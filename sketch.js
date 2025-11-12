@@ -4,7 +4,6 @@ let TREE_SPAWN_RATE = 0.03;
 let PROP_BOAT_WIDTH = 0.25;
 let FPS = 60;
 let SCROLL_TIME = 2; // seconds to go from top to bottom
-var DRIFT_SPEED = 4;
 let MAX_PROJECTILES = 1;
 
 let MAX_BOATS = 1;
@@ -21,6 +20,8 @@ let R = [
 ];
 
 // ===== Globals =====
+let DRIFT_SPEED; // will be set to ensure fixed travel time from top to bottom
+let JET_SPEED; // will be set to allow fixed travel time from left to right
 let isPaused = false;
 let immobileMode = true;
 let jet;
@@ -31,6 +32,7 @@ let explosions = [];
 let animations = [];
 let riverWidth, riverX;
 let score = 0;
+let showAnswers = true; // show number on block instead of color
 let streakbar; // number of hits in a row
 let streakBarMax = 5; // required streak for point bonus
 let streakBonus = 10; // points for filling streak bar
@@ -131,7 +133,7 @@ class Jet {
     this.y = y;
     this.width = 40;
     this.height = 60;
-    this.speed = 7;
+    this.speed = JET_SPEED;
     this.hitTime = 0;
   }
   
@@ -199,6 +201,12 @@ class Boat {
       this.width = width*PROP_BOAT_WIDTH;
     }
     this.height = 30;
+    if (this.width % this.height > 0) {
+      // increase height so that we can tile evenly
+      let ntiles = int(this.width / this.height) + 1;
+      this.height = this.width / ntiles;
+    }
+
     this.speed = DRIFT_SPEED;
     this.colorIndex = int(random(K));
     this.color = BOAT_COLORS[this.colorIndex];
@@ -211,23 +219,41 @@ class Boat {
   render() {
     push();
 
-    // rectMode(CENTER);
-    // noStroke();
-    // fill(this.color);
-    // rect(this.x, this.y, this.width, this.height);
+    rectMode(CENTER);
+    noStroke();
+    fill(this.color);
+    rect(this.x, this.y, this.width, this.height);
 
     imageMode(CENTER);
-    tint(this.color);
+    if (!showAnswers) {
+      tint(this.color);
+    }
 
     let N = this.width / this.height; // number of tiles horizontally
     let tileW = this.height;          // each tile is square (height x height)
     let startX = this.x - this.width / 2 + tileW / 2; // leftmost tile center
 
+    let action_index = -1;
+    if (showAnswers) {
+      let row = R[this.colorIndex];
+      for (let i = 0; i < row.length; i++) {
+        if (row[i] > 0) {
+          action_index = i+1;
+        }
+      }
+      textFont(myFont);
+      textSize(24);
+      textAlign(CENTER, CENTER);
+      fill('black');
+    }
     for (let i = 0; i < N; i++) {
       let tileX = startX + i * tileW;
-      image(this.img, tileX, this.y, tileW, this.height);
+      if (showAnswers) {
+        text(action_index, tileX, this.y);
+      } else {
+        // image(this.img, tileX, this.y, tileW, this.height);
+      }
     }
-
     pop();
     noTint();
   }
@@ -281,23 +307,52 @@ class Projectile {
   }
 }
 
+function circlePositions(x_start, x_end, W) {
+  // diameter
+  let D = 2 * W;
+  
+  // number of circles that fit
+  let N = floor((x_end - x_start) / D);
+  
+  let positions = [];
+  for (let i = 0; i < N; i++) {
+    // center of each circle
+    let x = x_start + W + i * D;
+    positions.push(x);
+  }
+  return positions;
+}
+
 class Explosion {
-  constructor(x, y, color) {
-    this.x = x;
+  constructor(x_start, x_end, y, color) {
+    this.x_start = x_start;
+    this.x_end = x_end;
     this.y = y;
     this.color = color;
-    this.life = 10;
+    this.maxLife = 20;
+    this.life = 20;
+    this.speed = DRIFT_SPEED;
+
+    if (this.x_start === this.x_end) {
+      this.xs = [this.x_start];
+    } else {
+      this.xs = circlePositions(this.x_start, this.x_end, 15);
+    }
   }
 
   update() {
     this.life--;
+    this.y += this.speed;
   }
 
   render() {
     push();
     noStroke();
-    fill(this.color[0], this.color[1], this.color[2], map(this.life, 10, 0, 255, 0));
-    ellipse(this.x, this.y, (10 - this.life) * 3);
+    ellipseMode(CENTER, CENTER);
+    fill(this.color[0], this.color[1], this.color[2], map(this.life, this.maxLife, 0, 255, 0));
+    for (let i = 0; i < this.xs.length; i++) {
+      ellipse(this.xs[i], this.y, (this.maxLife - this.life) * 7);
+    }
     pop();
   }
 
@@ -426,6 +481,7 @@ function setup() {
   
   // set drift speed to maintain fixed scroll times
   DRIFT_SPEED = height / (FPS * SCROLL_TIME);
+  JET_SPEED = width / (FPS * 2);
   
   river = new River(riverImg, RIVER_PERCENT);
   grass = new Grass(grassImg, RIVER_PERCENT);
@@ -472,7 +528,7 @@ function draw() {
           jet.takeHit();
           streakbar.reset();
           
-          explosions.push(new Explosion(jet.x, jet.y-jet.height/2, [255, 150, 0]));
+          explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height/2, [255, 150, 0]));
           
           lives--;
         }
@@ -493,9 +549,9 @@ function draw() {
             // Correct hit
             score++;
             streakbar.hit();
-            explosions.push(new Explosion(boats[j].x, boats[j].y+10, [255, 150, 0]));
-            explosions.push(new Explosion(boats[j].x - boats[j].width/3, boats[j].y+10, [255, 150, 0]));
-            explosions.push(new Explosion(boats[j].x + boats[j].width/3, boats[j].y+10, [255, 150, 0]));
+            let dx = boats[j].width/2;
+            let cy = boats[j].y - boats[j].height/2;
+            explosions.push(new Explosion(boats[j].x - dx, boats[j].x + dx, cy, [255, 150, 0]));
             boats.splice(j, 1);
             projectiles.splice(i, 1);
             break;
@@ -553,6 +609,7 @@ function draw() {
     // text("'N' for new game", width / 2, 5*height/8);
   }
   if (isPaused) {
+
     textSize(48);
     fill(255);
     textAlign(CENTER, CENTER);
@@ -568,9 +625,9 @@ function draw() {
     textSize(32);
     let modeStr;
     if (immobileMode) {
-      modeStr = 'Imobile';
+      modeStr = 'Stationary';
     } else {
-      modeStr = 'Mobile';
+      modeStr = 'Dynamic';
     }
     text("Mode ('M'): " + modeStr, width / 2, 5*height/8);
     if (framesInGame > 0) {
