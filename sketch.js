@@ -22,6 +22,7 @@ let R = [
 
 // ===== Globals =====
 let isPaused = false;
+let immobileMode = true;
 let jet;
 let trees = [];
 let boats = [];
@@ -31,8 +32,9 @@ let animations = [];
 let riverWidth, riverX;
 let score = 0;
 let streakbar; // number of hits in a row
-let streakBarMax = 3; // required streak for point bonus
+let streakBarMax = 5; // required streak for point bonus
 let streakBonus = 10; // points for filling streak bar
+let framesInGame = 0;
 let lives = L;
 let BOAT_COLORS = []; // filled later in setup()
 
@@ -49,6 +51,17 @@ function preload() {
   jetImg = loadImage('assets/jet.png');
   grassImg = loadImage('assets/grass.png');
   stoneImg = loadImage('assets/stone.png');
+}
+
+function randomR(rows, cols) {
+  // each row will have exactly one nonzero entry
+  let R = [];
+  for (let i = 0; i < rows; i++) {
+    let row = Array(cols).fill(0);
+    row[Math.floor(Math.random() * cols)] = 1; // choose one random position
+    R.push(row);
+  }
+  return R;
 }
 
 // ===== Classes =====
@@ -123,13 +136,17 @@ class Jet {
   }
   
   takeHit() {
-    this.hitTimer = 32; // number of frames for animation
+    if (!immobileMode) {
+      this.hitTimer = 32; // number of frames for animation
+    }
   }
 
   update() {
-    if (keyIsDown(LEFT_ARROW)) this.x -= this.speed;
-    if (keyIsDown(RIGHT_ARROW)) this.x += this.speed;
-    this.x = constrain(this.x, this.width / 2, width - this.width / 2);
+    if (!immobileMode) {
+      if (keyIsDown(LEFT_ARROW)) this.x -= this.speed;
+      if (keyIsDown(RIGHT_ARROW)) this.x += this.speed;
+      this.x = constrain(this.x, this.width / 2, width - this.width / 2);
+    }
   }
 
   render() {
@@ -175,7 +192,12 @@ class Boat {
     this.img = img;
     this.x = x;
     this.y = y;
-    this.width = width*PROP_BOAT_WIDTH;
+    if (immobileMode) {
+      this.x = width/2;
+      this.width = width;
+    } else {
+      this.width = width*PROP_BOAT_WIDTH;
+    }
     this.height = 30;
     this.speed = DRIFT_SPEED;
     this.colorIndex = int(random(K));
@@ -188,6 +210,12 @@ class Boat {
 
   render() {
     push();
+
+    // rectMode(CENTER);
+    // noStroke();
+    // fill(this.color);
+    // rect(this.x, this.y, this.width, this.height);
+
     imageMode(CENTER);
     tint(this.color);
 
@@ -286,17 +314,37 @@ class StreakBar {
     this.width = 0.2*width;
     this.streak = 0;
     this.maxStreak = streakBarMax;
+    this.streakBonus = streakBonus;
+
+    this.isAnimating = false;
+    this.scoreTarget;
+    this.lastRefresh;
   }
   
   reset() {
     this.streak = 0;
+  }
+
+  update() {
+    if (this.isAnimating) {
+      if (score < this.scoreTarget) {
+        if (millis()-this.lastRefresh > 35) {
+          score++;
+          this.lastRefresh = millis();
+        }
+      } else {
+        this.isAnimating = false;
+      }
+    }
   }
   
   hit() {
     this.streak++;
     if (this.streak >= this.maxStreak) {
       this.streak = 0;
-      animations.push(new ScoreBonus(score, streakBonus));
+      this.scoreTarget = score + this.streakBonus;
+      this.lastRefresh = millis();
+      this.isAnimating = true;
     }
   }
   
@@ -306,7 +354,26 @@ class StreakBar {
     translate(this.x, this.y);
     noStroke();
     fill('green');
-    rect(0, 0, map(this.streak, 0, this.maxStreak, 0, this.width), this.height);
+    let barWidth = map(this.streak, 0, this.maxStreak, 0, this.width);
+    if (this.isAnimating) {
+      barWidth = this.width;
+      fill('yellow');
+    }
+    rect(0, 0, barWidth, this.height);
+
+    textAlign(CENTER);
+    textFont(myFont);
+    textSize(24);
+    fill('white');
+    text('Streak:', -0.8*this.width/2, 2);
+
+    if (true) { //(this.isAnimating) {
+      fill('black');
+      textFont(myFont);
+      textSize(24);
+      textAlign(CENTER);
+      text('BONUS!', this.width / 2, 2);
+    }
     stroke('white');
     strokeWeight(2);
     noFill();
@@ -315,33 +382,47 @@ class StreakBar {
   }
 }
 
-class ScoreBonus {
-  constructor(score, scoreToAdd) {
-    this.scoreTarget = score + scoreToAdd;
-    this.lastRefresh = millis();
-  }
+// class ScoreBonus {
+//   constructor(score, scoreToAdd) {
+//     this.scoreTarget = score + scoreToAdd;
+//     this.lastRefresh = millis();
+//   }
 
-  update() {
-    if (score < this.scoreTarget) {
-      if (millis()-this.lastRefresh > 35) {
-        score++;
-        this.lastRefresh = millis();
-      }
-    }
-  }
+//   update() {
+//     if (score < this.scoreTarget) {
+//       if (millis()-this.lastRefresh > 35) {
+//         score++;
+//         this.lastRefresh = millis();
+//       }
+//     }
+//   }
 
-  render() {
-    // don't need to do anything here
-  }
+//   render() {
+//     // don't need to do anything here
+//   }
 
-  isDead() {
-    return score >= this.scoreTarget;
-  }
+//   isDead() {
+//     return score >= this.scoreTarget;
+//   }
+// }
+
+function newGame() {
+  // create random reward matrix
+  // R = randomR(K, D);
+
+  framesInGame = 0;
+  score = 0;
+  lives = L;
+  streakbar.reset();
+  boats = [];
+  projectiles = [];
+  explosions = [];
+  animations = [];
 }
 
 // ====== p5.js setup and draw ======
 function setup() {
-  createCanvas(600, 600);
+  createCanvas(windowWidth, windowHeight);
   
   // set drift speed to maintain fixed scroll times
   DRIFT_SPEED = height / (FPS * SCROLL_TIME);
@@ -363,6 +444,7 @@ function setup() {
   
   textAlign(CENTER, CENTER);
   textSize(24);
+  newGame();
 }
 
 function draw() {
@@ -371,6 +453,7 @@ function draw() {
   background(34, 139, 34);
   
   if (!isPaused) {
+    framesInGame++;
     grass.update();
     
     // Spawn boats (limited by MAX_BOATS)
@@ -382,15 +465,17 @@ function draw() {
     for (let i = boats.length - 1; i >= 0; i--) {
       boats[i].update();
 
-      // Check collision with jet
       if (boats[i].collidesWithJet(jet)) {
-        boats.splice(i, 1);
-        jet.takeHit();
-        streakbar.reset();
-        
-        explosions.push(new Explosion(jet.x, jet.y-jet.height/2, [255, 150, 0]));
-        
-        lives--;
+        if (!immobileMode) {
+        // Check collision with jet
+          boats.splice(i, 1);
+          jet.takeHit();
+          streakbar.reset();
+          
+          explosions.push(new Explosion(jet.x, jet.y-jet.height/2, [255, 150, 0]));
+          
+          lives--;
+        }
       } else if (boats[i].offscreen()) {
         boats.splice(i, 1);
       }
@@ -446,27 +531,51 @@ function draw() {
     if (explosions[i].isDead()) explosions.splice(i, 1);
   }
   
-  // Update/render other animations (e.g., score bonus)
-  for (let i = animations.length - 1; i >= 0; i--) {
-    animations[i].update();
-    animations[i].render();
-    if (animations[i].isDead()) animations.splice(i, 1);
-  }
+  // // Update/render other animations (e.g., score bonus)
+  // for (let i = animations.length - 1; i >= 0; i--) {
+  //   animations[i].update();
+  //   animations[i].render();
+  //   if (animations[i].isDead()) animations.splice(i, 1);
+  // }
 
   drawHUD();
+  streakbar.update();
   streakbar.render();
 
   if (lives <= 0) {
-    noLoop();
+    isPaused = true;
+    // noLoop();
+    // textSize(48);
+    // fill(255);
+    // textAlign(CENTER, CENTER);
+    // textFont(myFont);
+    // text("GAME OVER", width / 2, height / 2);
+    // text("'N' for new game", width / 2, 5*height/8);
+  }
+  if (isPaused) {
     textSize(48);
     fill(255);
     textAlign(CENTER, CENTER);
-    text("GAME OVER", width / 2, height / 2);
-  } else if (isPaused) {
-    textSize(48);
-    fill(255);
-    textAlign(CENTER, CENTER);
-    text("PAUSED", width / 2, height / 2);
+    textFont(myFont);
+    let statusStr = "PAUSED";
+    if (lives <= 0) {
+      statusStr = 'GAME OVER';
+    } else if (framesInGame === 0) {
+      statusStr = 'NEW GAME';
+    }
+    text(statusStr, width / 2, height / 2);
+
+    textSize(32);
+    let modeStr;
+    if (immobileMode) {
+      modeStr = 'Imobile';
+    } else {
+      modeStr = 'Mobile';
+    }
+    text("Mode ('M'): " + modeStr, width / 2, 5*height/8);
+    if (framesInGame > 0) {
+      text("'N' for new game", width / 2, 5*height/8 + 40);
+    }
   }
 }
 
@@ -480,20 +589,22 @@ function drawHUD() {
   textFont(myFont);
   fill(255);
   textAlign(RIGHT, TOP);
-  if (animations.length > 0) {
+  if (streakbar.isAnimating) {
     textSize(30);
     fill('yellow');
   }
   text("Score: " + score, width - 20, 5);
 
-  // Lives
-  fill(255);
-  textSize(24);
-  textFont('Helvetica');
-  textAlign(LEFT, TOP);
-  fill(255, 0, 0);
-  for (let i = 0; i < lives; i++) {
-    text("♥", 20 + i * 25, 5);
+  if (!immobileMode) {
+    // Show lives as hearts
+    fill(255);
+    textSize(24);
+    textFont('Helvetica');
+    textAlign(LEFT, TOP);
+    fill(255, 0, 0);
+    for (let i = 0; i < lives; i++) {
+      text("♥", 20 + i * 25, 5);
+    }
   }
 }
 
@@ -515,11 +626,22 @@ function randomLandX() {
 // ====== Firing control ======
 function keyPressed() {
   if (key >= '1' && key <= String(D)) {
+    // fire projectile
     let type = int(key);
     if (projectiles.length < MAX_PROJECTILES) {
       projectiles.push(new Projectile(jet.x, jet.y - 30, type));
     }
   } else if (key === 'p') {
+    // toggle paused
     isPaused = !isPaused;
+  } else if (isPaused) {
+    if (key === 'n') {
+      // start new game
+      newGame();
+    } else if (key === 'm') {
+      // toggle mode
+      immobileMode = !immobileMode;
+      newGame();
+    }
   }
 }
