@@ -369,102 +369,84 @@ function draw() {
   frameRate(FPS);
   
   background(34, 139, 34);
-  grass.update();
-  river.update();
-  grass.render();
   
-  if (isPaused) {
-    textSize(48);
-    fill(255);
-    textAlign(CENTER, CENTER);
-    text("PAUSED", width / 2, height / 2);
-  } else {
-  }
-
-  // Spawn trees
-  if (random(1) < TREE_SPAWN_RATE) {
-    trees.push(new Tree(randomLandX(), -10));
-  }
-
-  // Spawn boats (limited by MAX_BOATS)
-  if (boats.length < MAX_BOATS && random(1) < 0.02) {
-    boats.push(new Boat(stoneImg, random(riverX + 20, riverX + riverWidth - 20), -20));
-  }
-
-  // Update and render trees
-  for (let i = trees.length - 1; i >= 0; i--) {
-    trees[i].update();
-    // trees[i].render();
-    if (trees[i].offscreen()) trees.splice(i, 1);
-  }
-
-  // Update and render boats
-  for (let i = boats.length - 1; i >= 0; i--) {
-    boats[i].update();
-    boats[i].render();
-
-    // Check collision with jet
-    if (boats[i].collidesWithJet(jet)) {
-      boats.splice(i, 1);
-      jet.takeHit();
-      streakbar.reset();
-      
-      explosions.push(new Explosion(jet.x, jet.y-jet.height/2, [255, 150, 0]));
-      
-      lives--;
-      if (lives <= 0) {
-        noLoop();
-        textSize(48);
-        fill(255);
-        textAlign(CENTER, CENTER);
-        text("GAME OVER", width / 2, height / 2);
-      }
-    } else if (boats[i].offscreen()) {
-      boats.splice(i, 1);
+  if (!isPaused) {
+    grass.update();
+    
+    // Spawn boats (limited by MAX_BOATS)
+    if (boats.length < MAX_BOATS && random(1) < 0.02) {
+      boats.push(new Boat(stoneImg, random(riverX + 20, riverX + riverWidth - 20), -20));
     }
-  }
 
-  // Update and render projectiles
-  for (let i = projectiles.length - 1; i >= 0; i--) {
-    let p = projectiles[i];
-    p.update();
-    p.render();
+    // Update and render boats
+    for (let i = boats.length - 1; i >= 0; i--) {
+      boats[i].update();
 
-    // Check for collisions with boats
-    for (let j = boats.length - 1; j >= 0; j--) {
-      if (boats[j].checkHit(p)) {
-        if (R[boats[j].colorIndex][p.type - 1] === 1) {
-          // Correct hit
-          score++;
-          streakbar.hit();
-          explosions.push(new Explosion(boats[j].x, boats[j].y+10, [255, 150, 0]));
-          explosions.push(new Explosion(boats[j].x - boats[j].width/3, boats[j].y+10, [255, 150, 0]));
-          explosions.push(new Explosion(boats[j].x + boats[j].width/3, boats[j].y+10, [255, 150, 0]));
-          boats.splice(j, 1);
-          projectiles.splice(i, 1);
-          break;
+      // Check collision with jet
+      if (boats[i].collidesWithJet(jet)) {
+        boats.splice(i, 1);
+        jet.takeHit();
+        streakbar.reset();
+        
+        explosions.push(new Explosion(jet.x, jet.y-jet.height/2, [255, 150, 0]));
+        
+        lives--;
+      } else if (boats[i].offscreen()) {
+        boats.splice(i, 1);
+      }
+    }
+
+    // Update and render projectiles
+    for (let i = projectiles.length - 1; i >= 0; i--) {
+      let p = projectiles[i];
+      p.update();
+
+      // Check for collisions with boats
+      for (let j = boats.length - 1; j >= 0; j--) {
+        if (boats[j].checkHit(p)) {
+          if (R[boats[j].colorIndex][p.type - 1] === 1) {
+            // Correct hit
+            score++;
+            streakbar.hit();
+            explosions.push(new Explosion(boats[j].x, boats[j].y+10, [255, 150, 0]));
+            explosions.push(new Explosion(boats[j].x - boats[j].width/3, boats[j].y+10, [255, 150, 0]));
+            explosions.push(new Explosion(boats[j].x + boats[j].width/3, boats[j].y+10, [255, 150, 0]));
+            boats.splice(j, 1);
+            projectiles.splice(i, 1);
+            break;
+          }
         }
       }
+
+      if (p.offscreen()) {
+        streakbar.reset();
+        projectiles.splice(i, 1);
+      }
     }
 
-    if (p.offscreen()) {
-      streakbar.reset();
-      projectiles.splice(i, 1);
-    }
+    // Update jet
+    jet.update();
   }
 
-  // Update and render jet
-  jet.update();
+  // render grass, boats, projectiles, and jet
+  grass.render();
+  for (let i = boats.length - 1; i >= 0; i--) {
+    boats[i].render();
+  }
+  for (let i = projectiles.length - 1; i >= 0; i--) {
+    let p = projectiles[i];
+    p.render();
+  }
   jet.render();
-  
-  // Render explosions
+
+  // Update/render explosions
   for (let i = explosions.length - 1; i >= 0; i--) {
     explosions[i].update();
     explosions[i].render();
     if (explosions[i].isDead()) explosions.splice(i, 1);
   }
   
-  // Render other animations (e.g., score bonus)
+  // Update/render other animations (e.g., score bonus)
   for (let i = animations.length - 1; i >= 0; i--) {
     animations[i].update();
     animations[i].render();
@@ -473,6 +455,19 @@ function draw() {
 
   drawHUD();
   streakbar.render();
+
+  if (lives <= 0) {
+    noLoop();
+    textSize(48);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    text("GAME OVER", width / 2, height / 2);
+  } else if (isPaused) {
+    textSize(48);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    text("PAUSED", width / 2, height / 2);
+  }
 }
 
 // ====== HUD ======
