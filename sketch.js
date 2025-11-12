@@ -1,23 +1,23 @@
 // ===== Global Parameters =====
-let RIVER_PERCENT = 0.8;
-let TREE_SPAWN_RATE = 0.03;
-let PROP_BOAT_WIDTH = 0.25;
-let FPS = 60;
-let SCROLL_TIME = 2; // seconds to go from top to bottom
-let MAX_PROJECTILES = 1;
+let FPS = 60; // frames per second
+let SCROLL_TIME = 2; // seconds for cue to travel top to bottom
+let MAX_PROJECTILES = 1; // max shots allowed on screen at same time
+let MAX_BOATS = 1; // max number of cues on screen at same time
+let ITI_MEAN = 0.8; // mean of ITI distribution, in seconds
+let PROP_RIVER_WIDTH = 0.8; // proportion of screen taken up by cue area
+let PROP_BOAT_WIDTH = 0.25; // proportion of screen taken up by cue itself
 
-let MAX_BOATS = 1;
 let K = 4; // number of boat colors
 let D = 3; // number of projectile types
 let L = 5; // starting lives
 
-// KxD binary rule matrix: R[k][d] = 1 means projectile d destroys color k
-let R = [
-  [1, 0, 0],
-  [0, 1, 0],
-  [0, 0, 1],
-  [1, 0, 1]
-];
+let R; // KxD binary rule matrix: R[k][d] = 1 means projectile d destroys color k
+// let R = [
+//   [1, 0, 0],
+//   [0, 1, 0],
+//   [0, 0, 1],
+//   [1, 0, 1]
+// ];
 
 // ===== Globals =====
 let DRIFT_SPEED; // will be set to ensure fixed travel time from top to bottom
@@ -165,29 +165,6 @@ class Jet {
     if (this.hitTimer > 0) {
       this.hitTimer--;
     }
-  }
-}
-
-class Tree {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.size = random(10, 20);
-    this.speed = DRIFT_SPEED;
-  }
-  update() {
-    this.y += this.speed;
-  }
-  render() {
-    push();
-    translate(this.x, this.y);
-    fill(0, 150, 0);
-    noStroke();
-    triangle(0, -this.size, -this.size / 2, this.size / 2, this.size / 2, this.size / 2);
-    pop();
-  }
-  offscreen() {
-    return this.y - this.size > height;
   }
 }
 
@@ -464,7 +441,7 @@ class StreakBar {
 
 function newGame() {
   // create random reward matrix
-  // R = randomR(K, D);
+  R = randomR(K, D);
 
   framesInGame = 0;
   score = 0;
@@ -484,8 +461,8 @@ function setup() {
   DRIFT_SPEED = height / (FPS * SCROLL_TIME);
   JET_SPEED = width / (FPS * 2);
   
-  river = new River(riverImg, RIVER_PERCENT);
-  grass = new Grass(grassImg, RIVER_PERCENT);
+  river = new River(riverImg, PROP_RIVER_WIDTH);
+  grass = new Grass(grassImg, PROP_RIVER_WIDTH);
 
   // Define boat colors here (p5 color() now available)
   BOAT_COLORS = [
@@ -514,7 +491,8 @@ function draw() {
     grass.update();
     
     // Spawn boats (limited by MAX_BOATS)
-    if (boats.length < MAX_BOATS && random(1) < 0.02) {
+    let iti_p = 1/(ITI_MEAN*FPS);
+    if (boats.length < MAX_BOATS && random(1) < iti_p) {
       boats.push(new Boat(stoneImg, random(riverX + 20, riverX + riverWidth - 20), -20));
     }
 
@@ -670,7 +648,7 @@ function drawHUD() {
 
 // ====== Helpers ======
 function computeRiverGeometry() {
-  riverWidth = width * RIVER_PERCENT;
+  riverWidth = width * PROP_RIVER_WIDTH;
   riverX = width / 2 - riverWidth / 2;
 }
 
