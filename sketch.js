@@ -23,7 +23,8 @@ let R = [
 let DRIFT_SPEED; // will be set to ensure fixed travel time from top to bottom
 let JET_SPEED; // will be set to allow fixed travel time from left to right
 let isPaused = false;
-let immobileMode = true;
+let immobileMode = false;
+let showAnswers = true; // show number on block instead of color
 let jet;
 let trees = [];
 let boats = [];
@@ -32,7 +33,6 @@ let explosions = [];
 let animations = [];
 let riverWidth, riverX;
 let score = 0;
-let showAnswers = true; // show number on block instead of color
 let streakbar; // number of hits in a row
 let streakBarMax = 5; // required streak for point bonus
 let streakBonus = 10; // points for filling streak bar
@@ -144,7 +144,9 @@ class Jet {
   }
 
   update() {
-    if (!immobileMode) {
+    if (immobileMode) {
+      this.x = width / 2;
+    } else {
       if (keyIsDown(LEFT_ARROW)) this.x -= this.speed;
       if (keyIsDown(RIGHT_ARROW)) this.x += this.speed;
       this.x = constrain(this.x, this.width / 2, width - this.width / 2);
@@ -194,11 +196,10 @@ class Boat {
     this.img = img;
     this.x = x;
     this.y = y;
+    this.width = width*PROP_BOAT_WIDTH;
     if (immobileMode) {
       this.x = width/2;
-      this.width = width;
-    } else {
-      this.width = width*PROP_BOAT_WIDTH;
+      // this.width = width;
     }
     this.height = 30;
     if (this.width % this.height > 0) {
@@ -528,7 +529,7 @@ function draw() {
           jet.takeHit();
           streakbar.reset();
           
-          explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height/2, [255, 150, 0]));
+          explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height, [255, 150, 0]));
           
           lives--;
         }
@@ -600,13 +601,6 @@ function draw() {
 
   if (lives <= 0) {
     isPaused = true;
-    // noLoop();
-    // textSize(48);
-    // fill(255);
-    // textAlign(CENTER, CENTER);
-    // textFont(myFont);
-    // text("GAME OVER", width / 2, height / 2);
-    // text("'N' for new game", width / 2, 5*height/8);
   }
   if (isPaused) {
 
@@ -622,6 +616,7 @@ function draw() {
     }
     text(statusStr, width / 2, height / 2);
 
+    fill('black');
     textSize(32);
     let modeStr;
     if (immobileMode) {
@@ -630,8 +625,16 @@ function draw() {
       modeStr = 'Dynamic';
     }
     text("Mode ('M'): " + modeStr, width / 2, 5*height/8);
+
+    let ansStr;
+    if (showAnswers) {
+      ansStr = 'Showing';
+    } else {
+      ansStr = 'Hiding';
+    }
+    text(ansStr + " answers ('A')", width / 2, 5*height/8 + 40);
     if (framesInGame > 0) {
-      text("'N' for new game", width / 2, 5*height/8 + 40);
+      text("'N' for new game", width / 2, 5*height/8 + 80);
     }
   }
 }
@@ -698,6 +701,9 @@ function keyPressed() {
     } else if (key === 'm') {
       // toggle mode
       immobileMode = !immobileMode;
+      newGame();
+    } else if (key === 'a') {
+      showAnswers = !showAnswers;
       newGame();
     }
   }
