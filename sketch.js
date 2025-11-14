@@ -5,7 +5,7 @@ let MAX_PROJECTILES = 1; // max shots allowed on screen at same time
 let MAX_BOATS = 1; // max number of cues on screen at same time
 let ITI_MEAN = 0.8; // mean of ITI distribution, in seconds
 let PROP_RIVER_WIDTH = 0.8; // proportion of screen taken up by cue area
-let PROP_BOAT_WIDTH = 0.25; // proportion of screen taken up by cue itself
+let CUE_WIDTH = 200; // size of cue in pixels
 
 let K = 4; // number of boat colors
 let D = 3; // number of projectile types
@@ -173,12 +173,11 @@ class Boat {
     this.img = img;
     this.x = x;
     this.y = y;
-    this.width = width*PROP_BOAT_WIDTH;
+    this.width = CUE_WIDTH;
     if (immobileMode) {
       this.x = width/2;
-      // this.width = width;
     }
-    this.height = 30;
+    this.height = 50;
     if (this.width % this.height > 0) {
       // increase height so that we can tile evenly
       let ntiles = int(this.width / this.height) + 1;
