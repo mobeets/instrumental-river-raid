@@ -7,6 +7,7 @@ let ITI_MEAN = 0.8; // mean of ITI distribution, in seconds
 let PROP_RIVER_WIDTH = 0.8; // proportion of screen taken up by cue area
 let PROP_CUE_WIDTH = 0.2; // size of cue in pixels
 let showHUD = false;
+let bulletsPassThru = false;
 
 let K = 4; // number of boat colors
 let D = 3; // number of projectile types
@@ -164,6 +165,7 @@ function draw() {
     for (let i = projectiles.length - 1; i >= 0; i--) {
       let p = projectiles[i];
       p.update();
+      let pIsAboveBoat = false;
 
       // Check for collisions with boats
       for (let j = boats.length - 1; j >= 0; j--) {
@@ -179,10 +181,13 @@ function draw() {
             projectiles.splice(i, 1);
             break;
           }
+        } else if (!bulletsPassThru && p.y < boats[j].y - boats[j].height/2) {
+          // bullet is incorrect, so we make it disappear
+          pIsAboveBoat = true;
         }
       }
 
-      if (p.offscreen()) {
+      if (pIsAboveBoat || p.offscreen()) {
         streakbar.reset();
         projectiles.splice(i, 1);
       }
@@ -368,6 +373,7 @@ function getGameInfo() {
     streakBarMax: streakBarMax,
     JET_SPEED: JET_SPEED,
     DRIFT_SPEED: DRIFT_SPEED,
+    bulletsPassThru: bulletsPassThru,
     R: R,
     K: K,
     D: D,
