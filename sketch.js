@@ -1,3 +1,7 @@
+// ===== Photodiode settings =====
+let photodiode_params = {x: 0, y: undefined, size: 50};
+let photodiode;
+
 // ===== Global Parameters =====
 let FPS = 60; // frames per second
 let SCROLL_TIME = 2; // seconds for cue to travel top to bottom
@@ -10,14 +14,7 @@ let CUE_WIDTH = 200; // size of cue in pixels
 let K = 4; // number of boat colors
 let D = 3; // number of projectile types
 let L = 5; // starting lives
-
-let R; // KxD binary rule matrix: R[k][d] = 1 means projectile d destroys color k
-// let R = [
-//   [1, 0, 0],
-//   [0, 1, 0],
-//   [0, 0, 1],
-//   [1, 0, 1]
-// ];
+let R; // reward matrix
 
 // ===== Globals =====
 let DRIFT_SPEED; // will be set to ensure fixed travel time from top to bottom
@@ -31,6 +28,7 @@ let boats = [];
 let projectiles = [];
 let explosions = [];
 let animations = [];
+let trials = [];
 let riverWidth, riverX;
 let score = 0;
 let streakbar; // number of hits in a row
@@ -56,7 +54,15 @@ function preload() {
 }
 
 function randomR(rows, cols) {
+  // creates random KxD binary reward matrix
   // each row will have exactly one nonzero entry
+  // R[k][d] = 1 means projectile d destroys color k
+  // let R = [
+  //   [1, 0, 0],
+  //   [0, 1, 0],
+  //   [0, 0, 1],
+  //   [1, 0, 1]
+  // ];
   let R = [];
   for (let i = 0; i < rows; i++) {
     let row = Array(cols).fill(0);
@@ -66,380 +72,8 @@ function randomR(rows, cols) {
   return R;
 }
 
-// ===== Classes =====
-
-class Grass {
-  constructor(img, riverPercent) {
-    this.img = img;
-    this.riverPercent = riverPercent;
-
-    // compute side widths
-    this.sideWidth = (width * (1 - this.riverPercent)) / 2;
-    this.scroll = 0;
-    this.speed = DRIFT_SPEED; // same as river for consistent drift
-  }
-
-  update() {
-    this.scroll += this.speed;
-    if (this.scroll >= this.img.height) {
-      this.scroll = 0;
-    }
-  }
-
-  render() {
-    imageMode(CORNER);
-    // Left strip
-    for (let y = -this.img.height; y < height; y += this.img.height) {
-      image(this.img, 0, y + this.scroll, this.sideWidth, this.img.height);
-    }
-
-    // Right strip
-    for (let y = -this.img.height; y < height; y += this.img.height) {
-      image(this.img, width - this.sideWidth, y + this.scroll, this.sideWidth, this.img.height);
-    }
-  }
-}
-
-class River {
-  constructor(img, percent) {
-    this.img = img;
-    this.percent = percent;
-    this.width = width * this.percent;
-    this.x = width / 2 - this.width / 2;
-    this.scroll = 0;
-    this.speed = DRIFT_SPEED; // pixels per frame
-  }
-
-  update() {
-    this.scroll += this.speed;
-    if (this.scroll >= this.img.height) {
-      this.scroll = 0;
-    }
-  }
-
-  render() {
-    // Tile vertically to fill the screen
-    for (let y = -this.img.height; y < height; y += this.img.height) {
-      imageMode(CORNER);
-      image(this.img, this.x, y + this.scroll, this.width, this.img.height);
-    }
-  }
-}
-
-class Jet {
-  constructor(img, x, y) {
-    this.img = img;
-    this.x = x;
-    this.y = y;
-    this.width = 40;
-    this.height = 60;
-    this.speed = JET_SPEED;
-    this.hitTime = 0;
-  }
-  
-  takeHit() {
-    if (!immobileMode) {
-      this.hitTimer = 32; // number of frames for animation
-    }
-  }
-
-  update() {
-    if (immobileMode) {
-      this.x = width / 2;
-    } else {
-      if (keyIsDown(LEFT_ARROW)) this.x -= this.speed;
-      if (keyIsDown(RIGHT_ARROW)) this.x += this.speed;
-      this.x = constrain(this.x, this.width / 2, width - this.width / 2);
-    }
-  }
-
-  render() {
-    imageMode(CENTER);
-    if (this.hitTimer > 0 && this.hitTimer % 16 < 8) {
-      blendMode(DIFFERENCE);
-      image(this.img, this.x, this.y, this.width, this.height);
-      blendMode(BLEND);
-    } else {
-      image(this.img, this.x, this.y, this.width, this.height);
-    }
-    if (this.hitTimer > 0) {
-      this.hitTimer--;
-    }
-  }
-}
-
-class Boat {
-  constructor(img, x, y) {
-    this.img = img;
-    this.x = x;
-    this.y = y;
-    this.width = CUE_WIDTH;
-    if (immobileMode) {
-      this.x = width/2;
-    }
-    this.height = 50;
-    if (this.width % this.height > 0) {
-      // increase height so that we can tile evenly
-      let ntiles = int(this.width / this.height) + 1;
-      this.height = this.width / ntiles;
-    }
-
-    this.speed = DRIFT_SPEED;
-    this.colorIndex = int(random(K));
-    this.color = BOAT_COLORS[this.colorIndex];
-  }
-
-  update() {
-    this.y += this.speed;
-  }
-
-  render() {
-    push();
-
-    rectMode(CENTER);
-    noStroke();
-    fill(this.color);
-    rect(this.x, this.y, this.width, this.height);
-
-    imageMode(CENTER);
-    if (!showAnswers) {
-      tint(this.color);
-    }
-
-    let N = this.width / this.height; // number of tiles horizontally
-    let tileW = this.height;          // each tile is square (height x height)
-    let startX = this.x - this.width / 2 + tileW / 2; // leftmost tile center
-
-    let action_index = -1;
-    if (showAnswers) {
-      let row = R[this.colorIndex];
-      for (let i = 0; i < row.length; i++) {
-        if (row[i] > 0) {
-          action_index = i+1;
-        }
-      }
-      textFont(myFont);
-      textSize(24);
-      textAlign(CENTER, CENTER);
-      fill('black');
-    }
-    for (let i = 0; i < N; i++) {
-      let tileX = startX + i * tileW;
-      if (showAnswers) {
-        text(action_index, tileX, this.y);
-      } else {
-        // image(this.img, tileX, this.y, tileW, this.height);
-      }
-    }
-    pop();
-    noTint();
-  }
-
-  offscreen() {
-    return this.y - this.height / 2 > height;
-  }
-
-  collidesWithJet(jet) {
-    return !(
-      this.x + this.width / 2 < jet.x - jet.width / 2 || // boat is left of jet
-      this.x - this.width / 2 > jet.x + jet.width / 2 || // boat is right of jet
-      this.y + this.height / 2 < jet.y - jet.height / 2 || // boat is above jet
-      this.y - this.height / 2 > jet.y + jet.height / 2    // boat is below jet
-    );
-  }
-
-  checkHit(projectile) {
-    return (
-      abs(this.x - projectile.x) < this.width / 2 &&
-      abs(this.y - projectile.y) < this.height / 2
-    );
-  }
-}
-
-class Projectile {
-  constructor(x, y, type) {
-    this.x = x;
-    this.y = y;
-    this.speed = 8;
-    this.type = type; // 1..D
-    this.sizes = [8, 8, 8];
-    this.colors = [color(0,0,0), color(0,0,0), color(0,0,0)];
-  }
-
-  update() {
-    this.y -= this.speed;
-  }
-
-  render() {
-    push();
-    translate(this.x, this.y);
-    fill(this.colors[this.type-1]);
-    noStroke();
-    ellipse(0, 0, this.sizes[this.type-1]);
-    pop();
-  }
-
-  offscreen() {
-    return this.y + this.sizes[this.type-1] < 0;
-  }
-}
-
-function circlePositions(x_start, x_end, W) {
-  // diameter
-  let D = 2 * W;
-  
-  // number of circles that fit
-  let N = floor((x_end - x_start) / D);
-  
-  let positions = [];
-  for (let i = 0; i < N; i++) {
-    // center of each circle
-    let x = x_start + W + i * D;
-    positions.push(x);
-  }
-  return positions;
-}
-
-class Explosion {
-  constructor(x_start, x_end, y, color) {
-    this.x_start = x_start;
-    this.x_end = x_end;
-    this.y = y;
-    this.color = color;
-    this.maxLife = 20;
-    this.life = 20;
-    this.speed = DRIFT_SPEED;
-
-    if (this.x_start === this.x_end) {
-      this.xs = [this.x_start];
-    } else {
-      this.xs = circlePositions(this.x_start, this.x_end, 15);
-    }
-  }
-
-  update() {
-    this.life--;
-    this.y += this.speed;
-  }
-
-  render() {
-    push();
-    noStroke();
-    ellipseMode(CENTER, CENTER);
-    fill(this.color[0], this.color[1], this.color[2], map(this.life, this.maxLife, 0, 255, 0));
-    for (let i = 0; i < this.xs.length; i++) {
-      ellipse(this.xs[i], this.y, (this.maxLife - this.life) * 7);
-    }
-    pop();
-  }
-
-  isDead() {
-    return this.life <= 0;
-  }
-}
-
-class StreakBar {
-  constructor() {
-    this.x = width/2;
-    this.y = 4;
-    this.height = 23;
-    this.width = 0.2*width;
-    this.streak = 0;
-    this.maxStreak = streakBarMax;
-    this.streakBonus = streakBonus;
-
-    this.isAnimating = false;
-    this.scoreTarget;
-    this.lastRefresh;
-  }
-  
-  reset() {
-    this.streak = 0;
-  }
-
-  update() {
-    if (this.isAnimating) {
-      if (score < this.scoreTarget) {
-        if (millis()-this.lastRefresh > 35) {
-          score++;
-          this.lastRefresh = millis();
-        }
-      } else {
-        this.isAnimating = false;
-      }
-    }
-  }
-  
-  hit() {
-    this.streak++;
-    if (this.streak >= this.maxStreak) {
-      this.streak = 0;
-      this.scoreTarget = score + this.streakBonus;
-      this.lastRefresh = millis();
-      this.isAnimating = true;
-    }
-  }
-  
-  render() {
-    rectMode(CORNER);
-    push();
-    translate(this.x, this.y);
-    noStroke();
-    fill('green');
-    let barWidth = map(this.streak, 0, this.maxStreak, 0, this.width);
-    if (this.isAnimating) {
-      barWidth = this.width;
-      fill('yellow');
-    }
-    rect(0, 0, barWidth, this.height);
-
-    textAlign(CENTER);
-    textFont(myFont);
-    textSize(24);
-    fill('white');
-    text('Streak:', -0.8*this.width/2, 2);
-
-    if (true) { //(this.isAnimating) {
-      fill('black');
-      textFont(myFont);
-      textSize(24);
-      textAlign(CENTER);
-      text('BONUS!', this.width / 2, 2);
-    }
-    stroke('white');
-    strokeWeight(2);
-    noFill();
-    rect(0, 0, this.width, this.height);
-    pop();
-  }
-}
-
-// class ScoreBonus {
-//   constructor(score, scoreToAdd) {
-//     this.scoreTarget = score + scoreToAdd;
-//     this.lastRefresh = millis();
-//   }
-
-//   update() {
-//     if (score < this.scoreTarget) {
-//       if (millis()-this.lastRefresh > 35) {
-//         score++;
-//         this.lastRefresh = millis();
-//       }
-//     }
-//   }
-
-//   render() {
-//     // don't need to do anything here
-//   }
-
-//   isDead() {
-//     return score >= this.scoreTarget;
-//   }
-// }
-
 function newGame() {
-  // create random reward matrix
+  // make new reward matrix
   R = randomR(K, D);
 
   framesInGame = 0;
@@ -454,7 +88,11 @@ function newGame() {
 
 // ====== p5.js setup and draw ======
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  let windowSize = min(windowWidth, windowHeight);
+  let cnv = createCanvas(windowSize, windowSize);
+  cnv.parent('canvas-container'); // attach to the centered div
+
+  photodiode = new Photodiode(photodiode_params, width, height);
   
   // set drift speed to maintain fixed scroll times
   DRIFT_SPEED = height / (FPS * SCROLL_TIME);
@@ -482,7 +120,6 @@ function setup() {
 
 function draw() {
   frameRate(FPS);
-  
   background(34, 139, 34);
   
   if (!isPaused) {
@@ -614,6 +251,10 @@ function draw() {
       text("'N' for new game", width / 2, 5*height/8 + 80);
     }
   }
+
+  // render photodiode last
+  photodiode.update();
+  photodiode.render();
 }
 
 // ====== HUD ======
@@ -684,4 +325,46 @@ function keyPressed() {
       newGame();
     }
   }
+}
+
+function getGameInfo() {
+  return {
+    width: width,
+    height: height,
+    framesInGame: framesInGame,
+    streakBonus: streakBonus,
+    streakBarMax: streakBarMax,
+    JET_SPEED: JET_SPEED,
+    DRIFT_SPEED: DRIFT_SPEED,
+    R: R,
+    K: K,
+    D: D,
+    L: L,
+    CUE_WIDTH: CUE_WIDTH,
+    PROP_RIVER_WIDTH: PROP_RIVER_WIDTH,
+    ITI_MEAN: ITI_MEAN,
+    MAX_BOATS: MAX_BOATS,
+    MAX_PROJECTILES: MAX_PROJECTILES,
+    SCROLL_TIME: SCROLL_TIME,
+    FPS: FPS,
+  };
+}
+
+function saveTrials() {
+  let gameInfo = getGameInfo();
+  let jsonString = JSON.stringify({gameInfo: gameInfo,
+    trials: trials}, null, 2); // Pretty-print with 2-space indent
+
+  // Create a Blob from the JSON string
+  let blob = new Blob([jsonString], { type: 'application/json' });
+
+  // Create a temporary download link
+  let url = URL.createObjectURL(blob);
+  let a = document.createElement('a');
+  a.href = url;
+  a.download = 'data.json';
+  a.click();
+
+  // Clean up the URL object
+  URL.revokeObjectURL(url);
 }
