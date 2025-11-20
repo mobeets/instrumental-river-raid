@@ -17,7 +17,7 @@ let photodiode_params = {size: 50};
 let photodiode;
 
 // ===== Data settings =====
-let events = [];
+let logger;
 let trials = [];
 
 // ===== Globals =====
@@ -95,6 +95,7 @@ function setup() {
   let cnv = createCanvas(windowSize, windowSize);
   cnv.parent('canvas-container'); // attach to the centered div
 
+  logger = new EventLogger();
   photodiode = new Photodiode(photodiode_params, width, height);
   
   // set drift speed to maintain fixed scroll times
@@ -204,13 +205,6 @@ function draw() {
     explosions[i].render();
     if (explosions[i].isDead()) explosions.splice(i, 1);
   }
-  
-  // // Update/render other animations (e.g., score bonus)
-  // for (let i = animations.length - 1; i >= 0; i--) {
-  //   animations[i].update();
-  //   animations[i].render();
-  //   if (animations[i].isDead()) animations.splice(i, 1);
-  // }
 
   drawHUD();
   streakbar.update();
@@ -220,44 +214,47 @@ function draw() {
     isPaused = true;
   }
   if (isPaused) {
-
-    textSize(48);
-    fill(255);
-    textAlign(CENTER, CENTER);
-    textFont(myFont);
-    let statusStr = "PAUSED";
-    if (lives <= 0) {
-      statusStr = 'GAME OVER';
-    } else if (framesInGame === 0) {
-      statusStr = 'NEW GAME';
-    }
-    text(statusStr, width / 2, height / 2);
-
-    fill('black');
-    textSize(32);
-    let modeStr;
-    if (immobileMode) {
-      modeStr = 'Stationary';
-    } else {
-      modeStr = 'Dynamic';
-    }
-    text("Mode ('M'): " + modeStr, width / 2, 5*height/8);
-
-    let ansStr;
-    if (showAnswers) {
-      ansStr = 'Showing';
-    } else {
-      ansStr = 'Hiding';
-    }
-    text(ansStr + " answers ('A')", width / 2, 5*height/8 + 40);
-    if (framesInGame > 0) {
-      text("'N' for new game", width / 2, 5*height/8 + 80);
-    }
+    drawPauseScreen();
   }
 
   // render photodiode last
   photodiode.update();
   photodiode.render();
+}
+
+function drawPauseScreen() {
+  textSize(48);
+  fill(255);
+  textAlign(CENTER, CENTER);
+  textFont(myFont);
+  let statusStr = "PAUSED";
+  if (lives <= 0) {
+    statusStr = 'GAME OVER';
+  } else if (framesInGame === 0) {
+    statusStr = 'NEW GAME';
+  }
+  text(statusStr, width / 2, height / 2);
+
+  fill('black');
+  textSize(32);
+  let modeStr;
+  if (immobileMode) {
+    modeStr = 'Stationary';
+  } else {
+    modeStr = 'Dynamic';
+  }
+  text("Mode ('M'): " + modeStr, width / 2, 5*height/8);
+
+  let ansStr;
+  if (showAnswers) {
+    ansStr = 'Showing';
+  } else {
+    ansStr = 'Hiding';
+  }
+  text(ansStr + " answers ('A')", width / 2, 5*height/8 + 40);
+  if (framesInGame > 0) {
+    text("'N' for new game", width / 2, 5*height/8 + 80);
+  }
 }
 
 // ====== HUD ======
@@ -305,39 +302,50 @@ function randomLandX() {
 }
 
 // ====== Firing control ======
-function keyPressed() {
-  if (key >= '1' && key <= String(D)) {
+function keyPressed(event) {
+  let eventMsg;
+  if (!isPaused && key >= '1' && key <= String(D)) {
     // fire projectile
-    logDiscreteEvent('keyPressed: projectile fired ' + key);
+    eventMsg = 'projectile fired ' + key;
     let type = int(key);
     if (projectiles.length < MAX_PROJECTILES) {
       projectiles.push(new Projectile(jet.x, jet.y - 30, type));
     }
   } else if (key === 'p') {
     // toggle paused
-    logDiscreteEvent('keyPressed: toggle paused');
+    eventMsg = 'toggle paused';
     isPaused = !isPaused;
   } else if (isPaused) {
     if (key === 'n') {
       // start new game
-      logDiscreteEvent('keyPressed: new game');
+      eventMsg = 'new game';
       newGame();
     } else if (key === 'm') {
       // toggle mode
-      logDiscreteEvent('keyPressed: toggle mode');
+      eventMsg = 'toggle mode';
       immobileMode = !immobileMode;
       newGame();
     } else if (key === 'a') {
-      logDiscreteEvent('keyPressed: toggle answers');
+      eventMsg = 'toggle answers';
       showAnswers = !showAnswers;
       newGame();
+    } else if (key === 's') {
+      saveTrials();
     }
   }
+  logger.log(event, event.timeStamp, eventMsg);
 }
 
-function logDiscreteEvent(name) {
-  events.push({name: name, time: millis()});
-  photodiode.trigger();
+function keyReleased() {
+  logger.log(event, event.timeStamp);
+}
+
+function mousePressed() {
+  logger.log(event, event.timeStamp);
+}
+
+function mouseReleased() {
+  logger.log(event, event.timeStamp);
 }
 
 function getGameInfo() {
@@ -365,20 +373,7 @@ function getGameInfo() {
 }
 
 function saveTrials() {
-  let gameInfo = getGameInfo();
-  let jsonString = JSON.stringify({gameInfo: gameInfo,
-    events: events, trials: trials}, null, 2); // Pretty-print with 2-space indent
-
-  // Create a Blob from the JSON string
-  let blob = new Blob([jsonString], { type: 'application/json' });
-
-  // Create a temporary download link
-  let url = URL.createObjectURL(blob);
-  let a = document.createElement('a');
-  a.href = url;
-  a.download = 'data.json';
-  a.click();
-
-  // Clean up the URL object
-  URL.revokeObjectURL(url);
+  logger.data.gameInfo = getGameInfo();
+  logger.data.trials = trials;
+  logger.download();
 }

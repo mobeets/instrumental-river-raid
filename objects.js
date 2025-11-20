@@ -80,6 +80,10 @@ class Jet {
     } else {
       if (keyIsDown(LEFT_ARROW)) this.x -= this.speed;
       if (keyIsDown(RIGHT_ARROW)) this.x += this.speed;
+      if (mouseIsPressed) {
+        if (mouseX < width/2) this.x -= this.speed;
+        else if (mouseX > width/2) this.x += this.speed;
+      }
       this.x = constrain(this.x, this.width / 2, width - this.width / 2);
     }
   }
@@ -256,7 +260,7 @@ class Explosion {
   render() {
     push();
     noStroke();
-    ellipseMode(CENTER, CENTER);
+    ellipseMode(CENTER);
     fill(this.color[0], this.color[1], this.color[2], map(this.life, this.maxLife, 0, 255, 0));
     for (let i = 0; i < this.xs.length; i++) {
       ellipse(this.xs[i], this.y, (this.maxLife - this.life) * 7);
