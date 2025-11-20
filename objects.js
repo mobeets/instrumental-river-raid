@@ -143,7 +143,7 @@ class Boat {
 
     let action_index = -1;
     if (showAnswers) {
-      let row = R[this.colorIndex];
+      let row = trial_block.R[this.colorIndex];
       for (let i = 0; i < row.length; i++) {
         if (row[i] > 0) {
           action_index = i+1;

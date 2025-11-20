@@ -8,6 +8,8 @@ let PROP_RIVER_WIDTH = 0.8; // proportion of screen taken up by cue area
 let PROP_CUE_WIDTH = 0.2; // size of cue in pixels
 let showHUD = false;
 let bulletsPassThru = false;
+let gameModeIndex = 0;
+let gameModes = ["targets", "instrumental", "targets-instrumental"];
 
 let K = 4; // number of boat colors
 let D = 3; // number of projectile types
@@ -20,7 +22,9 @@ let photodiode;
 
 // ===== Data settings =====
 let logger;
-let trials = [];
+let trial_blocks = [];
+let trial_block;
+let trial;
 
 // ===== Globals =====
 let DRIFT_SPEED; // will be set to ensure fixed travel time from top to bottom
@@ -78,9 +82,25 @@ function randomR(rows, cols) {
   return R;
 }
 
-function newGame() {
+function newGame(game_index) {
+  gameModeIndex = game_index;
+  trial_block = new TrialBlock(gameModes[gameModeIndex], K, false, 10);
+  if (gameModes[gameModeIndex] === "targets") {
+    immobileMode = false;
+    showAnswers = true;
+  } else if (gameModes[gameModeIndex] === "instrumental") {
+    immobileMode = true;
+    showAnswers = false;
+  } else if (gameModes[gameModeIndex] === "targets-instrumental") {
+    immobileMode = false;
+    showAnswers = false;
+  } else {
+    console.log("Invalid game type.");
+  }
+  trial_blocks.push(trial_block);
+
   // make new reward matrix
-  R = randomR(K, D);
+  trial_block.R = randomR(K, D);
 
   framesInGame = 0;
   score = 0;
@@ -124,7 +144,7 @@ function setup() {
   
   textAlign(CENTER, CENTER);
   textSize(24);
-  newGame();
+  newGame(gameModeIndex);
 }
 
 function draw() {
@@ -138,6 +158,9 @@ function draw() {
     // Spawn boats (limited by MAX_BOATS)
     let iti_p = 1/(ITI_MEAN*FPS);
     if (boats.length < MAX_BOATS && random(1) < iti_p) {
+      trial = trial_block.next_trial();
+      // todo: if trial is undefined, the block is over
+      // todo: set Boat using trial properties
       boats.push(new Boat(stoneImg, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -20));
     }
 
@@ -146,17 +169,19 @@ function draw() {
       boats[i].update();
 
       if (boats[i].collidesWithJet(jet)) {
+        // Collided with jet
         if (!immobileMode) {
-        // Check collision with jet
           boats.splice(i, 1);
           jet.takeHit();
           streakbar.reset();
+          // todo: update trial here with collision
           
           explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height, [255, 150, 0]));
           
           lives--;
         }
       } else if (boats[i].offscreen()) {
+        // todo: end trial here with no shot
         boats.splice(i, 1);
       }
     }
@@ -170,8 +195,10 @@ function draw() {
       // Check for collisions with boats
       for (let j = boats.length - 1; j >= 0; j--) {
         if (boats[j].checkHit(p)) {
-          if (R[boats[j].colorIndex][p.type - 1] === 1) {
+          if (trial_block.R[boats[j].colorIndex][p.type - 1] === 1) {
             // Correct hit
+
+            // todo: update trial here with a hit
             score++;
             streakbar.hit();
             let dx = boats[j].width/2;
@@ -183,6 +210,7 @@ function draw() {
           }
         } else if (!bulletsPassThru && p.y < boats[j].y - boats[j].height/2) {
           // bullet is incorrect, so we make it disappear
+          // todo: update trial here with a miss
           pIsAboveBoat = true;
         }
       }
@@ -248,23 +276,10 @@ function drawPauseScreen() {
 
   fill('black');
   textSize(32);
-  let modeStr;
-  if (immobileMode) {
-    modeStr = 'Stationary';
-  } else {
-    modeStr = 'Dynamic';
-  }
+  let modeStr = gameModes[gameModeIndex];
   text("Mode ('M'): " + modeStr, width / 2, 5*height/8);
-
-  let ansStr;
-  if (showAnswers) {
-    ansStr = 'Showing';
-  } else {
-    ansStr = 'Hiding';
-  }
-  text(ansStr + " answers ('A')", width / 2, 5*height/8 + 40);
   if (framesInGame > 0) {
-    text("'N' for new game", width / 2, 5*height/8 + 80);
+    text("'N' for new game", width / 2, 5*height/8 + 40);
   }
 }
 
@@ -321,16 +336,9 @@ function keyPressed(event) {
     if (key === 'n') {
       // start new game
       eventMsg = 'new game';
-      newGame();
+      newGame(gameModeIndex);
     } else if (key === 'm') {
-      // toggle mode
-      eventMsg = 'toggle mode';
-      immobileMode = !immobileMode;
-      newGame();
-    } else if (key === 'a') {
-      eventMsg = 'toggle answers';
-      showAnswers = !showAnswers;
-      newGame();
+      newGame((gameModeIndex + 1) % gameModes.length);
     } else if (key === 's') {
       saveTrials();
     }
@@ -391,6 +399,6 @@ function getGameInfo() {
 
 function saveTrials() {
   logger.data.gameInfo = getGameInfo();
-  logger.data.trials = trials;
+  logger.data.trial_blocks = trial_blocks;
   logger.download();
 }
