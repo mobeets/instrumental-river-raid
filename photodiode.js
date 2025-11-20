@@ -2,7 +2,7 @@
 class Photodiode {
   constructor(params = {}, width, height) {
     const defaults = {
-      x: undefined,
+      x: 0,
       y: undefined,
       size: 200,
       color: 'white',
@@ -45,9 +45,15 @@ class Photodiode {
   }
 
   render() {
+    if (this.start_time === undefined) return;
     rectMode(CORNER);
     noStroke();
     fill(this.color);
     square(this.x, this.y, this.size);
+  }
+
+  toJSON() {
+    // outputs all of object's variables as a json object
+    return Object.assign({}, this);
   }
 }

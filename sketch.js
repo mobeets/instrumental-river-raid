@@ -1,7 +1,3 @@
-// ===== Photodiode settings =====
-let photodiode_params = {x: 0, y: undefined, size: 50};
-let photodiode;
-
 // ===== Global Parameters =====
 let FPS = 60; // frames per second
 let SCROLL_TIME = 2; // seconds for cue to travel top to bottom
@@ -16,6 +12,14 @@ let D = 3; // number of projectile types
 let L = 5; // starting lives
 let R; // reward matrix
 
+// ===== Photodiode settings =====
+let photodiode_params = {size: 50};
+let photodiode;
+
+// ===== Data settings =====
+let events = [];
+let trials = [];
+
 // ===== Globals =====
 let DRIFT_SPEED; // will be set to ensure fixed travel time from top to bottom
 let JET_SPEED; // will be set to allow fixed travel time from left to right
@@ -28,7 +32,6 @@ let boats = [];
 let projectiles = [];
 let explosions = [];
 let animations = [];
-let trials = [];
 let riverWidth, riverX;
 let score = 0;
 let streakbar; // number of hits in a row
@@ -305,32 +308,43 @@ function randomLandX() {
 function keyPressed() {
   if (key >= '1' && key <= String(D)) {
     // fire projectile
+    logDiscreteEvent('keyPressed: projectile fired ' + key);
     let type = int(key);
     if (projectiles.length < MAX_PROJECTILES) {
       projectiles.push(new Projectile(jet.x, jet.y - 30, type));
     }
   } else if (key === 'p') {
     // toggle paused
+    logDiscreteEvent('keyPressed: toggle paused');
     isPaused = !isPaused;
   } else if (isPaused) {
     if (key === 'n') {
       // start new game
+      logDiscreteEvent('keyPressed: new game');
       newGame();
     } else if (key === 'm') {
       // toggle mode
+      logDiscreteEvent('keyPressed: toggle mode');
       immobileMode = !immobileMode;
       newGame();
     } else if (key === 'a') {
+      logDiscreteEvent('keyPressed: toggle answers');
       showAnswers = !showAnswers;
       newGame();
     }
   }
 }
 
+function logDiscreteEvent(name) {
+  events.push({name: name, time: millis()});
+  photodiode.trigger();
+}
+
 function getGameInfo() {
   return {
     width: width,
     height: height,
+    photodiode: photodiode,
     framesInGame: framesInGame,
     streakBonus: streakBonus,
     streakBarMax: streakBarMax,
@@ -353,7 +367,7 @@ function getGameInfo() {
 function saveTrials() {
   let gameInfo = getGameInfo();
   let jsonString = JSON.stringify({gameInfo: gameInfo,
-    trials: trials}, null, 2); // Pretty-print with 2-space indent
+    events: events, trials: trials}, null, 2); // Pretty-print with 2-space indent
 
   // Create a Blob from the JSON string
   let blob = new Blob([jsonString], { type: 'application/json' });
