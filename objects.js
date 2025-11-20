@@ -1,11 +1,11 @@
 
 class Grass {
-  constructor(img, riverPercent) {
+  constructor(img, percent) {
     this.img = img;
-    this.riverPercent = riverPercent;
+    this.percent = percent;
 
     // compute side widths
-    this.sideWidth = (width * (1 - this.riverPercent)) / 2;
+    this.sideWidth = (width * (1 - this.percent)) / 2;
     this.scroll = 0;
     this.speed = DRIFT_SPEED; // same as river for consistent drift
   }
@@ -104,7 +104,7 @@ class Boat {
     this.img = img;
     this.x = x;
     this.y = y;
-    this.width = CUE_WIDTH;
+    this.width = cueWidth;
     if (immobileMode) {
       this.x = width/2;
     }

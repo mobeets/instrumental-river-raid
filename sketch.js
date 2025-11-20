@@ -5,7 +5,7 @@ let MAX_PROJECTILES = 1; // max shots allowed on screen at same time
 let MAX_BOATS = 1; // max number of cues on screen at same time
 let ITI_MEAN = 0.8; // mean of ITI distribution, in seconds
 let PROP_RIVER_WIDTH = 0.8; // proportion of screen taken up by cue area
-let CUE_WIDTH = 200; // size of cue in pixels
+let PROP_CUE_WIDTH = 0.2; // size of cue in pixels
 let showHUD = false;
 
 let K = 4; // number of boat colors
@@ -24,6 +24,7 @@ let trials = [];
 // ===== Globals =====
 let DRIFT_SPEED; // will be set to ensure fixed travel time from top to bottom
 let JET_SPEED; // will be set to allow fixed travel time from left to right
+let cueWidth;
 let isPaused = false;
 let immobileMode = false;
 let showAnswers = true; // show number on block instead of color
@@ -103,6 +104,7 @@ function setup() {
   // set drift speed to maintain fixed scroll times
   DRIFT_SPEED = height / (FPS * SCROLL_TIME);
   JET_SPEED = width / (FPS * 2);
+  cueWidth = width*PROP_CUE_WIDTH;
   
   river = new River(riverImg, PROP_RIVER_WIDTH);
   grass = new Grass(grassImg, PROP_RIVER_WIDTH);
@@ -135,7 +137,7 @@ function draw() {
     // Spawn boats (limited by MAX_BOATS)
     let iti_p = 1/(ITI_MEAN*FPS);
     if (boats.length < MAX_BOATS && random(1) < iti_p) {
-      boats.push(new Boat(stoneImg, random(riverX + CUE_WIDTH/2, riverX + riverWidth - CUE_WIDTH/2), -20));
+      boats.push(new Boat(stoneImg, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -20));
     }
 
     // Update and render boats
@@ -214,7 +216,7 @@ function draw() {
     streakbar.render();
   }
 
-  if (lives <= 0) {
+  if (showHUD && lives <= 0) {
     isPaused = true;
   }
   if (isPaused) {
@@ -232,7 +234,7 @@ function drawPauseScreen() {
   textAlign(CENTER, CENTER);
   textFont(myFont);
   let statusStr = "PAUSED";
-  if (lives <= 0) {
+  if (showHUD && lives <= 0) {
     statusStr = 'GAME OVER';
   } else if (framesInGame === 0) {
     statusStr = 'NEW GAME';
@@ -294,15 +296,6 @@ function drawHUD() {
 function computeRiverGeometry() {
   riverWidth = width * PROP_RIVER_WIDTH;
   riverX = width / 2 - riverWidth / 2;
-}
-
-function randomLandX() {
-  let side = random() < 0.5 ? "left" : "right";
-  if (side === "left") {
-    return random(0, riverX);
-  } else {
-    return random(riverX + riverWidth, width);
-  }
 }
 
 // ====== Firing control ======
@@ -379,7 +372,8 @@ function getGameInfo() {
     K: K,
     D: D,
     L: L,
-    CUE_WIDTH: CUE_WIDTH,
+    cueWidth: cueWidth,
+    PROP_CUE_WIDTH: PROP_CUE_WIDTH,
     PROP_RIVER_WIDTH: PROP_RIVER_WIDTH,
     ITI_MEAN: ITI_MEAN,
     MAX_BOATS: MAX_BOATS,
