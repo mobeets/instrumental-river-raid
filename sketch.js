@@ -6,6 +6,7 @@ let MAX_BOATS = 1; // max number of cues on screen at same time
 let ITI_MEAN = 0.8; // mean of ITI distribution, in seconds
 let PROP_RIVER_WIDTH = 0.8; // proportion of screen taken up by cue area
 let CUE_WIDTH = 200; // size of cue in pixels
+let showHUD = false;
 
 let K = 4; // number of boat colors
 let D = 3; // number of projectile types
@@ -207,9 +208,11 @@ function draw() {
     if (explosions[i].isDead()) explosions.splice(i, 1);
   }
 
-  drawHUD();
-  streakbar.update();
-  streakbar.render();
+  if (showHUD) {
+    drawHUD();
+    streakbar.update();
+    streakbar.render();
+  }
 
   if (lives <= 0) {
     isPaused = true;
@@ -365,6 +368,7 @@ function getGameInfo() {
   return {
     width: width,
     height: height,
+    showHUD: showHUD,
     photodiode: photodiode,
     framesInGame: framesInGame,
     streakBonus: streakBonus,

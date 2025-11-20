@@ -1,0 +1,52 @@
+{
+	"tasks": [
+		{
+			"name": "target-practice",
+			"is_practice": false,
+			"blocks": [{"K": 5}],
+			"ntrials_per_cue": 10,
+		},
+		{
+			"name": "instrumental-learning",
+			"is_practice": true,
+			"blocks": [{"K": 2}],
+			"ntrials_per_cue": 3,
+		},
+		{
+			"name": "instrumental-learning",
+			"is_practice": false,
+			"blocks": [{"K": 2}, {"K": 3}, {"K": 4}, {"K": 5}, {"K": 6}],
+			"ntrials_per_cue": 10,
+		},
+		{
+			"name": "target-practice-instrumental-learning",
+			"is_practice": true,
+			"blocks": [{"K": 2}],
+			"ntrials_per_cue": 3,
+		},
+		{
+			"name": "target-practice-instrumental-learning",
+			"is_practice": false,
+			"blocks": [{"K": 5}],
+			"ntrials_per_cue": 10,
+		},
+		{
+			"name": "target-practice",
+			"is_practice": false,
+			"blocks": [{"K": 2}, {"K": 3}, {"K": 4}, {"K": 5}, {"K": 6}],
+			"ntrials_per_cue": 10,
+		},
+		{
+			"name": "instrumental-learning",
+			"is_practice": false,
+			"blocks": [{"K": 2}, {"K": 3}, {"K": 4}, {"K": 5}, {"K": 6}],
+			"ntrials_per_cue": 10,
+		},
+		{
+			"name": "target-practice-instrumental-learning",
+			"is_practice": false,
+			"blocks": [{"K": 2}, {"K": 3}, {"K": 4}, {"K": 5}, {"K": 6}],
+			"ntrials_per_cue": 10,
+		},
+	]
+}
