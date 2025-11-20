@@ -6,12 +6,21 @@ class EventLogger {
 	}
 
 	log(event, time = millis(), message = '') {
+		// if message is provided, we will trigger photodiode
 	  if (typeof event === "string") {
 	    event = {name: event};
 	  }
 	  // n.b. here we assume it is an object
 	  event.time = time;
 	  event.message = message;
+
+	  if (message !== "" && photodiode !== undefined) {
+	  	event.photodiode = true;
+	  	photodiode.trigger();
+	  } else {
+	  	event.photodiode = false;
+	  }
+
 	  this.data.events.push(event);
 	  console.log(event);
 	}
