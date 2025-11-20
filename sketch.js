@@ -91,8 +91,9 @@ function newGame() {
 
 // ====== p5.js setup and draw ======
 function setup() {
-  let windowSize = min(windowWidth, windowHeight);
-  let cnv = createCanvas(windowSize, windowSize);
+  // let windowSize = min(windowWidth, windowHeight);
+  // let cnv = createCanvas(windowSize, windowSize);
+  let cnv = createCanvas(windowWidth, windowHeight);
   cnv.parent('canvas-container'); // attach to the centered div
 
   logger = new EventLogger();
@@ -133,7 +134,7 @@ function draw() {
     // Spawn boats (limited by MAX_BOATS)
     let iti_p = 1/(ITI_MEAN*FPS);
     if (boats.length < MAX_BOATS && random(1) < iti_p) {
-      boats.push(new Boat(stoneImg, random(riverX + 20, riverX + riverWidth - 20), -20));
+      boats.push(new Boat(stoneImg, random(riverX + CUE_WIDTH/2, riverX + riverWidth - CUE_WIDTH/2), -20));
     }
 
     // Update and render boats
@@ -334,6 +335,18 @@ function keyPressed(event) {
     }
   }
   logger.log(event, event.timeStamp, eventMsg);
+}
+
+function isPressingLeft() {
+  if (keyIsDown(LEFT_ARROW)) { console.log('here'); return true; }
+  if (mouseIsPressed && mouseX < width/2) return true;
+  return false;
+}
+
+function isPressingRight() {
+  if (keyIsDown(RIGHT_ARROW)) return true;
+  if (mouseIsPressed && mouseX > width/2) return true;
+  return false;
 }
 
 function keyReleased() {

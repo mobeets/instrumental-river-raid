@@ -78,12 +78,8 @@ class Jet {
     if (immobileMode) {
       this.x = width / 2;
     } else {
-      if (keyIsDown(LEFT_ARROW)) this.x -= this.speed;
-      if (keyIsDown(RIGHT_ARROW)) this.x += this.speed;
-      if (mouseIsPressed) {
-        if (mouseX < width/2) this.x -= this.speed;
-        else if (mouseX > width/2) this.x += this.speed;
-      }
+      if (isPressingLeft()) this.x -= this.speed;
+      if (isPressingRight()) this.x += this.speed;
       this.x = constrain(this.x, this.width / 2, width - this.width / 2);
     }
   }
