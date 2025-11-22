@@ -45,9 +45,11 @@ class Experiment {
 		this.blocks = [];
 	}
 
-	next_block() {
-		if (this.is_complete()) return;
-		this.block_index++;
+	next_block(restartGame) {
+		if (!restartGame) {
+			if (this.is_complete()) return;
+			this.block_index++;
+		}
 		let block = new TrialBlock(this.block_configs[this.block_index]);
 		this.blocks.push(block);
 		return block;
@@ -61,7 +63,6 @@ class Experiment {
     // outputs all of object's variables as a json object
     return Object.assign({}, this);
   }
-
 }
 
 class TrialBlock {
