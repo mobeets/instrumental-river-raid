@@ -9,6 +9,7 @@
 		"PROP_CUE_WIDTH": 0.2,
 		"showHUD": false,
 		"bulletsPassThru": false,
+		"maxEntropyPolicy": true,
 		"nactions": 3,
 		"photodiode": {"size": 50},
 		"debug": false
