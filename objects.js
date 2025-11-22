@@ -7,7 +7,7 @@ class Grass {
     // compute side widths
     this.sideWidth = (width * (1 - this.percent)) / 2;
     this.scroll = 0;
-    this.speed = DRIFT_SPEED; // same as river for consistent drift
+    this.speed = driftSpeed; // same as river for consistent drift
   }
 
   update() {
@@ -38,7 +38,7 @@ class River {
     this.width = width * this.percent;
     this.x = width / 2 - this.width / 2;
     this.scroll = 0;
-    this.speed = DRIFT_SPEED; // pixels per frame
+    this.speed = driftSpeed; // pixels per frame
   }
 
   update() {
@@ -64,7 +64,7 @@ class Jet {
     this.y = y;
     this.width = 40;
     this.height = 60;
-    this.speed = JET_SPEED;
+    this.speed = jetSpeed;
     this.hitTime = 0;
   }
   
@@ -100,7 +100,7 @@ class Jet {
 }
 
 class Boat {
-  constructor(img, x, y) {
+  constructor(img, x, y, cue) {
     this.img = img;
     this.x = x;
     this.y = y;
@@ -115,8 +115,8 @@ class Boat {
       this.height = this.width / ntiles;
     }
 
-    this.speed = DRIFT_SPEED;
-    this.colorIndex = int(random(K));
+    this.speed = driftSpeed;
+    this.colorIndex = cue;
     this.color = BOAT_COLORS[this.colorIndex];
   }
 
@@ -193,8 +193,8 @@ class Projectile {
     this.y = y;
     this.speed = 8;
     this.type = type; // 1..D
-    this.sizes = [8, 8, 8];
-    this.colors = [color(0,0,0), color(0,0,0), color(0,0,0)];
+    this.sizes = [8, 8, 8, 8, 8];
+    this.colors = [color(0,0,0), color(0,0,0), color(0,0,0), color(0,0,0), color(0,0,0)];
   }
 
   update() {
@@ -217,15 +217,15 @@ class Projectile {
 
 function circlePositions(x_start, x_end, W) {
   // diameter
-  let D = 2 * W;
+  let diam = 2 * W;
   
   // number of circles that fit
-  let N = floor((x_end - x_start) / D);
+  let N = floor((x_end - x_start) / diam);
   
   let positions = [];
   for (let i = 0; i < N; i++) {
     // center of each circle
-    let x = x_start + W + i * D;
+    let x = x_start + W + i * diam;
     positions.push(x);
   }
   return positions;
@@ -239,7 +239,7 @@ class Explosion {
     this.color = color;
     this.maxLife = 20;
     this.life = 20;
-    this.speed = DRIFT_SPEED;
+    this.speed = driftSpeed;
 
     if (this.x_start === this.x_end) {
       this.xs = [this.x_start];

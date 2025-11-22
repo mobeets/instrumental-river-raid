@@ -1,37 +1,20 @@
-// ===== Global Parameters =====
-let FPS = 60; // frames per second
-let SCROLL_TIME = 2; // seconds for cue to travel top to bottom
-let MAX_PROJECTILES = 1; // max shots allowed on screen at same time
-let MAX_BOATS = 1; // max number of cues on screen at same time
-let ITI_MEAN = 0.8; // mean of ITI distribution, in seconds
-let PROP_RIVER_WIDTH = 0.8; // proportion of screen taken up by cue area
-let PROP_CUE_WIDTH = 0.2; // size of cue in pixels
-let showHUD = false;
-let bulletsPassThru = false;
-let gameModeIndex = 0;
-let gameModes = ["targets", "instrumental", "targets-instrumental"];
-let sceneName = "grass";
-
-let K = 4; // number of boat colors
-let D = 3; // number of projectile types
-let L = 5; // starting lives
-let R; // reward matrix
-
-// ===== Photodiode settings =====
-let photodiode_params = {size: 50};
-let photodiode;
-
 // ===== Data settings =====
 let logger;
 let config;
-let experiment;
+let E;
 let trial_blocks = [];
 let trial_block;
 let trial;
+let photodiode;
 
 // ===== Globals =====
-let DRIFT_SPEED; // will be set to ensure fixed travel time from top to bottom
-let JET_SPEED; // will be set to allow fixed travel time from left to right
+let L = 5; // starting lives
+let streakBarMax = 5; // required streak for point bonus
+let streakBonus = 10; // points for filling streak bar
+let framesInGame = 0;
+let R; // reward matrix
+let driftSpeed; // will be set to ensure fixed travel time from top to bottom
+let jetSpeed; // will be set to allow fixed travel time from left to right
 let cueWidth;
 let isPaused = false;
 let immobileMode = false;
@@ -45,9 +28,6 @@ let animations = [];
 let riverWidth, riverX;
 let score = 0;
 let streakbar; // number of hits in a row
-let streakBarMax = 5; // required streak for point bonus
-let streakBonus = 10; // points for filling streak bar
-let framesInGame = 0;
 let lives = L;
 let BOAT_COLORS = []; // filled later in setup()
 
@@ -68,7 +48,7 @@ function preload() {
 }
 
 function randomR(rows, cols) {
-  // creates random KxD binary reward matrix
+  // creates random ncues x D binary reward matrix
   // each row will have exactly one nonzero entry
   // R[k][d] = 1 means projectile d destroys color k
   // let R = [
@@ -86,16 +66,15 @@ function randomR(rows, cols) {
   return R;
 }
 
-function newGame(game_index) {
-  gameModeIndex = game_index;
-  trial_block = new TrialBlock(gameModes[gameModeIndex], K, false, 10, sceneName);
-  if (gameModes[gameModeIndex] === "targets") {
+function newGame(restartGame = false) {
+  trial_block = E.next_block(restartGame);
+  if (trial_block.name === "targets") {
     immobileMode = false;
     showAnswers = true;
-  } else if (gameModes[gameModeIndex] === "instrumental") {
+  } else if (trial_block.name === "instrumental") {
     immobileMode = true;
     showAnswers = false;
-  } else if (gameModes[gameModeIndex] === "targets-instrumental") {
+  } else if (trial_block.name === "targets-instrumental") {
     immobileMode = false;
     showAnswers = false;
   } else {
@@ -104,7 +83,7 @@ function newGame(game_index) {
   trial_blocks.push(trial_block);
 
   // make new reward matrix
-  trial_block.R = randomR(K, D);
+  trial_block.R = randomR(trial_block.ncues, E.params.nactions);
 
   framesInGame = 0;
   score = 0;
@@ -118,28 +97,30 @@ function newGame(game_index) {
 
 // ====== p5.js setup and draw ======
 function setup() {
-  experiment = new Experiment(config);
+  E = new Experiment(config);
 
   let cnv = createCanvas(windowWidth, windowHeight);
   cnv.parent('canvas-container'); // attach to the centered div
 
   logger = new EventLogger();
-  photodiode = new Photodiode(photodiode_params, width, height);
+  photodiode = new Photodiode(E.params.photodiode, width, height);
   
   // set drift speed to maintain fixed scroll times
-  DRIFT_SPEED = height / (FPS * SCROLL_TIME);
-  JET_SPEED = width / (FPS * 2);
-  cueWidth = width*PROP_CUE_WIDTH;
+  driftSpeed = height / (E.params.FPS * E.params.SCROLL_TIME);
+  jetSpeed = width / (E.params.FPS * 2);
+  cueWidth = width*E.params.PROP_CUE_WIDTH;
   
-  river = new River(riverImg, PROP_RIVER_WIDTH);
-  grass = new Grass(grassImg, PROP_RIVER_WIDTH);
+  river = new River(riverImg, E.params.PROP_RIVER_WIDTH);
+  grass = new Grass(grassImg, E.params.PROP_RIVER_WIDTH);
 
   // Define boat colors here (p5 color() now available)
   BOAT_COLORS = [
     color(255, 0, 0),
     color(255, 0, 255),
     color(0, 255, 255),
-    color(255, 255, 0)
+    color(255, 255, 0),
+    color(0, 0, 255),
+    color(0, 255, 0),
   ];
 
   computeRiverGeometry();
@@ -148,11 +129,11 @@ function setup() {
   
   textAlign(CENTER, CENTER);
   textSize(24);
-  newGame(gameModeIndex);
+  newGame(false);
 }
 
 function draw() {
-  frameRate(FPS);
+  frameRate(E.params.FPS);
   background(34, 139, 34);
   
   if (!isPaused) {
@@ -160,12 +141,12 @@ function draw() {
     grass.update();
     
     // Spawn boats (limited by MAX_BOATS)
-    let iti_p = 1/(ITI_MEAN*FPS);
-    if (boats.length < MAX_BOATS && random(1) < iti_p) {
+    let iti_p = 1/(E.params.ITI_MEAN*E.params.FPS);
+    if (boats.length < E.params.MAX_BOATS && random(1) < iti_p) {
       trial = trial_block.next_trial();
       // todo: if trial is undefined, the block is over
       // todo: set Boat using trial properties
-      boats.push(new Boat(stoneImg, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -20));
+      boats.push(new Boat(stoneImg, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -20, floor(random(trial_block.ncues))));
     }
 
     // Update and render boats
@@ -212,7 +193,7 @@ function draw() {
             projectiles.splice(i, 1);
             break;
           }
-        } else if (!bulletsPassThru && p.y < boats[j].y - boats[j].height/2) {
+        } else if (!E.params.bulletsPassThru && p.y < boats[j].y - boats[j].height/2) {
           // bullet is incorrect, so we make it disappear
           // todo: update trial here with a miss
           pIsAboveBoat = true;
@@ -247,13 +228,13 @@ function draw() {
     if (explosions[i].isDead()) explosions.splice(i, 1);
   }
 
-  if (showHUD) {
+  if (E.params.showHUD) {
     drawHUD();
     streakbar.update();
     streakbar.render();
   }
 
-  if (showHUD && lives <= 0) {
+  if (E.params.showHUD && lives <= 0) {
     isPaused = true;
   }
   if (isPaused) {
@@ -271,7 +252,7 @@ function drawPauseScreen() {
   textAlign(CENTER, CENTER);
   textFont(myFont);
   let statusStr = "PAUSED";
-  if (showHUD && lives <= 0) {
+  if (E.params.showHUD && lives <= 0) {
     statusStr = 'GAME OVER';
   } else if (framesInGame === 0) {
     statusStr = 'NEW GAME';
@@ -280,10 +261,9 @@ function drawPauseScreen() {
 
   fill('black');
   textSize(32);
-  let modeStr = gameModes[gameModeIndex];
-  text("Mode ('M'): " + modeStr, width / 2, 5*height/8);
   if (framesInGame > 0) {
-    text("'N' for new game", width / 2, 5*height/8 + 40);
+    text("'N' for next game", width / 2, 5*height/8 + 0);
+    text("'R' to restart game", width / 2, 5*height/8 + 40);
   }
 }
 
@@ -318,18 +298,18 @@ function drawHUD() {
 
 // ====== Helpers ======
 function computeRiverGeometry() {
-  riverWidth = width * PROP_RIVER_WIDTH;
+  riverWidth = width * E.params.PROP_RIVER_WIDTH;
   riverX = width / 2 - riverWidth / 2;
 }
 
 // ====== Firing control ======
 function keyPressed(event) {
   let eventMsg;
-  if (!isPaused && key >= '1' && key <= String(D)) {
+  if (!isPaused && key >= '1' && key <= String(E.params.nactions)) {
     // fire projectile
     eventMsg = 'projectile fired ' + key;
     let type = int(key);
-    if (projectiles.length < MAX_PROJECTILES) {
+    if (projectiles.length < E.params.MAX_PROJECTILES) {
       projectiles.push(new Projectile(jet.x, jet.y - 30, type));
     }
   } else if (key === 'p') {
@@ -340,9 +320,10 @@ function keyPressed(event) {
     if (key === 'n') {
       // start new game
       eventMsg = 'new game';
-      newGame(gameModeIndex);
-    } else if (key === 'm') {
-      newGame((gameModeIndex + 1) % gameModes.length);
+      newGame(false);
+    } else if (key === 'r') {
+      eventMsg = 'restart game';
+      newGame(true);
     } else if (key === 's') {
       saveTrials();
     }
@@ -351,7 +332,7 @@ function keyPressed(event) {
 }
 
 function isPressingLeft() {
-  if (keyIsDown(LEFT_ARROW)) { console.log('here'); return true; }
+  if (keyIsDown(LEFT_ARROW)) return true;
   if (mouseIsPressed && mouseX < width/2) return true;
   return false;
 }
@@ -374,35 +355,20 @@ function mouseReleased() {
   logger.log(event, event.timeStamp);
 }
 
-function getGameInfo() {
+function getRenderInfo() {
   return {
     width: width,
     height: height,
-    showHUD: showHUD,
     photodiode: photodiode,
     framesInGame: framesInGame,
-    streakBonus: streakBonus,
-    streakBarMax: streakBarMax,
-    JET_SPEED: JET_SPEED,
-    DRIFT_SPEED: DRIFT_SPEED,
-    bulletsPassThru: bulletsPassThru,
-    R: R,
-    K: K,
-    D: D,
-    L: L,
+    jetSpeed: jetSpeed,
+    driftSpeed: driftSpeed,
     cueWidth: cueWidth,
-    PROP_CUE_WIDTH: PROP_CUE_WIDTH,
-    PROP_RIVER_WIDTH: PROP_RIVER_WIDTH,
-    ITI_MEAN: ITI_MEAN,
-    MAX_BOATS: MAX_BOATS,
-    MAX_PROJECTILES: MAX_PROJECTILES,
-    SCROLL_TIME: SCROLL_TIME,
-    FPS: FPS,
   };
 }
 
 function saveTrials() {
-  logger.data.gameInfo = getGameInfo();
+  logger.data.renderInfo = getRenderInfo();
   logger.data.trial_blocks = trial_blocks;
   logger.download();
 }

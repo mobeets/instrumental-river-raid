@@ -39,6 +39,7 @@ class Experiment {
 	constructor({subject_id, config_path, config}) {
 		this.subject_id = subject_id;
 		this.config_path = config_path;
+		this.params = config.params;
 		this.block_configs = config.blocks;
 		this.block_index = -1;
 		this.blocks = [];
@@ -64,13 +65,13 @@ class Experiment {
 }
 
 class TrialBlock {
-	constructor({name, K, is_practice, ntrials_per_cue, scene}) {
+	constructor({name, ncues, is_practice, ntrials_per_cue, scene}) {
 		this.name = name;
-		this.K = K;
+		this.ncues = ncues;
 		this.is_practice = is_practice;
 		this.ntrials_per_cue = ntrials_per_cue;
 		this.scene = scene;
-		this.cue_list = this.makeCueSequence(this.K, this.ntrials_per_cue);
+		this.cue_list = this.makeCueSequence(this.ncues, this.ntrials_per_cue);
 		this.trial_index = -1;
 		this.trial;
 		this.trials = [];
@@ -100,7 +101,6 @@ class TrialBlock {
 
 	  return xs;
 	}
-
 
 	next_trial() {
 		if (this.is_complete()) return;
