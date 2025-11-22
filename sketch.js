@@ -10,6 +10,7 @@ let showHUD = false;
 let bulletsPassThru = false;
 let gameModeIndex = 0;
 let gameModes = ["targets", "instrumental", "targets-instrumental"];
+let sceneName = "grass";
 
 let K = 4; // number of boat colors
 let D = 3; // number of projectile types
@@ -22,6 +23,8 @@ let photodiode;
 
 // ===== Data settings =====
 let logger;
+let config;
+let experiment;
 let trial_blocks = [];
 let trial_block;
 let trial;
@@ -61,6 +64,7 @@ function preload() {
   jetImg = loadImage('assets/jet.png');
   grassImg = loadImage('assets/grass.png');
   stoneImg = loadImage('assets/stone.png');
+  config = loadConfig();
 }
 
 function randomR(rows, cols) {
@@ -84,7 +88,7 @@ function randomR(rows, cols) {
 
 function newGame(game_index) {
   gameModeIndex = game_index;
-  trial_block = new TrialBlock(gameModes[gameModeIndex], K, false, 10);
+  trial_block = new TrialBlock(gameModes[gameModeIndex], K, false, 10, sceneName);
   if (gameModes[gameModeIndex] === "targets") {
     immobileMode = false;
     showAnswers = true;
@@ -114,8 +118,8 @@ function newGame(game_index) {
 
 // ====== p5.js setup and draw ======
 function setup() {
-  // let windowSize = min(windowWidth, windowHeight);
-  // let cnv = createCanvas(windowSize, windowSize);
+  experiment = new Experiment(config);
+
   let cnv = createCanvas(windowWidth, windowHeight);
   cnv.parent('canvas-container'); // attach to the centered div
 

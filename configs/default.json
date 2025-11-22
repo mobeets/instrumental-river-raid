@@ -1,0 +1,172 @@
+{
+	"blocks": [
+		{
+			"name": "targets",
+			"K": 5,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "instrumental",
+			"K": 2,
+			"is_practice": true,
+			"ntrials_per_cue": 3,
+			"scene": "grass"
+		},
+		{
+			"name": "instrumental",
+			"K": 2,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "instrumental",
+			"K": 3,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "instrumental",
+			"K": 4,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "instrumental",
+			"K": 5,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "instrumental",
+			"K": 6,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "targets-instrumental",
+			"K": 2,
+			"is_practice": true,
+			"ntrials_per_cue": 3,
+			"scene": "grass"
+		},
+		{
+			"name": "targets-instrumental",
+			"K": 2,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "targets-instrumental",
+			"K": 3,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "targets-instrumental",
+			"K": 4,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "targets-instrumental",
+			"K": 5,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "targets-instrumental",
+			"K": 6,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "targets",
+			"K": 2,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "instrumental",
+			"K": 2,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "instrumental",
+			"K": 3,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "instrumental",
+			"K": 4,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "instrumental",
+			"K": 5,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "instrumental",
+			"K": 6,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "targets-instrumental",
+			"K": 2,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "targets-instrumental",
+			"K": 3,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "targets-instrumental",
+			"K": 4,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "targets-instrumental",
+			"K": 5,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		},
+		{
+			"name": "targets-instrumental",
+			"K": 6,
+			"is_practice": false,
+			"ntrials_per_cue": 10,
+			"scene": "grass"
+		}
+	]
+}
