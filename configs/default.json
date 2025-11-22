@@ -10,7 +10,8 @@
 		"showHUD": false,
 		"bulletsPassThru": false,
 		"nactions": 3,
-		"photodiode": {"size": 50}
+		"photodiode": {"size": 50},
+		"debug": false
 	},
 	"blocks": [
 		{

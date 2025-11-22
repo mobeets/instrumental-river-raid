@@ -76,6 +76,7 @@ class TrialBlock {
 		this.trial_index = -1;
 		this.trial;
 		this.trials = [];
+		this.score = 0;
 	}
 
 	makeCueSequence(ncues, ntrials_per_cue) {
@@ -99,7 +100,6 @@ class TrialBlock {
 	    // Append this permuted block
 	    xs = xs.concat(blockArray);
 	  }
-
 	  return xs;
 	}
 
@@ -109,10 +109,6 @@ class TrialBlock {
 		let trial = new Trial(this.cue_list[this.trial_index]);
 		this.trials.push(trial);
 		return trial;
-	}
-
-	respond(response) {
-		this.trial.respond(response);
 	}
 
 	is_complete() {
@@ -129,12 +125,15 @@ class Trial {
 	constructor(cue) {
 		this.cue = cue;
 		this.startTime = millis();
-		this.response;
+		this.events = [];
 	}
 
-	respond(response) {
-		this.response = response;
-		this.responseTime = millis();
+	trigger(event) {
+		if (typeof event === "string") {
+	    event = {name: event};
+	  }
+		event.time = millis();
+		this.events.push(event);
 	}
 
 	toJSON() {

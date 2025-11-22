@@ -26,7 +26,6 @@ let projectiles = [];
 let explosions = [];
 let animations = [];
 let riverWidth, riverX;
-let score = 0;
 let streakbar; // number of hits in a row
 let lives = L;
 let BOAT_COLORS = []; // filled later in setup()
@@ -86,9 +85,8 @@ function newGame(restartGame = false) {
   trial_block.R = randomR(trial_block.ncues, E.params.nactions);
 
   framesInGame = 0;
-  score = 0;
   lives = L;
-  streakbar.reset();
+  if (E.params.showHUD) streakbar.reset();
   boats = [];
   projectiles = [];
   explosions = [];
@@ -144,29 +142,34 @@ function draw() {
     let iti_p = 1/(E.params.ITI_MEAN*E.params.FPS);
     if (boats.length < E.params.MAX_BOATS && random(1) < iti_p) {
       trial = trial_block.next_trial();
-      // todo: if trial is undefined, the block is over
-      // todo: set Boat using trial properties
-      boats.push(new Boat(stoneImg, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -20, floor(random(trial_block.ncues))));
+      if (trial !== undefined) {
+        boats.push(new Boat(stoneImg, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -20, trial.cue-1));
+      } else {
+        // todo: if undefined, trigger end of block
+      }
     }
 
     // Update and render boats
     for (let i = boats.length - 1; i >= 0; i--) {
       boats[i].update();
 
+      if (!boats[i].hasBeenSeen && boats[i].onscreen()) trial.trigger('cue onset');
       if (boats[i].collidesWithJet(jet)) {
         // Collided with jet
         if (!immobileMode) {
           boats.splice(i, 1);
           jet.takeHit();
           streakbar.reset();
-          // todo: update trial here with collision
+          trial.trigger('collision');
+          trial.trigger('cue offset');
           
           explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height, [255, 150, 0]));
           
           lives--;
         }
       } else if (boats[i].offscreen()) {
-        // todo: end trial here with no shot
+        // trial ends without a hit
+        trial.trigger('cue offset');
         boats.splice(i, 1);
       }
     }
@@ -182,10 +185,11 @@ function draw() {
         if (boats[j].checkHit(p)) {
           if (trial_block.R[boats[j].colorIndex][p.type - 1] === 1) {
             // Correct hit
+            trial.trigger('hit');
+            trial.trigger('cue offset');
+            trial_block.score++;
 
-            // todo: update trial here with a hit
-            score++;
-            streakbar.hit();
+            if (E.params.showHUD) streakbar.hit();
             let dx = boats[j].width/2;
             let cy = boats[j].y - boats[j].height/2;
             explosions.push(new Explosion(boats[j].x - dx, boats[j].x + dx, cy, [255, 150, 0]));
@@ -201,7 +205,8 @@ function draw() {
       }
 
       if (pIsAboveBoat || p.offscreen()) {
-        streakbar.reset();
+        if (E.params.showHUD) streakbar.reset();
+        trial.trigger({name: 'projectile offset', index: p.type});
         projectiles.splice(i, 1);
       }
     }
@@ -246,6 +251,10 @@ function draw() {
   photodiode.render();
 }
 
+
+function nextBlock() {
+}
+
 function drawPauseScreen() {
   textSize(48);
   fill(255);
@@ -262,8 +271,10 @@ function drawPauseScreen() {
   fill('black');
   textSize(32);
   if (framesInGame > 0) {
-    text("'N' for next game", width / 2, 5*height/8 + 0);
-    text("'R' to restart game", width / 2, 5*height/8 + 40);
+    if (E.params.debug) {
+      text("'N' for next game", width / 2, 5*height/8 + 0);
+      text("'R' to restart game", width / 2, 5*height/8 + 40);
+    }
   }
 }
 
@@ -281,7 +292,7 @@ function drawHUD() {
     textSize(30);
     fill('yellow');
   }
-  text("Score: " + score, width - 20, 5);
+  text("Score: " + trial_block.score, width - 20, 5);
 
   if (!immobileMode) {
     // Show lives as hearts
@@ -307,17 +318,22 @@ function keyPressed(event) {
   let eventMsg;
   if (!isPaused && key >= '1' && key <= String(E.params.nactions)) {
     // fire projectile
-    eventMsg = 'projectile fired ' + key;
     let type = int(key);
     if (projectiles.length < E.params.MAX_PROJECTILES) {
+      eventMsg = 'projectile fired ' + key;
       projectiles.push(new Projectile(jet.x, jet.y - 30, type));
+      trial.trigger({name: 'projectile onset', index: type});
     }
   } else if (key === 'p') {
     // toggle paused
     eventMsg = 'toggle paused';
     isPaused = !isPaused;
   } else if (isPaused) {
-    if (key === 'n') {
+    if (key >= '1' && key <= String(E.params.nactions)) {
+      // start new game
+      eventMsg = 'new game';
+      newGame(false);
+    } else if (key === 'n') {
       // start new game
       eventMsg = 'new game';
       newGame(false);

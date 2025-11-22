@@ -6,7 +6,7 @@ class EventLogger {
 	}
 
 	log(event, time = millis(), message = '') {
-		// if message is provided, we will trigger photodiode
+	  // if message is provided, we will trigger photodiode
 	  if (typeof event === "string") {
 	    event = {name: event};
 	  }

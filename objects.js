@@ -118,6 +118,7 @@ class Boat {
     this.speed = driftSpeed;
     this.colorIndex = cue;
     this.color = BOAT_COLORS[this.colorIndex];
+    this.hasBeenSeen = false;
   }
 
   update() {
@@ -164,6 +165,12 @@ class Boat {
     }
     pop();
     noTint();
+  }
+
+  onscreen() {
+    let isOnscreen = this.y + this.height / 2 > 0;
+    if (isOnscreen) this.hasBeenSeen = true;
+    return isOnscreen;
   }
 
   offscreen() {
@@ -290,9 +297,9 @@ class StreakBar {
 
   update() {
     if (this.isAnimating) {
-      if (score < this.scoreTarget) {
+      if (trial_block.score < this.scoreTarget) {
         if (millis()-this.lastRefresh > 35) {
-          score++;
+          trial_block.score++;
           this.lastRefresh = millis();
         }
       } else {
@@ -305,7 +312,7 @@ class StreakBar {
     this.streak++;
     if (this.streak >= this.maxStreak) {
       this.streak = 0;
-      this.scoreTarget = score + this.streakBonus;
+      this.scoreTarget = trial_block.score + this.streakBonus;
       this.lastRefresh = millis();
       this.isAnimating = true;
     }
