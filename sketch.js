@@ -16,7 +16,6 @@ let R; // reward matrix
 let driftSpeed; // will be set to ensure fixed travel time from top to bottom
 let jetSpeed; // will be set to allow fixed travel time from left to right
 let cueWidth;
-let isPaused = true;
 let immobileMode = false;
 let showAnswers = true; // show number on block instead of color
 let jet;
@@ -29,6 +28,13 @@ let riverWidth, riverX;
 let streakbar; // number of hits in a row
 let lives = L;
 let BOAT_COLORS = []; // filled later in setup()
+
+const PLAY_MODE = 0;
+const PAUSE_MODE = 1;
+const STARTING_MODE = 2;
+const READY_MODE = 3;
+const COMPLETE_MODE = 4;
+let gameMode = READY_MODE;
 
 // ===== Assets =====
 
@@ -47,6 +53,8 @@ function preload() {
 }
 
 function randomR(rows, cols) {
+  // todo: create balanced matrices
+
   // creates random ncues x D binary reward matrix
   // each row will have exactly one nonzero entry
   // R[k][d] = 1 means projectile d destroys color k
@@ -67,7 +75,12 @@ function randomR(rows, cols) {
 
 function newGame(restartGame = false) {
   trial_block = E.next_block(restartGame);
-  if (trial_block === undefined) { isPaused = true; return; }
+  if (trial_block === undefined) { gameMode = COMPLETE_MODE; return; }
+  if (E.block_index > 1) {
+    gameMode = STARTING_MODE;
+  } else {
+    gameMode = READY_MODE;
+  }
 
   if (trial_block.name === "targets") {
     immobileMode = false;
@@ -136,7 +149,7 @@ function draw() {
   frameRate(E.params.FPS);
   background(34, 139, 34);
 
-  if (!isPaused) {
+  if (gameMode == PLAY_MODE) {
     framesInGame++;
     grass.update();
 
@@ -145,7 +158,7 @@ function draw() {
     if (boats.length < E.params.MAX_BOATS && random(1) < iti_p) {
       trial = trial_block.next_trial();
       if (trial === undefined) {
-        isPaused = true;
+        newGame(false);
       } else {
         boats.push(new Boat(stoneImg, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -20, trial.cue-1));
       }
@@ -241,9 +254,9 @@ function draw() {
   }
 
   if (E.params.showHUD && lives <= 0) {
-    isPaused = true;
+    newGame(false);
   }
-  if (isPaused) {
+  if (gameMode != PLAY_MODE) {
     drawPauseScreen();
   }
 
@@ -257,39 +270,36 @@ function drawPauseScreen() {
   fill(255);
   textAlign(CENTER, CENTER);
   textFont(myFont);
-  let statusStr = "PAUSED";
-  if (E.params.showHUD && lives <= 0) {
-    statusStr = 'GAME OVER';
-  } else if (trial_block === undefined && E.is_complete()) {
-    statusStr = 'EXPERIMENT COMPLETE';
-  } else if (trial_block.is_complete()) {
-    if (E.is_complete()) {
-      statusStr = 'EXPERIMENT COMPLETE';
-    } else {
-      statusStr = 'GAME COMPLETE';
-    }
-  } else if (framesInGame === 0) {
-    statusStr = 'NEW GAME';
-  }
-  text(statusStr, width / 2, height / 2);
 
-  fill('black');
-  textSize(32);
-  if (statusStr === 'NEW GAME') {
+  if (gameMode == PAUSE_MODE) {
+    text("PAUSED", width / 2, height / 2);
+  } else if (gameMode == STARTING_MODE) {
+    text("GAME COMPLETE", width / 2, height / 2);
+
+    fill('black');
+    textSize(32);
     text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, 5*height/8 + 0);
-    text("Fire to begin", width / 2, 5*height/8 + 40);
-  } else if (statusStr === 'EXPERIMENT COMPLETE') {
-    text("Thank you!", width / 2, 5*height/8 + 0);
-  }
-  if (trial_block !== undefined && trial_block.is_complete()) {
     text("Score: " + trial_block.score.toFixed(0) + " out of " + trial_block.trials.length, width / 2, 5*height/8 + 0);
-    if (!E.is_complete()) {
-      text("Shoot to start next game", width / 2, 5*height/8 + 40);
-    }
-  } else if (framesInGame > 0) {
+  } else if (gameMode == READY_MODE) {
+    text("READY?", width / 2, height / 2);
+    fill('black');
+    textSize(32);
+    text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, 5*height/8 + 0);
+    text("Fire to start", width / 2, 5*height/8 + 40);
+  } else if (gameMode == COMPLETE_MODE) {
+    text("EXPERIMENT COMPLETE", width / 2, height / 2);
+    fill('black');
+    textSize(32);
+    text("Thank you!", width / 2, 5*height/8 + 0);
+  } else {
+    console.log("Invalid gameMode");
+  }
+
+  if (gameMode != COMPLETE_MODE) {
     if (E.params.debug) {
-      text("'N' for next game", width / 2, 5*height/8 + 40);
-      text("'R' to restart game", width / 2, 5*height/8 + 80);
+      text("'N' for next game", width / 2, 5*height/8 + 80);
+      text("'R' to restart current game", width / 2, 5*height/8 + 120);
+      text("'S' to save game data", width / 2, 5*height/8 + 160);
     }
   }
 }
@@ -332,29 +342,33 @@ function computeRiverGeometry() {
 // ====== Firing control ======
 function keyPressed(event) {
   let eventMsg;
-  if (!isPaused && key >= '1' && key <= String(E.params.nactions)) {
-    // fire projectile
-    let type = int(key);
-    if (projectiles.length < E.params.MAX_PROJECTILES) {
-      eventMsg = 'projectile fired ' + key;
-      projectiles.push(new Projectile(jet.x, jet.y - 30, type));
-      trial.trigger({name: 'projectile onset', index: type});
+  if (gameMode == PLAY_MODE) {
+    if (key >= '1' && key <= String(E.params.nactions)) {
+      // fire projectile
+      let type = int(key);
+      if (projectiles.length < E.params.MAX_PROJECTILES) {
+        eventMsg = 'projectile fired ' + key;
+        projectiles.push(new Projectile(jet.x, jet.y - 30, type));
+        trial.trigger({name: 'projectile onset', index: type});
+      }
+    } else if (key === 'p') {
+      // pause game
+      eventMsg = 'pause';
+      gameMode = PAUSE_MODE;
     }
-  } else if (!E.is_complete() && key === 'p') {
-    // toggle paused
-    eventMsg = 'toggle paused';
-    isPaused = !isPaused;
-  } else if (isPaused) {
-    if (key === 'n') {
-      // start new game
-      eventMsg = 'new game';
-      newGame(false);
-    } else if (key === 'r') {
-      eventMsg = 'restart game';
-      newGame(true);
-    } else if (key === 's') {
-      saveTrials();
-    }
+  } else if (key === 'p' || key === '1') {
+    // unpause game
+    eventMsg = 'unpause';
+    gameMode = PLAY_MODE;
+  } else if (key === 'n' && gameMode != COMPLETE_MODE) {
+    // start new game
+    eventMsg = 'new game';
+    newGame(false);
+  } else if (key === 'r') {
+    eventMsg = 'restart game';
+    newGame(true);
+  } else if (key === 's') {
+    saveTrials();
   }
   logger.log(event, event.timeStamp, eventMsg);
 }

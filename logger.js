@@ -26,9 +26,9 @@ class EventLogger {
 	}
 
 	download(filename = 'data') {
-		// saves everything in data to .json locally
+	  // saves everything in data to .json locally
 
-		// Pretty-print with 2-space indent
+	  // Pretty-print with 2-space indent
 	  let jsonString = JSON.stringify(this.data, null, 2);
 
 	  // Create a Blob from the JSON string

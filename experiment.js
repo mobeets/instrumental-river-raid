@@ -47,16 +47,20 @@ class Experiment {
 
 	next_block(restartGame) {
 		if (!restartGame) {
-			if (this.is_complete()) return;
+			if (this.no_more_blocks()) return;
 			this.block_index++;
 		}
-		let block = new TrialBlock(this.block_configs[this.block_index]);
+		let block = new TrialBlock(this.block_index, this.block_configs[this.block_index]);
 		this.blocks.push(block);
 		return block;
 	}
 
-	is_complete() {
+	no_more_blocks() {
 		return this.blocks.length >= this.block_configs.length;
+	}
+
+	is_complete() {
+		return this.no_more_blocks();
 	}
 
 	toJSON() {
@@ -66,8 +70,9 @@ class Experiment {
 }
 
 class TrialBlock {
-	constructor({name, ncues, is_practice, ntrials_per_cue, scene}) {
+	constructor(index, {name, ncues, is_practice, ntrials_per_cue, scene}) {
 		this.name = name;
+		this.index = index;
 		this.ncues = ncues;
 		this.is_practice = is_practice;
 		this.ntrials_per_cue = ntrials_per_cue;
