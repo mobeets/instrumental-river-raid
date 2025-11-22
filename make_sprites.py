@@ -3,6 +3,36 @@ import sys
 from math import ceil, sqrt
 from PIL import Image
 
+def spaced_class_sort(filenames):
+    """
+    Sort filenames of the form '<class>-<number>' so that
+    files of the same class are maximally spaced apart.
+    """
+
+    from collections import defaultdict, deque
+
+    # Step 1: Group by class
+    groups = defaultdict(list)
+    for name in filenames:
+        cls, num = name.rsplit("-", 1)
+        groups[cls].append(name)
+
+    # Step 2: Sort each class internally by number (optional but sensible)
+    for cls in groups:
+        groups[cls].sort(key=lambda s: int(s.split("-")[-1].split('.')[0]))
+        groups[cls] = deque(groups[cls])  # faster pops
+
+    # Step 3: Round-robin distribute
+    classes = list(groups.keys())
+    result = []
+
+    while any(groups[c] for c in classes):
+        for c in classes:
+            if groups[c]:
+                result.append(groups[c].popleft())
+
+    return result
+
 def load_and_prepare_image(path, sprite_size):
     """Load an image, scale to fit inside sprite_size x sprite_size,
     and center it inside a new sprite canvas."""
@@ -24,7 +54,7 @@ def load_and_prepare_image(path, sprite_size):
 
     return canvas
 
-def build_spritesheet(directory, sprite_size, output_path):
+def build_spritesheet(directory, sprite_size, output_path, unsort=True):
     # Collect all image files
     files = [
         os.path.join(directory, f)
@@ -34,8 +64,12 @@ def build_spritesheet(directory, sprite_size, output_path):
     if not files:
         raise ValueError("No image files found in directory.")
 
+    files = sorted(files)
+    if unsort:
+        files = spaced_class_sort(files)
+
     # Load & prepare all images
-    sprites = [load_and_prepare_image(f, sprite_size) for f in sorted(files)]
+    sprites = [load_and_prepare_image(f, sprite_size) for f in files]
     n = len(sprites)
 
     # Determine sheet layout (square-ish grid)

@@ -17,16 +17,18 @@
 	"blocks": [
 		{
 			"name": "targets",
-			"ncues": 2,
+			"ncues": 3,
 			"is_practice": false,
 			"ntrials_per_cue": 2,
+			"theme": "animals",
 			"scene": "river"
 		},
 		{
 			"name": "instrumental",
-			"ncues": 2,
+			"ncues": 3,
 			"is_practice": true,
-			"ntrials_per_cue": 2,
+			"ntrials_per_cue": 3,
+			"theme": "animals",
 			"scene": "grass"
 		}
 	]

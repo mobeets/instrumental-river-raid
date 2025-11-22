@@ -20,6 +20,7 @@
 			"ncues": 2,
 			"is_practice": true,
 			"ntrials_per_cue": 3,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -27,6 +28,7 @@
 			"ncues": 5,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -34,6 +36,7 @@
 			"ncues": 2,
 			"is_practice": true,
 			"ntrials_per_cue": 3,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -41,6 +44,7 @@
 			"ncues": 2,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -48,6 +52,7 @@
 			"ncues": 3,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -55,6 +60,7 @@
 			"ncues": 4,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -62,6 +68,7 @@
 			"ncues": 5,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -69,6 +76,7 @@
 			"ncues": 6,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -76,6 +84,7 @@
 			"ncues": 2,
 			"is_practice": true,
 			"ntrials_per_cue": 3,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -83,6 +92,7 @@
 			"ncues": 2,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -90,6 +100,7 @@
 			"ncues": 3,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -97,6 +108,7 @@
 			"ncues": 4,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -104,6 +116,7 @@
 			"ncues": 5,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -111,6 +124,7 @@
 			"ncues": 6,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -118,6 +132,7 @@
 			"ncues": 2,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -125,6 +140,7 @@
 			"ncues": 2,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -132,6 +148,7 @@
 			"ncues": 3,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -139,6 +156,7 @@
 			"ncues": 4,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -146,6 +164,7 @@
 			"ncues": 5,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -153,6 +172,7 @@
 			"ncues": 6,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -160,6 +180,7 @@
 			"ncues": 2,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -167,6 +188,7 @@
 			"ncues": 3,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -174,6 +196,7 @@
 			"ncues": 4,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -181,6 +204,7 @@
 			"ncues": 5,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		},
 		{
@@ -188,6 +212,7 @@
 			"ncues": 6,
 			"is_practice": false,
 			"ntrials_per_cue": 10,
+			"theme": "animals",
 			"scene": "grass"
 		}
 	]

@@ -69,13 +69,16 @@ class Experiment {
   }
 }
 
+let themeOffsets = {2: 0, 3: 2, 4: 5, 5: 9, 6: 14};
 class TrialBlock {
-	constructor(index, {name, ncues, is_practice, ntrials_per_cue, scene}) {
+	constructor(index, {name, ncues, is_practice, ntrials_per_cue, theme, scene}) {
 		this.name = name;
 		this.index = index;
 		this.ncues = ncues;
 		this.is_practice = is_practice;
 		this.ntrials_per_cue = ntrials_per_cue;
+		this.theme = theme;
+		this.theme_offset = themeOffsets[this.ncues];
 		this.scene = scene;
 		this.cue_list = this.makeCueSequence(this.ncues, this.ntrials_per_cue);
 		this.trial_index = -1;

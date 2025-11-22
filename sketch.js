@@ -44,6 +44,7 @@ let jetImg;
 let grassImg;
 let stoneImg;
 let spriteSheet;
+let spriteSheets = {};
 function preload() {
   myFont = loadFont('assets/LuckiestGuy-Regular.ttf');
   riverImg = loadImage('assets/river.png');
@@ -51,7 +52,7 @@ function preload() {
   jetImg2 = loadImage('assets/jet2.png');
   grassImg = loadImage('assets/grass.png');
   // stoneImg = loadImage('assets/stone.png');
-  spriteSheet = new SquareSpriteSheet('assets/animal-pack.png', 64);
+  spriteSheets.animals = new SquareSpriteSheet('assets/animals.png', 64);
   config = loadConfig();
 }
 
@@ -100,6 +101,8 @@ function randomR(rows, cols, maxEntropyPolicy = false) {
 function newGame(restartGame = false) {
   trial_block = E.next_block(restartGame);
   if (trial_block === undefined) { gameMode = COMPLETE_MODE; return; }
+  spriteSheet = spriteSheets[trial_block.theme];
+
   if (E.block_index > 1) {
     gameMode = STARTING_MODE;
   } else {

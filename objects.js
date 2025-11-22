@@ -104,7 +104,6 @@ class Boat {
     this.x = x;
     this.y = y;
     this.width = cueWidth;
-    // this.tilesPerCue = 3;
     if (immobileMode) {
       this.x = width/2;
     }
@@ -119,7 +118,7 @@ class Boat {
     this.speed = driftSpeed;
     this.cue = cue;
     this.color = BOAT_COLORS[this.cue];
-    this.img = spriteSheet.getImage(this.cue);
+    this.img = spriteSheet.getImage(trial_block.theme_offset + this.cue);
     this.hasBeenSeen = false;
   }
 
@@ -131,15 +130,12 @@ class Boat {
     push();
 
     rectMode(CENTER);
-    noStroke();
     if (this.img === undefined) fill(this.color);
+    stroke('black');
     rect(this.x, this.y, this.width, this.height);
+    noStroke();
 
     imageMode(CENTER);
-    // if (!showAnswers) {
-    //   tint(this.color);
-    // }
-
     let N = this.width / this.height; // number of tiles horizontally
     let tileW = this.height;          // each tile is square (height x height)
     let startX = this.x - this.width / 2 + tileW / 2; // leftmost tile center
