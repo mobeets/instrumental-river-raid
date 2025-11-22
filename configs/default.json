@@ -16,6 +16,13 @@
 	"blocks": [
 		{
 			"name": "targets",
+			"ncues": 2,
+			"is_practice": true,
+			"ntrials_per_cue": 3,
+			"scene": "grass"
+		},
+		{
+			"name": "targets",
 			"ncues": 5,
 			"is_practice": false,
 			"ntrials_per_cue": 10,

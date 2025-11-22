@@ -46,7 +46,8 @@ let stoneImg;
 function preload() {
   myFont = loadFont('assets/LuckiestGuy-Regular.ttf');
   riverImg = loadImage('assets/river.png');
-  jetImg = loadImage('assets/jet.png');
+  jetImg1 = loadImage('assets/jet1.png');
+  jetImg2 = loadImage('assets/jet2.png');
   grassImg = loadImage('assets/grass.png');
   stoneImg = loadImage('assets/stone.png');
   config = loadConfig();
@@ -80,6 +81,13 @@ function newGame(restartGame = false) {
     gameMode = STARTING_MODE;
   } else {
     gameMode = READY_MODE;
+  }
+  if (trial_block.scene === 'grass') {
+    grass.img = grassImg;
+    jet.img = jetImg1;
+  } else {
+    grass.img = riverImg;
+    jet.img = jetImg2;
   }
 
   if (trial_block.name === "targets") {
@@ -137,7 +145,7 @@ function setup() {
   ];
 
   computeRiverGeometry();
-  jet = new Jet(jetImg, width / 2, height - 40);
+  jet = new Jet(jetImg1, width / 2, height - 60);
   streakbar = new StreakBar();
   
   textAlign(CENTER, CENTER);
@@ -147,7 +155,15 @@ function setup() {
 
 function draw() {
   frameRate(E.params.FPS);
-  background(34, 139, 34);
+  if (gameMode == PLAY_MODE) {
+    if (trial_block.scene === 'grass') {
+      background(34, 139, 34);
+    } else {
+      background('#496FB6');
+    }
+  } else {
+    background('gray');
+  }
 
   if (gameMode == PLAY_MODE) {
     framesInGame++;
@@ -230,15 +246,17 @@ function draw() {
   }
 
   // render grass, boats, projectiles, and jet
-  grass.render();
-  for (let i = boats.length - 1; i >= 0; i--) {
-    boats[i].render();
+  if (gameMode == PLAY_MODE) {
+    grass.render();
+    for (let i = boats.length - 1; i >= 0; i--) {
+      boats[i].render();
+    }
+    for (let i = projectiles.length - 1; i >= 0; i--) {
+      let p = projectiles[i];
+      p.render();
+    }
+    jet.render();
   }
-  for (let i = projectiles.length - 1; i >= 0; i--) {
-    let p = projectiles[i];
-    p.render();
-  }
-  jet.render();
 
   // Update/render explosions
   for (let i = explosions.length - 1; i >= 0; i--) {
@@ -352,9 +370,12 @@ function keyPressed(event) {
       // fire projectile
       let type = int(key);
       if (projectiles.length < E.params.MAX_PROJECTILES) {
-        eventMsg = 'projectile fired ' + key;
-        projectiles.push(new Projectile(jet.x, jet.y - 30, type));
-        trial.trigger({name: 'projectile onset', index: type});
+        if (trial.canFireAgain == undefined) {
+          eventMsg = 'projectile fired ' + key;
+          projectiles.push(new Projectile(jet.x, jet.y - 30, type));
+          trial.trigger({name: 'projectile onset', index: type});
+          trial.canFireAgain = false;
+        }
       }
     } else if (key === 'p') {
       // pause game
