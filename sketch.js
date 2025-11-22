@@ -285,7 +285,12 @@ function drawPauseScreen() {
     fill('black');
     textSize(32);
     text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, 5*height/8 + 0);
-    text("Fire to start", width / 2, 5*height/8 + 40);
+    fill('white');
+    if (trial_block.is_practice) {
+      text("Practice round!", width / 2, 5*height/8 + 40);
+    }
+    fill('black');
+    text("Fire to start", width / 2, 5*height/8 + 80);
   } else if (gameMode == COMPLETE_MODE) {
     text("EXPERIMENT COMPLETE", width / 2, height / 2);
     fill('black');
