@@ -100,15 +100,16 @@ class Jet {
 }
 
 class Boat {
-  constructor(img, x, y, cue) {
-    this.img = img;
+  constructor(cue, x, y) {
     this.x = x;
     this.y = y;
     this.width = cueWidth;
+    // this.tilesPerCue = 3;
     if (immobileMode) {
       this.x = width/2;
     }
-    this.height = 50;
+    // this.height = 64;
+    this.height = this.width;
     if (this.width % this.height > 0) {
       // increase height so that we can tile evenly
       let ntiles = int(this.width / this.height) + 1;
@@ -116,8 +117,9 @@ class Boat {
     }
 
     this.speed = driftSpeed;
-    this.colorIndex = cue;
-    this.color = BOAT_COLORS[this.colorIndex];
+    this.cue = cue;
+    this.color = BOAT_COLORS[this.cue];
+    this.img = spriteSheet.getImage(this.cue);
     this.hasBeenSeen = false;
   }
 
@@ -130,13 +132,13 @@ class Boat {
 
     rectMode(CENTER);
     noStroke();
-    fill(this.color);
+    if (this.img === undefined) fill(this.color);
     rect(this.x, this.y, this.width, this.height);
 
     imageMode(CENTER);
-    if (!showAnswers) {
-      tint(this.color);
-    }
+    // if (!showAnswers) {
+    //   tint(this.color);
+    // }
 
     let N = this.width / this.height; // number of tiles horizontally
     let tileW = this.height;          // each tile is square (height x height)
@@ -144,7 +146,7 @@ class Boat {
 
     let action_index = -1;
     if (showAnswers) {
-      let row = trial_block.R[this.colorIndex];
+      let row = trial_block.R[this.cue];
       for (let i = 0; i < row.length; i++) {
         if (row[i] > 0) {
           action_index = i+1;
@@ -160,7 +162,7 @@ class Boat {
       if (showAnswers) {
         text(action_index, tileX, this.y);
       } else {
-        // image(this.img, tileX, this.y, tileW, this.height);
+        image(this.img, tileX, this.y, tileW, this.height);
       }
     }
     pop();
@@ -195,11 +197,11 @@ class Boat {
 }
 
 class Projectile {
-  constructor(x, y, type) {
+  constructor(x, y, action) {
     this.x = x;
     this.y = y;
     this.speed = 8;
-    this.type = type; // 1..D
+    this.action = action; // 1..D
     this.sizes = [8, 8, 8, 8, 8];
     this.colors = [color(0,0,0), color(0,0,0), color(0,0,0), color(0,0,0), color(0,0,0)];
   }
@@ -211,14 +213,14 @@ class Projectile {
   render() {
     push();
     translate(this.x, this.y);
-    fill(this.colors[this.type-1]);
+    fill(this.colors[this.action-1]);
     noStroke();
-    ellipse(0, 0, this.sizes[this.type-1]);
+    ellipse(0, 0, this.sizes[this.action-1]);
     pop();
   }
 
   offscreen() {
-    return this.y + this.sizes[this.type-1] < 0;
+    return this.y + this.sizes[this.action-1] < 0;
   }
 }
 
@@ -349,5 +351,39 @@ class StreakBar {
     noFill();
     rect(0, 0, this.width, this.height);
     pop();
+  }
+}
+
+class SquareSpriteSheet {
+  constructor(imgPath, spriteSize) {
+    this.spriteSize = spriteSize;
+    this.sheet = loadImage(imgPath);  // must be called in preload()
+  }
+
+  // Call this after the image loads (setup or later)
+  getImage(index) {
+    const size = this.spriteSize;
+
+    // Ensure the sheet is fully loaded
+    if (!this.sheet.width || !this.sheet.height) {
+      console.error("Sprite sheet not loaded yet.");
+      return null;
+    }
+
+    const cols = Math.floor(this.sheet.width / size);
+    const rows = Math.floor(this.sheet.height / size);
+    const total = cols * rows;
+
+    if (index < 0 || index >= total) {
+      console.error(`Index ${index} out of range (0–${total - 1})`);
+      return null;
+    }
+
+    // Compute row/column from linear index
+    const sx = (index % cols) * size;
+    const sy = Math.floor(index / cols) * size;
+
+    // Extract subimage
+    return this.sheet.get(sx, sy, size, size);
   }
 }

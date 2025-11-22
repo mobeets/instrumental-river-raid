@@ -43,13 +43,15 @@ let riverImg;
 let jetImg;
 let grassImg;
 let stoneImg;
+let spriteSheet;
 function preload() {
   myFont = loadFont('assets/LuckiestGuy-Regular.ttf');
   riverImg = loadImage('assets/river.png');
   jetImg1 = loadImage('assets/jet1.png');
   jetImg2 = loadImage('assets/jet2.png');
   grassImg = loadImage('assets/grass.png');
-  stoneImg = loadImage('assets/stone.png');
+  // stoneImg = loadImage('assets/stone.png');
+  spriteSheet = new SquareSpriteSheet('assets/animal-pack.png', 64);
   config = loadConfig();
 }
 
@@ -148,9 +150,10 @@ function setup() {
   photodiode = new Photodiode(E.params.photodiode, width, height);
   
   // set drift speed to maintain fixed scroll times
-  driftSpeed = height / (E.params.FPS * E.params.SCROLL_TIME);
-  jetSpeed = width / (E.params.FPS * 2);
+  let jetOffset = 60;
   cueWidth = width*E.params.PROP_CUE_WIDTH;
+  driftSpeed = (height-jetOffset) / (E.params.FPS * E.params.SCROLL_TIME);
+  jetSpeed = (width-cueWidth) / (E.params.FPS * 2);
   
   river = new River(riverImg, E.params.PROP_RIVER_WIDTH);
   grass = new Grass(grassImg, E.params.PROP_RIVER_WIDTH);
@@ -165,8 +168,9 @@ function setup() {
     color(0, 255, 0),
   ];
 
-  computeRiverGeometry();
-  jet = new Jet(jetImg1, width / 2, height - 60);
+  riverWidth = width * E.params.PROP_RIVER_WIDTH;
+  riverX = width / 2 - riverWidth / 2;
+  jet = new Jet(jetImg1, width / 2, height - jetOffset);
   streakbar = new StreakBar();
   
   textAlign(CENTER, CENTER);
@@ -197,7 +201,7 @@ function draw() {
       if (trial === undefined) {
         newGame(false);
       } else {
-        boats.push(new Boat(stoneImg, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -20, trial.cue-1));
+        boats.push(new Boat(trial.cue-1, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -cueWidth));
       }
     }
 
@@ -235,7 +239,7 @@ function draw() {
       // Check for collisions with boats
       for (let j = boats.length - 1; j >= 0; j--) {
         if (boats[j].checkHit(p)) {
-          if (trial_block.R[boats[j].colorIndex][p.type - 1] === 1) {
+          if (trial_block.R[boats[j].cue][p.action - 1] === 1) {
             // Correct hit
             trial.trigger('hit');
             trial.trigger('cue offset');
@@ -257,7 +261,7 @@ function draw() {
 
       if (pIsAboveBoat || p.offscreen()) {
         if (E.params.showHUD) streakbar.reset();
-        trial.trigger({name: 'projectile offset', index: p.type});
+        trial.trigger({name: 'projectile offset', index: p.action});
         projectiles.splice(i, 1);
       }
     }
@@ -377,24 +381,18 @@ function drawHUD() {
   }
 }
 
-// ====== Helpers ======
-function computeRiverGeometry() {
-  riverWidth = width * E.params.PROP_RIVER_WIDTH;
-  riverX = width / 2 - riverWidth / 2;
-}
-
 // ====== Firing control ======
 function keyPressed(event) {
   let eventMsg;
   if (gameMode == PLAY_MODE) {
     if (key >= '1' && key <= String(E.params.nactions)) {
       // fire projectile
-      let type = int(key);
+      let action = int(key);
       if (projectiles.length < E.params.MAX_PROJECTILES) {
         if (trial.canFireAgain == undefined) {
           eventMsg = 'projectile fired ' + key;
-          projectiles.push(new Projectile(jet.x, jet.y - 30, type));
-          trial.trigger({name: 'projectile onset', index: type});
+          projectiles.push(new Projectile(jet.x, jet.y - 30, action));
+          trial.trigger({name: 'projectile onset', index: action});
           trial.canFireAgain = false;
         }
       }
