@@ -16,7 +16,7 @@ let R; // reward matrix
 let driftSpeed; // will be set to ensure fixed travel time from top to bottom
 let jetSpeed; // will be set to allow fixed travel time from left to right
 let cueWidth;
-let isPaused = false;
+let isPaused = true;
 let immobileMode = false;
 let showAnswers = true; // show number on block instead of color
 let jet;
@@ -67,6 +67,8 @@ function randomR(rows, cols) {
 
 function newGame(restartGame = false) {
   trial_block = E.next_block(restartGame);
+  if (trial_block === undefined) { isPaused = true; return; }
+
   if (trial_block.name === "targets") {
     immobileMode = false;
     showAnswers = true;
@@ -133,19 +135,19 @@ function setup() {
 function draw() {
   frameRate(E.params.FPS);
   background(34, 139, 34);
-  
+
   if (!isPaused) {
     framesInGame++;
     grass.update();
-    
-    // Spawn boats (limited by MAX_BOATS)
+
+    // Start next trial if necessary
     let iti_p = 1/(E.params.ITI_MEAN*E.params.FPS);
     if (boats.length < E.params.MAX_BOATS && random(1) < iti_p) {
       trial = trial_block.next_trial();
-      if (trial !== undefined) {
-        boats.push(new Boat(stoneImg, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -20, trial.cue-1));
+      if (trial === undefined) {
+        isPaused = true;
       } else {
-        // todo: if undefined, trigger end of block
+        boats.push(new Boat(stoneImg, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -20, trial.cue-1));
       }
     }
 
@@ -199,7 +201,6 @@ function draw() {
           }
         } else if (!E.params.bulletsPassThru && p.y < boats[j].y - boats[j].height/2) {
           // bullet is incorrect, so we make it disappear
-          // todo: update trial here with a miss
           pIsAboveBoat = true;
         }
       }
@@ -251,10 +252,6 @@ function draw() {
   photodiode.render();
 }
 
-
-function nextBlock() {
-}
-
 function drawPauseScreen() {
   textSize(48);
   fill(255);
@@ -263,6 +260,14 @@ function drawPauseScreen() {
   let statusStr = "PAUSED";
   if (E.params.showHUD && lives <= 0) {
     statusStr = 'GAME OVER';
+  } else if (trial_block === undefined && E.is_complete()) {
+    statusStr = 'EXPERIMENT COMPLETE';
+  } else if (trial_block.is_complete()) {
+    if (E.is_complete()) {
+      statusStr = 'EXPERIMENT COMPLETE';
+    } else {
+      statusStr = 'GAME COMPLETE';
+    }
   } else if (framesInGame === 0) {
     statusStr = 'NEW GAME';
   }
@@ -270,10 +275,21 @@ function drawPauseScreen() {
 
   fill('black');
   textSize(32);
-  if (framesInGame > 0) {
+  if (statusStr === 'NEW GAME') {
+    text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, 5*height/8 + 0);
+    text("Fire to begin", width / 2, 5*height/8 + 40);
+  } else if (statusStr === 'EXPERIMENT COMPLETE') {
+    text("Thank you!", width / 2, 5*height/8 + 0);
+  }
+  if (trial_block !== undefined && trial_block.is_complete()) {
+    text("Score: " + trial_block.score.toFixed(0) + " out of " + trial_block.trials.length, width / 2, 5*height/8 + 0);
+    if (!E.is_complete()) {
+      text("Shoot to start next game", width / 2, 5*height/8 + 40);
+    }
+  } else if (framesInGame > 0) {
     if (E.params.debug) {
-      text("'N' for next game", width / 2, 5*height/8 + 0);
-      text("'R' to restart game", width / 2, 5*height/8 + 40);
+      text("'N' for next game", width / 2, 5*height/8 + 40);
+      text("'R' to restart game", width / 2, 5*height/8 + 80);
     }
   }
 }
@@ -324,16 +340,12 @@ function keyPressed(event) {
       projectiles.push(new Projectile(jet.x, jet.y - 30, type));
       trial.trigger({name: 'projectile onset', index: type});
     }
-  } else if (key === 'p') {
+  } else if (!E.is_complete() && key === 'p') {
     // toggle paused
     eventMsg = 'toggle paused';
     isPaused = !isPaused;
   } else if (isPaused) {
-    if (key >= '1' && key <= String(E.params.nactions)) {
-      // start new game
-      eventMsg = 'new game';
-      newGame(false);
-    } else if (key === 'n') {
+    if (key === 'n') {
       // start new game
       eventMsg = 'new game';
       newGame(false);
