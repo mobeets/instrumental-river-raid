@@ -52,8 +52,12 @@ class Jet {
     if (immobileMode) {
       this.x = width / 2;
     } else {
-      if (isPressingLeft()) this.x -= this.speed;
-      if (isPressingRight()) this.x += this.speed;
+      // let inputVel = getDirectionInput();
+      // this.x += inputVel * this.speed;
+      if (user.moveLeft) this.x -= this.speed;
+      if (user.moveRight) this.x += this.speed;
+      // if (isPressingLeft()) this.x -= this.speed;
+      // if (isPressingRight()) this.x += this.speed;
       this.x = constrain(this.x, this.width / 2, width - this.width / 2);
     }
   }

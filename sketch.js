@@ -6,6 +6,8 @@ let trial_blocks = [];
 let trial_block;
 let trial;
 let photodiode;
+let controls;
+let user;
 
 // ===== Globals =====
 let L = 5; // starting lives
@@ -151,9 +153,11 @@ function setup() {
 
   logger = new EventLogger();
   photodiode = new Photodiode(E.params.photodiode, width, height);
+  controls = new UnifiedControls(logger);
+  user = new TaskControls(controls);
   
   // set drift speed to maintain fixed scroll times
-  let jetOffset = 60;
+  let jetOffset = E.params.jetOffset;
   cueWidth = width*E.params.PROP_CUE_WIDTH;
   driftSpeed = (height-jetOffset) / (E.params.FPS * E.params.SCROLL_TIME);
   jetSpeed = (width-cueWidth) / (E.params.FPS * 2);
@@ -194,6 +198,8 @@ function draw() {
   } else {
     background('gray');
   }
+  controls.update();
+  checkUserButtonPresses();
 
   if (gameMode == PLAY_MODE) {
     framesInGame++;
@@ -386,66 +392,48 @@ function drawHUD() {
   }
 }
 
-// ====== Firing control ======
-function keyPressed(event) {
+function checkUserButtonPresses() {
   let eventMsg;
   if (gameMode == PLAY_MODE) {
-    if (key >= '1' && key <= String(E.params.nactions)) {
-      // fire projectile
-      let action = int(key);
+    let action = user.fired;
+    if (action > 0) {
       if (projectiles.length < E.params.MAX_PROJECTILES) {
-        if (trial.canFireAgain == undefined) {
-          eventMsg = 'projectile fired ' + key;
+        if (trial !== undefined && trial?.canFireAgain === undefined) {
+          eventMsg = 'projectile fired ' + action.toFixed(0);
           projectiles.push(new Projectile(jet.x, jet.y - 30, action));
           trial.trigger({name: 'projectile onset', index: action});
           trial.canFireAgain = false;
         }
       }
-    } else if (key === 'p') {
+    }
+    if (user.pause) {
       // pause game
       eventMsg = 'pause';
       gameMode = PAUSE_MODE;
     }
-  } else if (key === 'p' || key === '1') {
+  } else if (user.pause || user.fired > 0) {
     // unpause game
     eventMsg = 'unpause';
     gameMode = PLAY_MODE;
-  } else if (key === 'n' && gameMode != COMPLETE_MODE) {
+  } else if (user.next_block && gameMode != COMPLETE_MODE) {
     // start new game
     eventMsg = 'new game';
     newGame(false);
-  } else if (key === 'r') {
+  } else if (user.restart_block) {
     eventMsg = 'restart game';
     newGame(true);
-  } else if (key === 's') {
+  } else if (user.save) {
     saveTrials();
   }
-  logger.log(event, event.timeStamp, eventMsg);
+  if (eventMsg !== undefined) {
+    logger.log(eventMsg, millis(), eventMsg);
+  }
 }
 
-function isPressingLeft() {
-  if (keyIsDown(LEFT_ARROW)) return true;
-  if (mouseIsPressed && mouseX < width/2) return true;
-  return false;
-}
-
-function isPressingRight() {
-  if (keyIsDown(RIGHT_ARROW)) return true;
-  if (mouseIsPressed && mouseX > width/2) return true;
-  return false;
-}
-
-function keyReleased() {
-  logger.log(event, event.timeStamp);
-}
-
-function mousePressed() {
-  logger.log(event, event.timeStamp);
-}
-
-function mouseReleased() {
-  logger.log(event, event.timeStamp);
-}
+function keyPressed()  { controls.keyPressed(); }
+function keyReleased() { controls.keyReleased(); }
+function mousePressed(){ controls.mousePressed(); }
+function mouseReleased(){ controls.mouseReleased(); }
 
 function getRenderInfo() {
   return {

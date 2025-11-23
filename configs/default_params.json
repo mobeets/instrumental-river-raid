@@ -6,6 +6,7 @@
 	"ITI_MEAN": 0.8,
 	"PROP_RIVER_WIDTH": 0.8,
 	"PROP_CUE_WIDTH": 0.2,
+	"jetOffset": 60,
 	"showHUD": false,
 	"bulletsPassThru": false,
 	"maxEntropyPolicy": true,
