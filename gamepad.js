@@ -4,10 +4,10 @@ class GamepadWrapper {
 
     // Standard Gamepad button mapping (based on Gamepad API standard)
     this.buttonMap = {
-      "A": 0,
-      "B": 1,
-      "X": 2,
-      "Y": 3,
+      "SOUTH": 0,
+      "EAST": 1,
+      "WEST": 2,
+      "NORTH": 3,
       "LB": 4,
       "RB": 5,
       "LT": 6,

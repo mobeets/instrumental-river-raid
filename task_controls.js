@@ -27,15 +27,15 @@ class TaskControls {
   }
 
   get fireA() {
-    return this.u.justPressedKey('1') || this.u.justPressedButton("X");
+    return this.u.justPressedKey('1') || this.u.justPressedButton("WEST");
   }
 
   get fireB() {
-    return this.u.justPressedKey('2') || this.u.justPressedButton("A");
+    return this.u.justPressedKey('2') || this.u.justPressedButton("SOUTH");
   }
 
   get fireC() {
-    return this.u.justPressedKey('3') || this.u.justPressedButton("B");
+    return this.u.justPressedKey('3') || this.u.justPressedButton("EAST");
   }
 
   get moveLeft() {
