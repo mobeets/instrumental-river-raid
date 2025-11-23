@@ -31,32 +31,6 @@ class Grass {
   }
 }
 
-class River {
-  constructor(img, percent) {
-    this.img = img;
-    this.percent = percent;
-    this.width = width * this.percent;
-    this.x = width / 2 - this.width / 2;
-    this.scroll = 0;
-    this.speed = driftSpeed; // pixels per frame
-  }
-
-  update() {
-    this.scroll += this.speed;
-    if (this.scroll >= this.img.height) {
-      this.scroll = 0;
-    }
-  }
-
-  render() {
-    // Tile vertically to fill the screen
-    for (let y = -this.img.height; y < height; y += this.img.height) {
-      imageMode(CORNER);
-      image(this.img, this.x, y + this.scroll, this.width, this.img.height);
-    }
-  }
-}
-
 class Jet {
   constructor(img, x, y) {
     this.img = img;

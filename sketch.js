@@ -158,7 +158,9 @@ function setup() {
   driftSpeed = (height-jetOffset) / (E.params.FPS * E.params.SCROLL_TIME);
   jetSpeed = (width-cueWidth) / (E.params.FPS * 2);
   
-  river = new River(riverImg, E.params.PROP_RIVER_WIDTH);
+  let nonPhotodiodeProp = 1 - 2*photodiode.size / width;
+  // n.b. if E.params.PROP_RIVER_WIDTH < nonPhotodiodeProp, the photodiode will block the view of some Boat objects
+
   grass = new Grass(grassImg, E.params.PROP_RIVER_WIDTH);
 
   // Define boat colors here (p5 color() now available)
