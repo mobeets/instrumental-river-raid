@@ -1,0 +1,202 @@
+[
+  {
+    "name": "targets",
+    "ncues": 3,
+    "is_practice": true,
+    "ntrials_per_cue": 3,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "targets",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 2,
+    "is_practice": true,
+    "ntrials_per_cue": 3,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 2,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 4,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "river"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 6,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 5,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "river"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 2,
+    "is_practice": true,
+    "ntrials_per_cue": 3,
+    "theme": "animals",
+    "scene": "river"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 2,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "river"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 5,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 6,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 4,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "river"
+  },
+  {
+    "name": "targets",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 4,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "river"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 5,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "river"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 6,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 2,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 2,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "river"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 5,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "river"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 6,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "grass"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 4,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals",
+    "scene": "grass"
+  }
+]

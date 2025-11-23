@@ -1,35 +1,18 @@
-{
-	"params": {
-		"FPS": 60,
-		"SCROLL_TIME": 2,
-		"MAX_PROJECTILES": 1,
-		"MAX_BOATS": 1,
-		"ITI_MEAN": 0.8,
-		"PROP_RIVER_WIDTH": 0.8,
-		"PROP_CUE_WIDTH": 0.2,
-		"showHUD": false,
-		"bulletsPassThru": false,
-		"maxEntropyPolicy": true,
-		"nactions": 3,
-		"photodiode": {"size": 50},
-		"debug": false
+[
+	{
+		"name": "targets",
+		"ncues": 3,
+		"is_practice": false,
+		"ntrials_per_cue": 2,
+		"theme": "animals",
+		"scene": "river"
 	},
-	"blocks": [
-		{
-			"name": "targets",
-			"ncues": 3,
-			"is_practice": false,
-			"ntrials_per_cue": 2,
-			"theme": "animals",
-			"scene": "river"
-		},
-		{
-			"name": "instrumental",
-			"ncues": 3,
-			"is_practice": true,
-			"ntrials_per_cue": 3,
-			"theme": "animals",
-			"scene": "grass"
-		}
-	]
-}
+	{
+		"name": "instrumental",
+		"ncues": 3,
+		"is_practice": true,
+		"ntrials_per_cue": 3,
+		"theme": "animals",
+		"scene": "grass"
+	}
+]

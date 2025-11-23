@@ -13,8 +13,9 @@ function loadConfig() {
 	// call inside preload
 
   const defaults = {
-    subject_id: 'unknown',
-    config_name: 'default'
+    subject: 'unknown',
+    experiment: 'default_experiment',
+    params_name: 'default_params',
   };
 
   // Merge defaults with URL params
@@ -23,24 +24,30 @@ function loadConfig() {
 
   // Safe destructuring with fallback defaults
   const {
-    subject_id = 'unknown',
-    config_name = 'default'
+    subject = 'unknown',
+    experiment = 'default_experiment',
+    params_name ='default_params',
   } = finalParams;
 
   // Build path to config file
-  const config_path = `configs/${config_name}.json`;
+  const blocks_path = `configs/${experiment}.json`;
+
+  // Build path to params file
+  const params_path = `configs/${params_name}.json`;
 
   // In preload(), loadJSON() returns the parsed JSON synchronously
-  const config = loadJSON(config_path);
-  return {subject_id, config_path, config};
+  const blocks = loadJSON(blocks_path);
+  const params = loadJSON(params_path);
+  return {subject, blocks_path, params_path, blocks, params};
 }
 
 class Experiment {
-	constructor({subject_id, config_path, config}) {
+	constructor({subject_id, blocks_path, params_path, blocks, params}) {
 		this.subject_id = subject_id;
-		this.config_path = config_path;
-		this.params = config.params;
-		this.block_configs = config.blocks;
+		this.config_path = blocks_path;
+		this.params_path = params_path;
+		this.block_configs = Object.values(blocks);
+		this.params = params;
 		this.block_index = -1;
 		this.blocks = [];
 	}

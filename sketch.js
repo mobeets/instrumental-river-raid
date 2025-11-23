@@ -250,7 +250,7 @@ function draw() {
 
             if (E.params.showHUD) streakbar.hit();
             let dx = boats[j].width/2;
-            let cy = boats[j].y - boats[j].height/2;
+            let cy = boats[j].y;// - boats[j].height/2;
             explosions.push(new Explosion(boats[j].x - dx, boats[j].x + dx, cy, [255, 150, 0]));
             boats.splice(j, 1);
             projectiles.splice(i, 1);
