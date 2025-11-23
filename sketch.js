@@ -333,7 +333,7 @@ function drawPauseScreen() {
     fill('black');
     textSize(32);
     text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, 5*height/8 + 0);
-    text("Score: " + trial_block.score.toFixed(0) + " out of " + trial_block.trials.length, width / 2, 5*height/8 + 0);
+    text("Score: " + trial_block.score.toFixed(0) + " out of " + trial_block.trials.length, width / 2, 5*height/8 + 40);
   } else if (gameMode == READY_MODE) {
     text("READY?", width / 2, height / 2);
     fill('black');
