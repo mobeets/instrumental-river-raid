@@ -8,6 +8,8 @@ class UnifiedControls {
     // Keyboard state
     this.keys = {};
     this.prevKeys = {};
+    this.justPressedKeys = {};
+    this.justReleasedKeys = {};
 
     // Mouse state
     this.mouseDown = false;
@@ -18,11 +20,11 @@ class UnifiedControls {
   }
 
   // ----- Keyboard -----
-  keyPressed() {
+  keyPressed(key) {
     this.keys[key] = true;
     this.logEvent(`key_${key}_pressed`);
   }
-  keyReleased() {
+  keyReleased(key) {
     this.keys[key] = false;
     this.logEvent(`key_${key}_released`);
   }

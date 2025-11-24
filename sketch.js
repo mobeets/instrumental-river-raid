@@ -20,6 +20,7 @@ let jetSpeed; // will be set to allow fixed travel time from left to right
 let cueWidth;
 let immobileMode = false;
 let showAnswers = true; // show number on block instead of color
+let mustHitLocation = false;
 let jet;
 let trees = [];
 let boats = [];
@@ -121,12 +122,19 @@ function newGame(restartGame = false) {
   if (trial_block.name === "targets") {
     immobileMode = false;
     showAnswers = true;
+    mustHitLocation = false;
   } else if (trial_block.name === "instrumental") {
     immobileMode = true;
     showAnswers = false;
+    mustHitLocation = false;
   } else if (trial_block.name === "targets-instrumental") {
     immobileMode = false;
     showAnswers = false;
+    mustHitLocation = false;
+  } else if (trial_block.name === "locations-instrumental") {
+    immobileMode = false;
+    showAnswers = false;
+    mustHitLocation = true;
   } else {
     console.log("Invalid game type.");
   }
@@ -160,7 +168,7 @@ function setup() {
   let jetOffset = E.params.jetOffset;
   cueWidth = width*E.params.PROP_CUE_WIDTH;
   driftSpeed = (height-jetOffset) / (E.params.FPS * E.params.SCROLL_TIME);
-  jetSpeed = (width-cueWidth) / (E.params.FPS * 2);
+  jetSpeed = (width-cueWidth) / (E.params.FPS * 1.5);
   
   let nonPhotodiodeProp = 1 - 2*photodiode.size / width;
   // n.b. if E.params.PROP_RIVER_WIDTH < nonPhotodiodeProp, the photodiode will block the view of some Boat objects
@@ -212,7 +220,8 @@ function draw() {
       if (trial === undefined) {
         newGame(false);
       } else {
-        boats.push(new Boat(trial.cue-1, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -cueWidth));
+        let nTilesPerCue = mustHitLocation ? E.params.nactions : 1;
+        boats.push(new Boat(trial.cue-1, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -cueWidth, nTilesPerCue));
       }
     }
 
@@ -249,7 +258,7 @@ function draw() {
 
       // Check for collisions with boats
       for (let j = boats.length - 1; j >= 0; j--) {
-        if (boats[j].checkHit(p)) {
+        if (boats[j].checkHit(p, mustHitLocation)) {
           if (trial_block.R[boats[j].cue][p.action - 1] === 1) {
             // Correct hit
             trial.trigger('hit');
@@ -430,8 +439,8 @@ function checkUserButtonPresses() {
   }
 }
 
-function keyPressed()  { controls.keyPressed(); }
-function keyReleased() { controls.keyReleased(); }
+function keyPressed(event)  { controls.keyPressed(event.key); }
+function keyReleased(event) { controls.keyReleased(event.key); }
 function mousePressed(){ controls.mousePressed(); }
 function mouseReleased(){ controls.mouseReleased(); }
 

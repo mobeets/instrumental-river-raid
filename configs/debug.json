@@ -1,11 +1,11 @@
 [
 	{
-		"name": "targets",
-		"ncues": 3,
-		"is_practice": false,
-		"ntrials_per_cue": 2,
+		"name": "locations-instrumental",
+		"ncues": 2,
+		"is_practice": true,
+		"ntrials_per_cue": 4,
 		"theme": "animals",
-		"scene": "river"
+		"scene": "grass"
 	},
 	{
 		"name": "instrumental",
@@ -14,5 +14,13 @@
 		"ntrials_per_cue": 3,
 		"theme": "animals",
 		"scene": "grass"
+	},
+	{
+		"name": "targets",
+		"ncues": 3,
+		"is_practice": false,
+		"ntrials_per_cue": 2,
+		"theme": "animals",
+		"scene": "river"
 	}
 ]
