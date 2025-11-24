@@ -1,6 +1,6 @@
 {
 	"FPS": 60,
-	"SCROLL_TIME": 3,
+	"SCROLL_TIME": 4,
 	"MAX_PROJECTILES": 1,
 	"MAX_BOATS": 1,
 	"ITI_MEAN": 0.8,

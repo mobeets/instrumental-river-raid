@@ -52,12 +52,8 @@ class Jet {
     if (immobileMode) {
       this.x = width / 2;
     } else {
-      // let inputVel = getDirectionInput();
-      // this.x += inputVel * this.speed;
       if (user.moveLeft) this.x -= this.speed;
       else if (user.moveRight) this.x += this.speed;
-      // if (isPressingLeft()) this.x -= this.speed;
-      // if (isPressingRight()) this.x += this.speed;
       this.x = constrain(this.x, this.width / 2, width - this.width / 2);
     }
   }
@@ -93,6 +89,8 @@ class Boat {
     this.color = BOAT_COLORS[this.cue];
     this.img = spriteSheet.getImage(trial_block.theme_offset + this.cue);
     this.hasBeenSeen = false;
+    this.selectedLocationIndex = -1;
+    this.correctActionIndex = this.getCorrectActionIndex();
   }
 
   update() {
@@ -112,30 +110,37 @@ class Boat {
     let tileW = this.height;          // each tile is square (height x height)
     let startX = this.x - this.width / 2 + tileW / 2; // leftmost tile center
 
-    let actionToShow = this.getCorrectActionIndex()+1;
+    let actionToShow = this.correctActionIndex+1;
     if (showAnswers) {
       textFont(myFont);
       textSize(24);
       textAlign(CENTER, CENTER);
       fill('black');
     }
+
+    let selectedIndex = this.selectedLocationIndex;
+    if (selectedIndex === -1 && this.nTilesPerCue > 1) {
+      selectedIndex = this.getSelectedLocationIndex(jet.x);
+    }
+
+    let strokeColor = 'black';
     for (let i = 0; i < this.nTilesPerCue; i++) {
       let tileX = startX + i * tileW;
 
-      // check location
-      let isHit = this.checkHitRect({x: jet.x, y: this.y}, tileX, this.y, tileW, this.height);
-      // let doTint = 0;
-      if (isHit) noTint();
-      else tint(255, 128);
-      // if (doTint)
-      
+      // highlight location, if multiple tiles
+      strokeWeight(0);
+      if (selectedIndex !== -1) {
+        // if (i === selectedIndex) noTint();
+        // else tint(255, 128);
+        if (i === selectedIndex) strokeWeight(3);
+      }
 
       if (showAnswers) {
         text(actionToShow, tileX, this.y);
       } else {
         image(this.img, tileX, this.y, tileW, this.height);
-        stroke('black');
-        strokeWeight(2);
+        stroke(strokeColor);
+        // strokeWeight(2);
         noFill();
         rect(tileX, this.y, tileW, this.height);
       }
@@ -143,6 +148,20 @@ class Boat {
     noStroke();
     pop();
     noTint();
+  }
+
+  getSelectedLocationIndex(x) {
+    let tileW = this.height;          // each tile is square (height x height)
+    let startX = this.x - this.width / 2 + tileW / 2; // leftmost tile center
+    for (let i = 0; i < this.nTilesPerCue; i++) {
+      let tileX = startX + i * tileW;
+      if (this.checkHitRect({x: x, y: this.y}, tileX, this.y, tileW, this.height)) return i;
+    }
+    return -1;
+  }
+
+  setSelectedLocationIndex(x) {
+    this.selectedLocationIndex = this.getSelectedLocationIndex(x);
   }
 
   getCorrectActionIndex() {
@@ -183,8 +202,12 @@ class Boat {
   }
 
   checkHit(projectile, mustHitLocation) {
-    if (mustHitLocation) return this.checkHitInCorrectLocation(projectile);
-    return this.checkHitRect(projectile, this.x, this.y, this.width, this.height);
+    if (mustHitLocation) {
+      return this.checkHitInCorrectLocation(projectile);
+    } else {
+      let isHit = this.checkHitRect(projectile, this.x, this.y, this.width, this.height);
+      return isHit && (projectile.action-1 === this.correctActionIndex);
+    }
   }
 
   checkHitInCorrectLocation(projectile) {
@@ -192,7 +215,7 @@ class Boat {
     let tileW = this.height;          // each tile is square (height x height)
     let startX = this.x - this.width / 2 + tileW / 2; // leftmost tile center
 
-    let action_index = this.getCorrectActionIndex();
+    let action_index = this.correctActionIndex;
     let tileX = startX + action_index * tileW;
     return this.checkHitRect(projectile, tileX, this.y, tileW, this.height);
   }

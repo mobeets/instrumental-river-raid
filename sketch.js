@@ -259,20 +259,18 @@ function draw() {
       // Check for collisions with boats
       for (let j = boats.length - 1; j >= 0; j--) {
         if (boats[j].checkHit(p, mustHitLocation)) {
-          if (trial_block.R[boats[j].cue][p.action - 1] === 1) {
-            // Correct hit
-            trial.trigger('hit');
-            trial.trigger('cue offset');
-            trial_block.score++;
+          // Correct hit
+          trial.trigger('hit');
+          trial.trigger('cue offset');
+          trial_block.score++;
 
-            if (E.params.showHUD) streakbar.hit();
-            let dx = boats[j].width/2;
-            let cy = boats[j].y;// - boats[j].height/2;
-            explosions.push(new Explosion(boats[j].x - dx, boats[j].x + dx, cy, [255, 150, 0]));
-            boats.splice(j, 1);
-            projectiles.splice(i, 1);
-            break;
-          }
+          if (E.params.showHUD) streakbar.hit();
+          let dx = boats[j].width/2;
+          let cy = boats[j].y;// - boats[j].height/2;
+          explosions.push(new Explosion(boats[j].x - dx, boats[j].x + dx, cy, [255, 150, 0]));
+          boats.splice(j, 1);
+          projectiles.splice(i, 1);
+          break;
         } else if (!E.params.bulletsPassThru && p.y < boats[j].y - boats[j].height/2) {
           // bullet is incorrect, so we make it disappear
           pIsAboveBoat = true;
@@ -410,6 +408,7 @@ function checkUserButtonPresses() {
         if (trial !== undefined && trial?.canFireAgain === undefined) {
           eventMsg = 'projectile fired ' + action.toFixed(0);
           projectiles.push(new Projectile(jet.x, jet.y - 30, action));
+          if (mustHitLocation && boats.length > 0) boats[0].setSelectedLocationIndex(jet.x);
           trial.trigger({name: 'projectile onset', index: action});
           trial.canFireAgain = false;
         }

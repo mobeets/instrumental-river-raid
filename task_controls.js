@@ -39,10 +39,6 @@ class TaskControls {
   }
 
   get moveLeft() {
-    let c = this.u.isKey('ArrowLeft');
-    if (c) console.log('moving left');
-    return c;
-
     const stick = this.u.leftStick();
     const d = this.u.dpad();
     return (
@@ -54,10 +50,6 @@ class TaskControls {
   }
 
   get moveRight() {
-    let c = this.u.isKey('ArrowRight');
-    if (c) console.log('moving right');
-    return c;
-
     const stick = this.u.leftStick();
     const d = this.u.dpad();
     return (
