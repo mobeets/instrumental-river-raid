@@ -76,7 +76,38 @@ class Experiment {
   }
 }
 
+// - animals 1: 2-5
+// - animals 2: 2-5
+// - flowers_food: 2-5
+// - land_animals: 2-5
+
+// let themeOffsets = {
+// 	animals: {2: 0, 3: 2, 4: 5, 5: 9, 6: 14},
+// 	flowers: {},
+// 	land: {},
+// 	food: {},
+// 	real_animals: {},
+// 	training: {}
+// };
+
 let themeOffsets = {2: 0, 3: 2, 4: 5, 5: 9, 6: 14};
+
+let nextThemeOffsets = {
+	animals: 0,
+	flowers: 0,
+	land: 0,
+	food: 0,
+	real_animals: 0,
+	training: 0
+};
+
+function getNextThemeOffset(theme, ncues) {
+	if (theme === undefined || theme.length === 0) return 0;
+	let nextOffset = nextThemeOffsets[theme];
+	nextThemeOffsets[theme] += ncues;
+	return nextOffset;
+}
+
 class TrialBlock {
 	constructor(index, {name, ncues, is_practice, ntrials_per_cue, theme, scene}) {
 		this.name = name;
@@ -86,6 +117,7 @@ class TrialBlock {
 		this.ntrials_per_cue = ntrials_per_cue;
 		this.theme = theme;
 		this.theme_offset = themeOffsets[this.ncues];
+		// this.theme_offset = getNextThemeOffset(this.theme, this.ncues);
 		this.scene = scene;
 		this.cue_list = this.makeCueSequence(this.ncues, this.ntrials_per_cue);
 		this.trial_index = -1;

@@ -7,8 +7,8 @@ def generate_blocks(themes):
     # Tasks and ncues specification
     tasks = {
         "targets": [3],
-        "instrumental": [2, 3, 4, 5, 6],
-        "targets-instrumental": [2, 3, 4, 5, 6]
+        "instrumental": [2, 3, 4, 5],
+        "targets-instrumental": [2, 3, 4, 5]
     }
     scenes = ["grass", "river"]
     all_blocks = []
@@ -29,7 +29,10 @@ def generate_blocks(themes):
             random.shuffle(ncues_list)
 
             # Assign one theme for all blocks in this (run, task)
-            theme = next(theme_iterator)
+            if task != "targets":
+                theme = next(theme_iterator)
+            else:
+                theme = ""
 
             # Scene assignment for the *experimental* blocks
             scene_assignments = scenes * ((len(ncues_list) + 1) // 2)
@@ -46,7 +49,7 @@ def generate_blocks(themes):
                     "ncues": practice_ncues,
                     "is_practice": True,
                     "ntrials_per_cue": 3,
-                    "theme": theme,
+                    "theme": "training" if task != "targets" else "",
                     "scene": practice_scene
                 }
                 all_blocks.append(practice_block)

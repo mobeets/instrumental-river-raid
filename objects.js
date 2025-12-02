@@ -400,8 +400,9 @@ class SquareSpriteSheet {
     const total = cols * rows;
 
     if (index < 0 || index >= total) {
-      console.error(`Index ${index} out of range (0–${total - 1})`);
-      return null;
+      console.log(`Index ${index} out of range (0–${total - 1}). Using mod.`);
+      index = index % total;
+      // return null;
     }
 
     // Compute row/column from linear index

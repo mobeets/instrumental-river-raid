@@ -17,7 +17,7 @@ def spaced_class_sort(filenames):
         cls, num = name.rsplit("-", 1)
         groups[cls].append(name)
 
-    # Step 2: Sort each class internally by number (optional but sensible)
+    # Step 2: Sort each class internally by number
     for cls in groups:
         groups[cls].sort(key=lambda s: int(s.split("-")[-1].split('.')[0]))
         groups[cls] = deque(groups[cls])  # faster pops
@@ -103,5 +103,10 @@ if __name__ == "__main__":
     directory = sys.argv[1]
     sprite_size = int(sys.argv[2])
     output_path = sys.argv[3]
+    print(len(sys.argv), sys.argv)
+    if len(sys.argv) > 4:
+        do_unsort = False if sys.argv[4].lower().startswith('f') else True
+    else:
+        do_unsort = True
 
-    build_spritesheet(directory, sprite_size, output_path)
+    build_spritesheet(directory, sprite_size, output_path, do_unsort)

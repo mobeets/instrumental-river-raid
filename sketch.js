@@ -55,7 +55,12 @@ function preload() {
   jetImg2 = loadImage('assets/jet2.png');
   grassImg = loadImage('assets/grass.png');
   // stoneImg = loadImage('assets/stone.png');
-  spriteSheets.animals = new SquareSpriteSheet('assets/animals.png', 64);
+  spriteSheets.animals = new SquareSpriteSheet('assets/themes/animals.png', 64);
+  spriteSheets.flowers = new SquareSpriteSheet('assets/themes/flowers.png', 64);
+  // spriteSheets.land = new SquareSpriteSheet('assets/themes/land.png', 64);
+  // spriteSheets.food = new SquareSpriteSheet('assets/themes/food.png', 64);
+  // spriteSheets.real_animals = new SquareSpriteSheet('assets/themes/real_animals.png', 64);
+  spriteSheets.training = new SquareSpriteSheet('assets/themes/training.png', 64);
   config = loadConfig();
 }
 
