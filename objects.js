@@ -87,7 +87,9 @@ class Boat {
     this.speed = driftSpeed;
     this.cue = cue;
     this.color = BOAT_COLORS[this.cue];
-    this.img = spriteSheet.getImage(trial_block.theme_offset + this.cue);
+    if (spriteSheet !== undefined) {
+      this.img = spriteSheet.getImage(trial_block.theme_offset + this.cue);
+    }
     this.hasBeenSeen = false;
     this.selectedLocationIndex = -1;
     this.correctActionIndex = this.getCorrectActionIndex();

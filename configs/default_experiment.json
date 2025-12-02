@@ -3,7 +3,7 @@
     "name": "targets",
     "ncues": 3,
     "is_practice": true,
-    "ntrials_per_cue": 3,
+    "ntrials_per_cue": 2,
     "theme": "",
     "scene": "grass"
   },
