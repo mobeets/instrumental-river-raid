@@ -249,10 +249,10 @@ class Trial {
 		this.block_index = block_index;
 		this.startTime = millis();
 		this.events = [];
-		this.positions = {time: [], agent: {x: [], y: []}, cue: {x: [], y: []}};
+		this.positions = {time: [], agent: {x: [], y: []}, cue: {x: [], y: []}, projectile: {x: [], y: []}};
 	}
 
-	logPositions(jet, boats) {
+	logPositions(jet, boats, projectiles) {
 		this.positions.time.push(performance.now());
 		this.positions.agent.x.push(jet.x);
     this.positions.agent.y.push(jet.y);
@@ -262,6 +262,13 @@ class Trial {
     } else {
     	this.positions.cue.x.push(NaN);
     	this.positions.cue.y.push(NaN);
+    }
+    if (projectiles.length === 1) {
+    	this.positions.projectile.x.push(projectiles[0].x);
+    	this.positions.projectile.y.push(projectiles[0].y);
+    } else {
+    	this.positions.projectile.x.push(NaN);
+    	this.positions.projectile.y.push(NaN);
     }
 	}
 

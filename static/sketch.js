@@ -185,8 +185,7 @@ function draw() {
     grass.update();
 
     // Start next trial if necessary
-    // let iti_p = 1/(E.params.ITI_MEAN*E.params.FPS);
-    let iti_p = 1/200;
+    let iti_p = 1/(E.params.ITI_MEAN*E.params.FPS);
     if (boats.length < E.params.MAX_BOATS && random(1) < iti_p) {
       trial = trial_block.next_trial();
       if (trial === undefined) {
@@ -262,7 +261,7 @@ function draw() {
 
     // Update jet
     jet.update();
-    if (trial !== undefined) trial.logPositions(jet, boats);
+    if (trial !== undefined) trial.logPositions(jet, boats, projectiles);
   }
 
   // render grass, boats, projectiles, and jet
@@ -383,7 +382,7 @@ function checkUserButtonPresses() {
     let action = user.fired;
     if (action > 0) {
       if (projectiles.length < E.params.MAX_PROJECTILES) {
-        if (trial !== undefined && trial?.canFireAgain === undefined) {
+        if (trial !== undefined && boats.length > 0 && boats[0].hasBeenSeen && trial?.canFireAgain === undefined) {
           eventMsg = 'projectile fired ' + action.toFixed(0);
           projectiles.push(new Projectile(jet.x, jet.y - 30, action));
           if (mustHitLocation && boats.length > 0) boats[0].setSelectedLocationIndex(jet.x);

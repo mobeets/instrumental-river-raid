@@ -1,6 +1,6 @@
 ## Requirements
 
-- [uv](https://docs.astral.sh/uv/#installation).
+- [uv](https://docs.astral.sh/uv/#installation)
 
 ## Starting the task
 
