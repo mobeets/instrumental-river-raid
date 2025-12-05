@@ -256,18 +256,18 @@ class Trial {
 		wsLogger.log(msg, this.toJSON());
 	}
 
-	logEvent(event) {
+	logEvent(event, callback) {
 	  event.index = this.index;
 	  event.cue = this.cue;
 	  event.block_index = this.block_index;
-		wsLogger.log("Trial event", event);
+		wsLogger.log("Trial event", event, false, callback);
 	}
 
-	trigger(event) {
+	trigger(event, callback) {
 		if (typeof event === "string") {
 	    event = {name: event};
 	  }
-	  this.logEvent(event);
+	  this.logEvent(event, callback);
 		this.events.push(event);
 	}
 

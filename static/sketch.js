@@ -192,15 +192,17 @@ function draw() {
     for (let i = boats.length - 1; i >= 0; i--) {
       boats[i].update();
 
-      if (!boats[i].hasBeenSeen && boats[i].onscreen()) trial.trigger('cue onset');
+      if (!boats[i].hasBeenSeen && boats[i].onscreen()) {
+        // markEvent will trigger photodiode/sound
+        trial.trigger('cue onset', markEvent);
+      }
       if (boats[i].collidesWithJet(jet)) {
         // Collided with jet
         if (!immobileMode) {
           boats.splice(i, 1);
           jet.takeHit();
           streakbar.reset();
-          trial.trigger('collision');
-          trial.trigger('cue offset');
+          trial.trigger('cue offset - collision');
           
           explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height, [255, 150, 0]));
           
@@ -208,7 +210,7 @@ function draw() {
         }
       } else if (boats[i].offscreen()) {
         // trial ends without a hit
-        trial.trigger('cue offset');
+        trial.trigger('cue offset - offscreen');
         boats.splice(i, 1);
       }
     }
@@ -224,7 +226,7 @@ function draw() {
         if (boats[j].checkHit(p, mustHitLocation)) {
           // Correct hit
           trial.trigger('hit');
-          trial.trigger('cue offset');
+          trial.trigger('cue offset - hit');
           trial_block.score++;
 
           if (E.params.showHUD) streakbar.hit();
