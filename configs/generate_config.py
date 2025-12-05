@@ -3,7 +3,7 @@ import random
 import argparse
 from itertools import cycle
 
-def generate_blocks(themes):
+def generate_blocks(themes, ntrials_per_cue=10):
     # Tasks and ncues specification
     tasks = {
         "targets": [3],
@@ -60,7 +60,7 @@ def generate_blocks(themes):
                     "name": task,
                     "ncues": ncues,
                     "is_practice": False,
-                    "ntrials_per_cue": 10,
+                    "ntrials_per_cue": ntrials_per_cue,
                     "theme": theme,
                     "scene": scene
                 }

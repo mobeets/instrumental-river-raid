@@ -69,11 +69,8 @@ function newGame(restartGame = false) {
   if (trial_block === undefined) { gameMode = COMPLETE_MODE; return; }
   spriteSheet = spriteSheets[trial_block.theme];
 
-  if (E.block_index > 1) {
-    gameMode = STARTING_MODE;
-  } else {
-    gameMode = READY_MODE;
-  }
+  gameMode = READY_MODE;
+
   if (trial_block.scene === 'grass') {
     grass.img = grassImg;
     jet.img = jetImg1;
@@ -244,7 +241,7 @@ function draw() {
 
       if (pIsAboveBoat || p.offscreen()) {
         if (E.params.showHUD) streakbar.reset();
-        trial.trigger({name: 'projectile offset', index: p.action});
+        trial.trigger({name: 'projectile offset - miss', index: p.action});
         projectiles.splice(i, 1);
       }
     }
@@ -313,6 +310,7 @@ function drawPauseScreen() {
     text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, 5*height/8 + 0);
     fill('white');
     if (trial_block.is_practice) {
+      fill('#9e442f');
       text("Practice round!", width / 2, 5*height/8 + 40);
     }
     fill('black');
