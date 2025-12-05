@@ -40,7 +40,9 @@ app = FastAPI()
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Mount subfolder static/ at /static
-app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static_assets")
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
+app.mount("/assets", StaticFiles(directory=os.path.join(BASE_DIR, "assets")), name="assets")
+app.mount("/configs", StaticFiles(directory=os.path.join(BASE_DIR, "configs")), name="configs")
 
 # Serve your index.html at the root
 @app.get("/")

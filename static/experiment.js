@@ -57,7 +57,7 @@ class Experiment {
 			if (this.no_more_blocks()) return;
 			this.block_index++;
 		}
-		let block = new TrialBlock(this.block_index, this.block_configs[this.block_index]);
+		let block = new TrialBlock(this.block_index, this, this.block_configs[this.block_index]);
 		this.blocks.push(block);
 		return block;
 	}
@@ -108,8 +108,50 @@ function getNextThemeOffset(theme, ncues) {
 	return nextOffset;
 }
 
+function makeBalancedOneHotMatrix(rows, cols) {
+  // Smallest N such that N*cols ≥ rows
+  const N = Math.ceil(rows / cols);
+
+  // Build stacked identity (size N*cols x cols)
+  let M = [];
+  for (let n = 0; n < N; n++) {
+    for (let i = 0; i < cols; i++) {
+      let row = Array(cols).fill(0);
+      row[i] = 1;
+      M.push(row);
+    }
+  }
+
+  // Shuffle rows (Fisher–Yates)
+  for (let i = M.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [M[i], M[j]] = [M[j], M[i]];
+  }
+
+  // Return first K rows
+  return M.slice(0, rows);
+}
+
+function randomR(rows, cols, maxEntropyPolicy = false) {
+  // creates random ncues x D binary reward matrix
+  // each row will have exactly one nonzero entry
+  // R[k][d] = 1 means projectile d destroys color k
+  // if maxEntropyPolicy, then ensures every action is optimal for at least one cue
+  if (maxEntropyPolicy) {
+    return makeBalancedOneHotMatrix(rows, cols);
+  }
+
+  let R = [];
+  for (let i = 0; i < rows; i++) {
+    let row = Array(cols).fill(0);
+    row[Math.floor(Math.random() * cols)] = 1; // choose one random position
+    R.push(row);
+  }
+  return R;
+}
+
 class TrialBlock {
-	constructor(index, {name, ncues, is_practice, ntrials_per_cue, theme, scene}) {
+	constructor(index, E, {name, ncues, is_practice, ntrials_per_cue, theme, scene}) {
 		this.name = name;
 		this.index = index;
 		this.ncues = ncues;
@@ -120,10 +162,20 @@ class TrialBlock {
 		// this.theme_offset = getNextThemeOffset(this.theme, this.ncues);
 		this.scene = scene;
 		this.cue_list = this.makeCueSequence(this.ncues, this.ntrials_per_cue);
+		this.R = this.getRewardMatrix(E);
 		this.trial_index = -1;
 		this.trial;
 		this.trials = [];
 		this.score = 0;
+		this.log();
+	}
+
+	getRewardMatrix(E) {
+		return randomR(this.ncues, E.params.nactions, E.params.maxEntropyPolicy);
+	}
+
+	log() {
+		wsLogger.log("new trial block", this.toJSON());
 	}
 
 	makeCueSequence(ncues, ntrials_per_cue) {
@@ -153,7 +205,7 @@ class TrialBlock {
 	next_trial() {
 		if (this.is_complete()) return;
 		this.trial_index++;
-		let trial = new Trial(this.cue_list[this.trial_index]);
+		let trial = new Trial(this.cue_list[this.trial_index], this.index);
 		this.trials.push(trial);
 		return trial;
 	}
@@ -169,8 +221,9 @@ class TrialBlock {
 }
 
 class Trial {
-	constructor(cue) {
+	constructor(cue, block_index) {
 		this.cue = cue;
+		this.block_index = block_index;
 		this.startTime = millis();
 		this.events = [];
 	}

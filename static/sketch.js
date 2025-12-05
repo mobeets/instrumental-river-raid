@@ -64,48 +64,6 @@ function preload() {
   config = loadConfig();
 }
 
-function makeBalancedOneHotMatrix(rows, cols) {
-  // Smallest N such that N*cols ≥ rows
-  const N = Math.ceil(rows / cols);
-
-  // Build stacked identity (size N*cols x cols)
-  let M = [];
-  for (let n = 0; n < N; n++) {
-    for (let i = 0; i < cols; i++) {
-      let row = Array(cols).fill(0);
-      row[i] = 1;
-      M.push(row);
-    }
-  }
-
-  // Shuffle rows (Fisher–Yates)
-  for (let i = M.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [M[i], M[j]] = [M[j], M[i]];
-  }
-
-  // Return first K rows
-  return M.slice(0, rows);
-}
-
-function randomR(rows, cols, maxEntropyPolicy = false) {
-  // creates random ncues x D binary reward matrix
-  // each row will have exactly one nonzero entry
-  // R[k][d] = 1 means projectile d destroys color k
-  // if maxEntropyPolicy, then ensures every action is optimal for at least one cue
-  if (maxEntropyPolicy) {
-    return makeBalancedOneHotMatrix(rows, cols);
-  }
-
-  let R = [];
-  for (let i = 0; i < rows; i++) {
-    let row = Array(cols).fill(0);
-    row[Math.floor(Math.random() * cols)] = 1; // choose one random position
-    R.push(row);
-  }
-  return R;
-}
-
 function newGame(restartGame = false) {
   trial_block = E.next_block(restartGame);
   if (trial_block === undefined) { gameMode = COMPLETE_MODE; return; }
@@ -144,9 +102,6 @@ function newGame(restartGame = false) {
     console.log("Invalid game type.");
   }
   trial_blocks.push(trial_block);
-
-  // make new reward matrix
-  trial_block.R = randomR(trial_block.ncues, E.params.nactions, E.params.maxEntropyPolicy);
 
   framesInGame = 0;
   lives = L;
@@ -194,6 +149,10 @@ function setup() {
   jet = new Jet(jetImg1, width / 2, height - jetOffset);
   streakbar = new StreakBar();
   
+  // log config and render info
+  let renderInfo = getRenderInfo();
+  wsLogger.log('experiment start', {config, renderInfo});
+
   textAlign(CENTER, CENTER);
   textSize(24);
   newGame(false);
@@ -457,14 +416,8 @@ function getRenderInfo() {
     width: width,
     height: height,
     photodiode: photodiode,
-    framesInGame: framesInGame,
     jetSpeed: jetSpeed,
     driftSpeed: driftSpeed,
     cueWidth: cueWidth,
   };
-}
-
-function saveTrials() {
-  // logger.data.renderInfo = getRenderInfo();
-  // logger.data.trial_blocks = trial_blocks;
 }
