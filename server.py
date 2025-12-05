@@ -26,10 +26,8 @@ LOG_DIR = args.logdir
 os.makedirs(LOG_DIR, exist_ok=True)
 LOG_FILE = os.path.join(LOG_DIR, f"{SAVE_NAME}.jsonl")
 if os.path.exists(LOG_FILE):
-    resp = input(f"{LOG_FILE} already exists. Overwrite? [y/N]: ").strip().lower()
-    if resp not in ("y", "yes"):
-        print("Aborting.")
-        exit(1)
+    print(f"{LOG_FILE} already exists. Aborting.")
+    exit(1)
 
 # ---------------------
 # FastAPI app

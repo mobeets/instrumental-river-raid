@@ -126,7 +126,7 @@ function setup() {
   let jetOffset = E.params.jetOffset;
   cueWidth = width*E.params.PROP_CUE_WIDTH;
   driftSpeed = (height-jetOffset) / (E.params.FPS * E.params.ISI_DURATION);
-  jetSpeed = (width-cueWidth) / (E.params.FPS * 1.5);
+  jetSpeed = (width-cueWidth) / (E.params.FPS * E.params.JET_SIDETOSIDE_DURATION);
   explosionDuration = Math.ceil(E.params.FPS * E.params.FEEDBACK_DURATION);
   
   let nonPhotodiodeProp = 1 - 2*photodiode.size / width;
