@@ -1,16 +1,20 @@
-## Setup
+## Requirements
 
-Requirements: [uv](https://docs.astral.sh/uv/#installation).
+- [uv](https://docs.astral.sh/uv/#installation).
+
+## Starting the task
 
 To start the server for a patient named `SUBJECT_ID`, run the following in a terminal:
 `uv run python server.py --save_name SUBJECT_ID`
 
-Then go to the url listed in a browser and click around.
-Your mouse clicks and key presses will be saved locally to the file `logs/SUBJECT_ID.jsonl`.
+In a Chrome browser, open `http://0.0.0.0:8000?subject=SUBJECT_ID` to start the task.
 
-In a Chrome browser, open `http://0.0.0.0:8000?subject=SUBJECT_ID` to start the task
-- Appending to the url `&params_name=debug` will load the config file `configs/debug.json`
-- Appending `&experiment=default_experiment` to the url will load the experiment file `configs/default_experiment.json`
+## Experiment details
+
+- Default params can be found in `configs/default_params.json`, and overrided by appending `&params_name=example` to the url (this will load the config file `configs/example.json`)
+- Default block order can be found in `configs/default_experiment.json`, and overrided by appending `&experiment=experiment` to the url (this will load the experiment file `configs/experiment.json`)
+
+All trial data, mouse clicks, and key presses will be saved locally to the file `logs/SUBJECT_ID.jsonl`.
 
 ## Controls
 
