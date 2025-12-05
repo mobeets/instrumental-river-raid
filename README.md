@@ -30,3 +30,9 @@ On the patient's side (with USB controller connected):
 - START button to pause
 
 All task controls can be found in `static/task_controls.js`.
+
+## Debugging
+
+It is recommended to keep the Web Inspector in Chrome open in a separate window so you can make sure the WebSocket remains connected.
+
+Also note that you can save a copy of the experimental data manually by pausing and pressing 's'.
