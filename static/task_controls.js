@@ -16,7 +16,7 @@ class TaskControls {
   }
 
   get save() {
-    return this.u.isKey('s');
+    return this.u.justPressedKey('s');
   }
 
   get fired() {

@@ -279,7 +279,7 @@ class Trial {
 	}
 
 	logEvent(event, callback) {
-	  event.index = this.index;
+	  event.trial_index = this.index;
 	  event.cue = this.cue;
 	  event.block_index = this.block_index;
 		wsLogger.log("Trial event", event, false, callback);
@@ -298,3 +298,22 @@ class Trial {
     return Object.assign({}, this);
   }
 }
+
+function manuallySaveToJSON(E) {
+  let jsonString = JSON.stringify(E);
+
+  // Create a Blob from the JSON string
+  let blob = new Blob([jsonString], { type: 'application/json' });
+
+  // Create a temporary download link
+  let url = URL.createObjectURL(blob);
+  let a = document.createElement('a');
+  a.href = url;
+  let saveName = E.subject_id;
+  a.download = `${saveName}.json`;
+  a.click();
+
+  // Clean up the URL object
+  URL.revokeObjectURL(url);
+}
+

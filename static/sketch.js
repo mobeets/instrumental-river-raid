@@ -159,10 +159,17 @@ function setup() {
 }
 
 function getEventNameWithLocations(eventName, jet, boats, extra_info) {
-  let info = {name: eventName, agent: {x: jet.x, y: jet.y}, cues: []};
+  let info = {
+    name: eventName,
+    positions: {
+      agent: {x: jet.x, y: jet.y},
+      cues: []
+    }
+  };
+
   for (var i = boats.length - 1; i >= 0; i--) {
     let cue = {index: boats[i].index, x: boats[i].x, y: boats[i].y, width: boats[i].width, height: boats[i].height};
-    info['cues'].push(cue);
+    info.positions.cues.push(cue);
   }
   if (extra_info !== undefined) Object.assign(info, extra_info);
   return info;
@@ -206,8 +213,9 @@ function draw() {
       boats[i].update();
 
       if (!boats[i].hasBeenSeen && boats[i].onscreen()) {
-        // markEvent will trigger photodiode/sound
-        trial.trigger(getEventNameWithLocations('cue onset', jet, [boats[i]]), markEvent);
+        trial.trigger(getEventNameWithLocations('cue onset', jet, [boats[i]]));
+        // markEvent triggers photodiode/sound
+        markEvent();
       }
       if (boats[i].collidesWithJet(jet)) {
         // Collided with jet
@@ -256,7 +264,7 @@ function draw() {
 
       if (pIsAboveBoat || p.offscreen()) {
         if (E.params.showHUD) streakbar.reset();
-        trial.trigger(getEventNameWithLocations('projectile offset - miss', jet, boats, {index: p.action}));
+        trial.trigger(getEventNameWithLocations('projectile offset - miss', jet, boats, {action_index: p.action}));
         projectiles.splice(i, 1);
       }
     }
@@ -389,7 +397,7 @@ function checkUserButtonPresses() {
           projectiles.push(new Projectile(jet.x, jet.y - 30, action));
           if (mustHitLocation && boats.length > 0) boats[0].setSelectedLocationIndex(jet.x);
 
-          trial.trigger(getEventNameWithLocations('projectile onset', jet, boats, {index: action}));
+          trial.trigger(getEventNameWithLocations('projectile onset', jet, boats, {action_index: action}));
           trial.canFireAgain = false;
         }
       }
@@ -410,6 +418,8 @@ function checkUserButtonPresses() {
   } else if (user.restart_block) {
     eventMsg = 'restart game';
     newGame(true);
+  } else if (user.save) {
+    manuallySaveToJSON(E);
   }
   if (eventMsg !== undefined) {
     wsLogger.log("interaction", {eventMsg});

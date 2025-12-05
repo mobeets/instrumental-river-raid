@@ -69,6 +69,7 @@ class WSLogger {
   _enqueue(evt) {
     this.buffer.push(evt);
     if (this.buffer.length > this.maxBufferSize) {
+      console.error('Dropping logs due to maxBufferSize!');
       this.buffer.shift();
     }
   }
@@ -78,6 +79,7 @@ class WSLogger {
     this.batchQueue.push(evt);
     if (this.batchQueue.length > this.maxBufferSize) {
       // drop oldest batchable events
+      console.error('Dropping logs due to maxBufferSize!');
       this.batchQueue.shift();
     }
   }
