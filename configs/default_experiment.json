@@ -33,19 +33,19 @@
   },
   {
     "name": "instrumental",
-    "ncues": 5,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "animals_1",
-    "scene": "grass"
-  },
-  {
-    "name": "instrumental",
     "ncues": 3,
     "is_practice": false,
     "ntrials_per_cue": 10,
     "theme": "animals_1",
     "scene": "river"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 5,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "animals_1",
+    "scene": "grass"
   },
   {
     "name": "instrumental",
@@ -65,7 +65,7 @@
   },
   {
     "name": "targets-instrumental",
-    "ncues": 4,
+    "ncues": 3,
     "is_practice": false,
     "ntrials_per_cue": 10,
     "theme": "animals_2",
@@ -89,7 +89,7 @@
   },
   {
     "name": "targets-instrumental",
-    "ncues": 3,
+    "ncues": 4,
     "is_practice": false,
     "ntrials_per_cue": 10,
     "theme": "animals_2",

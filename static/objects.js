@@ -140,7 +140,19 @@ class Boat {
       }
 
       if (showAnswers) {
-        text(actionToShow, tileX, this.y);
+        // text(actionToShow, tileX, this.y);
+        fill('black'); noStroke();
+        let circleDiam = cueWidth / 5;
+        if (actionToShow === 1 || actionToShow === 3) {
+          ellipse(tileX, this.y, circleDiam);
+          if (actionToShow === 3) {
+            ellipse(tileX-1.5*circleDiam, this.y, circleDiam);
+            ellipse(tileX+1.5*circleDiam, this.y, circleDiam);
+          }
+        } else {
+          ellipse(tileX-0.75*circleDiam, this.y, circleDiam);
+          ellipse(tileX+0.75*circleDiam, this.y, circleDiam);
+        }
       } else {
         image(this.img, tileX, this.y, tileW, this.height);
         stroke(strokeColor);
