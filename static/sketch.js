@@ -150,8 +150,8 @@ function setup() {
   streakbar = new StreakBar();
   
   // log config and render info
-  let renderInfo = getRenderInfo();
-  wsLogger.log('experiment start', {config, renderInfo});
+  E.renderInfo = getRenderInfo();
+  E.log();
 
   textAlign(CENTER, CENTER);
   textSize(24);

@@ -54,12 +54,26 @@ class Experiment {
 
 	next_block(restartGame) {
 		if (!restartGame) {
-			if (this.no_more_blocks()) return;
+			if (this.blocks.length > 0) {
+				// log end of block
+				this.blocks[this.blocks.length-1].log(false);
+			}
+			if (this.no_more_blocks()) {
+				// log end of experiment
+				this.log(false);
+				return;
+			};
 			this.block_index++;
 		}
 		let block = new TrialBlock(this.block_index, this, this.block_configs[this.block_index]);
 		this.blocks.push(block);
 		return block;
+	}
+
+	log(isNew = true) {
+		let msg = "start of Experiment";
+		if (!isNew) msg = "end of Experiment";
+		wsLogger.log(msg, this.toJSON());
 	}
 
 	no_more_blocks() {
@@ -174,8 +188,10 @@ class TrialBlock {
 		return randomR(this.ncues, E.params.nactions, E.params.maxEntropyPolicy);
 	}
 
-	log() {
-		wsLogger.log("new trial block", this.toJSON());
+	log(isNew = true) {
+		let msg = "start of TrialBlock";
+		if (!isNew) msg = "end of TrialBlock";
+		wsLogger.log(msg, this.toJSON());
 	}
 
 	makeCueSequence(ncues, ntrials_per_cue) {
@@ -203,9 +219,15 @@ class TrialBlock {
 	}
 
 	next_trial() {
-		if (this.is_complete()) return;
+		if (this.is_complete()) {
+			return;
+		}
+		if (this.trials.length > 0) {
+			this.trials[this.trials.length-1].log(false);
+		}
 		this.trial_index++;
-		let trial = new Trial(this.cue_list[this.trial_index], this.index);
+		let trial = new Trial(this.trial_index, this.cue_list[this.trial_index], this.index);
+		trial.log(true);
 		this.trials.push(trial);
 		return trial;
 	}
@@ -221,18 +243,31 @@ class TrialBlock {
 }
 
 class Trial {
-	constructor(cue, block_index) {
+	constructor(index, cue, block_index) {
 		this.cue = cue;
 		this.block_index = block_index;
 		this.startTime = millis();
 		this.events = [];
 	}
 
+	log(isNew = true) {
+		let msg = "start of Trial";
+		if (!isNew) msg = "end of Trial";
+		wsLogger.log(msg, this.toJSON());
+	}
+
+	logEvent(event) {
+	  event.index = this.index;
+	  event.cue = this.cue;
+	  event.block_index = this.block_index;
+		wsLogger.log("Trial event", event);
+	}
+
 	trigger(event) {
 		if (typeof event === "string") {
 	    event = {name: event};
 	  }
-		event.time = millis();
+	  this.logEvent(event);
 		this.events.push(event);
 	}
 
