@@ -244,10 +244,25 @@ class TrialBlock {
 
 class Trial {
 	constructor(index, cue, block_index) {
+		this.index = index;
 		this.cue = cue;
 		this.block_index = block_index;
 		this.startTime = millis();
 		this.events = [];
+		this.positions = {time: [], agent: {x: [], y: []}, cue: {x: [], y: []}};
+	}
+
+	logPositions(jet, boats) {
+		this.positions.time.push(performance.now());
+		this.positions.agent.x.push(jet.x);
+    this.positions.agent.y.push(jet.y);
+    if (boats.length === 1) {
+    	this.positions.cue.x.push(boats[0].x);
+    	this.positions.cue.y.push(boats[0].y);
+    } else {
+    	this.positions.cue.x.push(NaN);
+    	this.positions.cue.y.push(NaN);
+    }
 	}
 
 	log(isNew = true) {

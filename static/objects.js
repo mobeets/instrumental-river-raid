@@ -74,7 +74,8 @@ class Jet {
 }
 
 class Boat {
-  constructor(cue, x, y, nTilesPerCue = 1) {
+  constructor(index, cue, x, y, nTilesPerCue = 1) {
+    this.index = index;
     this.x = x;
     this.y = y;
     this.width = cueWidth;

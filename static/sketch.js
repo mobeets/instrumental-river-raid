@@ -31,6 +31,7 @@ let riverWidth, riverX;
 let streakbar; // number of hits in a row
 let lives = L;
 let BOAT_COLORS = []; // filled later in setup()
+let boatCounter = 0;
 
 const PLAY_MODE = 0;
 const PAUSE_MODE = 1;
@@ -155,6 +156,16 @@ function setup() {
   newGame(false);
 }
 
+function getEventNameWithLocations(eventName, jet, boats, extra_info) {
+  let info = {name: eventName, agent: {x: jet.x, y: jet.y}, cues: []};
+  for (var i = boats.length - 1; i >= 0; i--) {
+    let cue = {index: boats[i].index, x: boats[i].x, y: boats[i].y, width: boats[i].width, height: boats[i].height};
+    info['cues'].push(cue);
+  }
+  if (extra_info !== undefined) Object.assign(info, extra_info);
+  return info;
+}
+
 function draw() {
   frameRate(E.params.FPS);
   if (gameMode == PLAY_MODE) {
@@ -174,14 +185,18 @@ function draw() {
     grass.update();
 
     // Start next trial if necessary
-    let iti_p = 1/(E.params.ITI_MEAN*E.params.FPS);
+    // let iti_p = 1/(E.params.ITI_MEAN*E.params.FPS);
+    let iti_p = 1/200;
     if (boats.length < E.params.MAX_BOATS && random(1) < iti_p) {
       trial = trial_block.next_trial();
       if (trial === undefined) {
         newGame(false);
       } else {
         let nTilesPerCue = mustHitLocation ? E.params.nactions : 1;
-        boats.push(new Boat(trial.cue-1, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -cueWidth, nTilesPerCue));
+        let boat = new Boat(boatCounter, trial.cue-1, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -cueWidth, nTilesPerCue);
+        boatCounter++;
+        trial.trigger(getEventNameWithLocations('cue created', jet, [boat]));
+        boats.push(boat);
       }
     }
 
@@ -191,15 +206,15 @@ function draw() {
 
       if (!boats[i].hasBeenSeen && boats[i].onscreen()) {
         // markEvent will trigger photodiode/sound
-        trial.trigger('cue onset', markEvent);
+        trial.trigger(getEventNameWithLocations('cue onset', jet, [boats[i]]), markEvent);
       }
       if (boats[i].collidesWithJet(jet)) {
         // Collided with jet
         if (!immobileMode) {
+          trial.trigger(getEventNameWithLocations('cue offset - collision', jet, [boats[i]]));
           boats.splice(i, 1);
           jet.takeHit();
           streakbar.reset();
-          trial.trigger('cue offset - collision');
           
           explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height, [255, 150, 0]));
           
@@ -207,7 +222,7 @@ function draw() {
         }
       } else if (boats[i].offscreen()) {
         // trial ends without a hit
-        trial.trigger('cue offset - offscreen');
+        trial.trigger(getEventNameWithLocations('cue offset - offscreen', jet, [boats[i]]));
         boats.splice(i, 1);
       }
     }
@@ -222,8 +237,7 @@ function draw() {
       for (let j = boats.length - 1; j >= 0; j--) {
         if (boats[j].checkHit(p, mustHitLocation)) {
           // Correct hit
-          trial.trigger('hit');
-          trial.trigger('cue offset - hit');
+          trial.trigger(getEventNameWithLocations('cue offset - hit', jet, [boats[j]]));
           trial_block.score++;
 
           if (E.params.showHUD) streakbar.hit();
@@ -241,13 +255,14 @@ function draw() {
 
       if (pIsAboveBoat || p.offscreen()) {
         if (E.params.showHUD) streakbar.reset();
-        trial.trigger({name: 'projectile offset - miss', index: p.action});
+        trial.trigger(getEventNameWithLocations('projectile offset - miss', jet, boats, {index: p.action}));
         projectiles.splice(i, 1);
       }
     }
 
     // Update jet
     jet.update();
+    if (trial !== undefined) trial.logPositions(jet, boats);
   }
 
   // render grass, boats, projectiles, and jet
@@ -372,7 +387,8 @@ function checkUserButtonPresses() {
           eventMsg = 'projectile fired ' + action.toFixed(0);
           projectiles.push(new Projectile(jet.x, jet.y - 30, action));
           if (mustHitLocation && boats.length > 0) boats[0].setSelectedLocationIndex(jet.x);
-          trial.trigger({name: 'projectile onset', index: action});
+
+          trial.trigger(getEventNameWithLocations('projectile onset', jet, boats, {index: action}));
           trial.canFireAgain = false;
         }
       }
