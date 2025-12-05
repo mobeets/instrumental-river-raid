@@ -48,7 +48,7 @@ def generate_blocks(themes, ntrials_per_cue=10):
                     "name": task,
                     "ncues": practice_ncues,
                     "is_practice": True,
-                    "ntrials_per_cue": 3 if task != "targets" else 2,
+                    "ntrials_per_cue": 5 if task != "targets" else 5,
                     "theme": "training" if task != "targets" else "",
                     "scene": practice_scene
                 }

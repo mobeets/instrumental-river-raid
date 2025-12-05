@@ -436,6 +436,7 @@ function getRenderInfo() {
     jetSpeed: jetSpeed,
     driftSpeed: driftSpeed,
     cueWidth: cueWidth,
+    boatColors: BOAT_COLORS,
     explosionDuration: explosionDuration
   };
 }
