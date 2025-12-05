@@ -32,6 +32,7 @@ let streakbar; // number of hits in a row
 let lives = L;
 let BOAT_COLORS = []; // filled later in setup()
 let boatCounter = 0;
+let explosionDuration;
 
 const PLAY_MODE = 0;
 const PAUSE_MODE = 1;
@@ -124,8 +125,9 @@ function setup() {
   // set drift speed to maintain fixed scroll times
   let jetOffset = E.params.jetOffset;
   cueWidth = width*E.params.PROP_CUE_WIDTH;
-  driftSpeed = (height-jetOffset) / (E.params.FPS * E.params.SCROLL_TIME);
+  driftSpeed = (height-jetOffset) / (E.params.FPS * E.params.ISI_DURATION);
   jetSpeed = (width-cueWidth) / (E.params.FPS * 1.5);
+  explosionDuration = Math.ceil(E.params.FPS * E.params.FEEDBACK_DURATION);
   
   let nonPhotodiodeProp = 1 - 2*photodiode.size / width;
   // n.b. if E.params.PROP_RIVER_WIDTH < nonPhotodiodeProp, the photodiode will block the view of some Boat objects
@@ -185,8 +187,8 @@ function draw() {
     grass.update();
 
     // Start next trial if necessary
-    let iti_p = 1/(E.params.ITI_MEAN*E.params.FPS);
-    if (boats.length < E.params.MAX_BOATS && random(1) < iti_p) {
+    let iti_p = 1/(E.params.ITI_MEAN_DURATION*E.params.FPS);
+    if (explosions.length === 0 && boats.length < E.params.MAX_BOATS && random(1) < iti_p) {
       trial = trial_block.next_trial();
       if (trial === undefined) {
         newGame(false);
@@ -215,7 +217,7 @@ function draw() {
           jet.takeHit();
           streakbar.reset();
           
-          explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height, [255, 150, 0]));
+          explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height, [255, 150, 0], explosionDuration));
           
           lives--;
         }
@@ -242,7 +244,7 @@ function draw() {
           if (E.params.showHUD) streakbar.hit();
           let dx = boats[j].width/2;
           let cy = boats[j].y;// - boats[j].height/2;
-          explosions.push(new Explosion(boats[j].x - dx, boats[j].x + dx, cy, [255, 150, 0]));
+          explosions.push(new Explosion(boats[j].x - dx, boats[j].x + dx, cy, [255, 150, 0], explosionDuration));
           boats.splice(j, 1);
           projectiles.splice(i, 1);
           break;
@@ -434,5 +436,6 @@ function getRenderInfo() {
     jetSpeed: jetSpeed,
     driftSpeed: driftSpeed,
     cueWidth: cueWidth,
+    explosionDuration: explosionDuration
   };
 }

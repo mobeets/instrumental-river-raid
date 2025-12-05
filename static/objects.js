@@ -269,13 +269,13 @@ function circlePositions(x_start, x_end, W) {
 }
 
 class Explosion {
-  constructor(x_start, x_end, y, color) {
+  constructor(x_start, x_end, y, color, nframes) {
     this.x_start = x_start;
     this.x_end = x_end;
     this.y = y;
     this.color = color;
-    this.maxLife = 20;
-    this.life = 20;
+    this.maxLife = nframes;
+    this.life = nframes;
     this.speed = driftSpeed;
 
     if (this.x_start === this.x_end) {
