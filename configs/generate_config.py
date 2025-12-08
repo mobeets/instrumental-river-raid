@@ -3,18 +3,24 @@ import random
 import argparse
 from itertools import cycle
 
-def generate_blocks(themes, ntrials_per_cue=10):
+tasks = {
+    "targets": [3],
+    "instrumental": [2, 3, 4, 5],
+    "targets-instrumental": [2, 3, 4, 5],
+    "locations": [3],
+    "locations-instrumental": [2, 3, 4, 5]
+}
+instructions = {
+    "targets": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
+    "instrumental": "figure out which button will destroy each block",
+    "targets-instrumental": "control an airplane with the joystick\nfigure out which button will destroy each block",
+    "locations": "control an airplane with the joystick\ndestroy each block by shooting the marked location",
+    "locations-instrumental": "control an airplane with the joystick\nfigure out which location will destroy each block"
+}
+DEFAULT_TASKS = ["targets", "instrumental", "targets-instrumental"]
+
+def generate_blocks(task_names, themes, ntrials_per_cue=10):
     # Tasks and ncues specification
-    tasks = {
-        "targets": [3],
-        "instrumental": [2, 3, 4, 5],
-        "targets-instrumental": [2, 3, 4, 5]
-    }
-    instructions = {
-        "targets": "control an airplane with the joystick \n shoot different blocks by pressing the correct button",
-        "instrumental": "figure out which button will shoot down each block",
-        "targets-instrumental": "control an airplane with the joystick \n figure out which button will shoot down each block"
-    }
     scenes = ["grass", "river"]
     all_blocks = []
 
@@ -24,7 +30,7 @@ def generate_blocks(themes, ntrials_per_cue=10):
     # Two runs total
     for run in [1, 2]:
         # Task order (you can shuffle this if you want)
-        run_tasks = list(tasks.keys())
+        run_tasks = task_names
         # random.shuffle(run_tasks)
 
         for task in run_tasks:
@@ -80,11 +86,11 @@ def generate_blocks(themes, ntrials_per_cue=10):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate randomized experiment blocks.")
     parser.add_argument("themes", nargs="+", help="List of themes to cycle through (e.g., animals space shapes)")
+    parser.add_argument("--tasks", nargs="+", help="names of tasks to cycle through", default=DEFAULT_TASKS)
     parser.add_argument("--output", "-o", default="blocks.json", help="Output JSON file")
 
     args = parser.parse_args()
-
-    blocks = generate_blocks(args.themes)
+    blocks = generate_blocks(args.tasks, args.themes)
 
     with open(args.output, "w") as f:
         json.dump(blocks, f, indent=2)
