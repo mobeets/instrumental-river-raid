@@ -346,11 +346,13 @@ function showImages(yOffset) {
     }
 
     if (spriteSheet === undefined) {
+      let action_index = cue;
+
       fill('black'); noStroke();
       let circleDiam = size / 5;
-      if (cue+1 === 1 || cue+1 === 3) {
+      if (action_index+1 === 1 || action_index+1 === 3) {
         ellipse(xc, y, circleDiam);
-        if (cue+1 === 3) {
+        if (action_index+1 === 3) {
           ellipse(xc-1.5*circleDiam, y, circleDiam);
           ellipse(xc+1.5*circleDiam, y, circleDiam);
         }
@@ -458,11 +460,11 @@ function drawPauseScreen() {
     if (trial_block.is_practice) {
       fill('#9e442f');
       text("Practice round!", width / 2, secondLineY + 40);
-      showJet();
     }
     if (trial_block.instructions) {
       showInstructions(secondLineY + 100);
       showImages(secondLineY + 300);
+      showJet();
     }
     textSize(32);
     fill('black');
@@ -539,6 +541,7 @@ function checkUserButtonPresses() {
     // unpause game
     eventMsg = 'unpause';
     gameMode = PLAY_MODE;
+    jet.x = width / 2;
   } else if (user.next_block && gameMode != COMPLETE_MODE) {
     // go to the next block
     eventMsg = 'new game (going to next block)';
