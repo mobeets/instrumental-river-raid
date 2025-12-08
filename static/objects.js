@@ -133,10 +133,10 @@ class Boat {
 
       // highlight location, if multiple tiles
       strokeWeight(0);
+      noTint();
       if (selectedIndex !== -1) {
-        // if (i === selectedIndex) noTint();
+        if (i === selectedIndex) strokeWeight(5);
         // else tint(255, 128);
-        if (i === selectedIndex) strokeWeight(3);
       }
 
       if (showAnswers) {
@@ -238,13 +238,13 @@ class Boat {
 }
 
 class Projectile {
-  constructor(x, y, action) {
+  constructor(x, y, action, showActionNumber) {
     this.x = x;
     this.y = y;
     this.speed = 8;
     this.action = action; // 1..D
-    // this.sizes = [8, 8, 8, 8, 8];
     this.sizes = [12, 12, 12];
+    this.showActionNumber = showActionNumber;
     this.colors = [color(0,0,0), color(0,0,0), color(0,0,0), color(0,0,0), color(0,0,0)];
   }
 
@@ -259,7 +259,7 @@ class Projectile {
     translate(this.x, this.y);
     fill(clr);
     noStroke();
-    if (E.params.projectileShowsNumber) {
+    if (this.showActionNumber) {
       let csz = sz / Math.sqrt(this.action);
       if (this.action === 1) {
         ellipse(0, 0, csz);

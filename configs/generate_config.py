@@ -11,9 +11,9 @@ def generate_blocks(themes, ntrials_per_cue=10):
         "targets-instrumental": [2, 3, 4, 5]
     }
     instructions = {
-        "targets": "control an airplane with the joystick \n shoot different blocks by pressing the correct button.",
-        "instrumental": "figure out which button will shoot down each block.",
-        "targets-instrumental": "control an airplane with the joystick \n figure out which button will shoot down each block."
+        "targets": "control an airplane with the joystick \n shoot different blocks by pressing the correct button",
+        "instrumental": "figure out which button will shoot down each block",
+        "targets-instrumental": "control an airplane with the joystick \n figure out which button will shoot down each block"
     }
     scenes = ["grass", "river"]
     all_blocks = []

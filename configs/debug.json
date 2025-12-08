@@ -4,7 +4,8 @@
 		"ncues": 2,
 		"is_practice": true,
 		"ntrials_per_cue": 4,
-		"theme": "animals",
+		"theme": "animals_1",
+		"instructions": "testing",
 		"scene": "grass"
 	},
 	{
@@ -12,7 +13,8 @@
 		"ncues": 3,
 		"is_practice": true,
 		"ntrials_per_cue": 3,
-		"theme": "animals",
+		"theme": "animals_1",
+		"instructions": "",
 		"scene": "grass"
 	},
 	{
@@ -20,7 +22,8 @@
 		"ncues": 3,
 		"is_practice": false,
 		"ntrials_per_cue": 2,
-		"theme": "animals",
+		"theme": "animals_1",
+		"instructions": "",
 		"scene": "river"
 	}
 ]

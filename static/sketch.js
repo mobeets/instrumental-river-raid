@@ -18,9 +18,11 @@ let R; // reward matrix
 let driftSpeed; // will be set to ensure fixed travel time from top to bottom
 let jetSpeed; // will be set to allow fixed travel time from left to right
 let cueWidth;
+let baseCueWidth;
 let immobileMode = false;
 let showAnswers = true; // show number on block instead of color
 let mustHitLocation = false;
+let showProjectileIdentity = false;
 let jet;
 let trees = [];
 let boats = [];
@@ -82,6 +84,9 @@ function newGame(restartGame = false, goBack = false) {
     jet.img = jetImg2;
   }
 
+  showProjectileIdentity = E.params.projectileShowsNumber;
+  cueWidth = baseCueWidth;
+
   if (trial_block.name === "targets") {
     immobileMode = false;
     showAnswers = true;
@@ -98,6 +103,8 @@ function newGame(restartGame = false, goBack = false) {
     immobileMode = false;
     showAnswers = false;
     mustHitLocation = true;
+    showProjectileIdentity = false;
+    cueWidth = E.params.nactions * baseCueWidth;
   } else {
     console.log("Invalid game type.");
   }
@@ -126,6 +133,7 @@ function setup() {
   // set drift speed to maintain fixed scroll times
   let jetOffset = E.params.jetOffset;
   cueWidth = width*E.params.PROP_CUE_WIDTH;
+  baseCueWidth = cueWidth;
   driftSpeed = (height-jetOffset) / (E.params.FPS * E.params.ISI_DURATION);
   jetSpeed = (width-cueWidth) / (E.params.FPS * E.params.JET_SIDETOSIDE_DURATION);
   explosionDuration = Math.ceil(E.params.FPS * E.params.FEEDBACK_DURATION);
@@ -317,19 +325,25 @@ function showImages(yOffset) {
   imageMode(CENTER);
   rectMode(CENTER);
   // let size = 0.5*cueWidth;
-  let size = min(cueWidth, 0.9*width / 6);
-  let total_size = trial_block.ncues * size;
+  let size = min(cueWidth, 0.9*width / 6, 0.2*height);
+  let total_size = trial_block.ncues * 1.1 * size;
+  let baseX = width / 2 - total_size / 2 + size / 2;
   push();
   // translate(width / 2 - total_size / 2 + size / 2, height - size);
-  translate(width / 2 - total_size / 2 + size / 2, yOffset);
+  translate(baseX, yOffset);
+  let nTilesPerCue = mustHitLocation ? E.params.nactions : 1;
 
   let x = 0;
   let y = 0;
   for (var cue = 0; cue < trial_block.ncues; cue++) {
     let color = BOAT_COLORS[cue];
-    let xc = x + size*cue;
+    let xc = x + 1.1*size*cue;
     fill(color);
-    rect(xc, y, size, size);
+    if (nTilesPerCue === 1) {
+      rect(xc, y, size, size);
+    } else {
+      rect(xc, y, size, size/nTilesPerCue);
+    }
 
     if (spriteSheet === undefined) {
       fill('black'); noStroke();
@@ -346,10 +360,35 @@ function showImages(yOffset) {
       }
     } else {
       let img = spriteSheet.getImage(trial_block.theme_offset + cue);
-      image(img, xc, y, size, size);
+      if (nTilesPerCue === 1) {
+        image(img, xc, y, size, size);
+      } else {
+        let csz = size/nTilesPerCue;
+        image(img, xc - csz, y, csz, csz);
+        image(img, xc, y, csz, csz);
+        image(img, xc + csz, y, csz, csz);
+        stroke('black'); strokeWeight(1); noFill();
+        rect(xc, y, csz, csz);
+        let jet_x = jet.x - baseX;
+
+        let xs = [-csz, 0, csz];
+        for (var i = 0; i < xs.length; i++) {
+          let x1 = xc + xs[i] - csz/2;
+          let x2 = xc + xs[i] + csz/2;
+          if (jet_x >= x1 && jet_x <= x2) {
+            strokeWeight(5);
+            rect(xc + xs[i], y, csz, csz);
+          }
+        }
+      }
       stroke('black');
+      strokeWeight(1); 
       noFill();
-      rect(xc, y, size, size);
+      if (nTilesPerCue === 1) {
+        rect(xc, y, size, size);
+      } else {
+        rect(xc, y, size, size/nTilesPerCue);
+      }
     }
   }
   pop();
@@ -368,7 +407,7 @@ function showJet() {
   let action = user.fired;
   if (action > 0) {
     if (projectiles_test.length < E.params.MAX_PROJECTILES) {
-      projectiles_test.push(new Projectile(jet.x, jet.y - 30, action));
+      projectiles_test.push(new Projectile(jet.x, jet.y - 30, action, showProjectileIdentity));
     }
   }
 }
@@ -397,7 +436,7 @@ function drawPauseScreen() {
     text("PAUSED", width / 2, firstLineY);
     if (trial_block.instructions) {
       showInstructions(secondLineY + 100);
-      showImages(height - 2*cueWidth);
+      showImages(secondLineY + 300);
     }
   } else if (gameMode == STARTING_MODE) {
     text("GAME COMPLETE", width / 2, firstLineY);
@@ -423,7 +462,7 @@ function drawPauseScreen() {
     }
     if (trial_block.instructions) {
       showInstructions(secondLineY + 100);
-      showImages(height - 2*cueWidth);
+      showImages(secondLineY + 300);
     }
     textSize(32);
     fill('black');
@@ -483,7 +522,7 @@ function checkUserButtonPresses() {
       if (projectiles.length < E.params.MAX_PROJECTILES) {
         if (trial !== undefined && boats.length > 0 && boats[0].hasBeenSeen && trial?.canFireAgain === undefined) {
           eventMsg = 'projectile fired ' + action.toFixed(0);
-          projectiles.push(new Projectile(jet.x, jet.y - 30, action));
+          projectiles.push(new Projectile(jet.x, jet.y - 30, action, showProjectileIdentity));
           if (mustHitLocation && boats.length > 0) boats[0].setSelectedLocationIndex(jet.x);
 
           trial.trigger(getEventNameWithLocations('projectile onset', jet, boats, {action_index: action}));
