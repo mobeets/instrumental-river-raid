@@ -74,7 +74,7 @@ def generate_blocks(task_names, themes, ntrials_per_cue=10, nrepeats_per_cycle=2
                 theme = ""
 
             # ---- ADD PRACTICE BLOCK (RUN 1 ONLY) ----
-            if run == 1:
+            if run == 0:
                 practice_ncues = min(tasks[task])
                 practice_scene = random.choice(scenes)  # can randomize or enforce balancing if needed
 
