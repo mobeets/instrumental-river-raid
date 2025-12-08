@@ -104,8 +104,12 @@ class Boat {
     push();
 
     rectMode(CENTER);
-    // if (this.img === undefined) fill(this.color);
-    fill(this.color);
+    if (this.img === undefined) {
+      fill(this.color);
+    } else {
+      fill('#ccc');
+      // fill(this.color);
+    }
     stroke('black');
     rect(this.x, this.y, this.width, this.height);
     noStroke();

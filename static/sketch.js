@@ -152,10 +152,10 @@ function setup() {
   // Define boat colors here (p5 color() now available)
   BOAT_COLORS = [
     color(255, 0, 0),
-    color(255, 0, 255),
-    color(0, 255, 255),
-    color(255, 255, 0),
     color(0, 0, 255),
+    color(255, 255, 0),
+    color(0, 255, 255),
+    color(255, 0, 255),
     color(0, 255, 0),
   ];
 
@@ -342,7 +342,15 @@ function showImages(yOffset) {
   let x = 0;
   let y = 0;
   for (var cue = 0; cue < trial_block.ncues; cue++) {
-    let color = BOAT_COLORS[cue];
+
+    let img, color;
+    if (spriteSheet === undefined) {
+      color = BOAT_COLORS[cue];
+    } else {
+      color = '#ccc';
+      img = spriteSheet.getImage(trial_block.theme_offset + cue);
+    }
+
     let xc = x + 1.1*size*cue;
     fill(color);
     if (nTilesPerCue === 1) {
@@ -401,7 +409,6 @@ function showImages(yOffset) {
       }
 
     } else {
-      let img = spriteSheet.getImage(trial_block.theme_offset + cue);
       if (nTilesPerCue === 1) {
         image(img, xc, y, size, size);
       } else {
