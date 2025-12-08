@@ -3,7 +3,7 @@
     "name": "targets",
     "ncues": 3,
     "is_practice": true,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 50,
     "theme": "",
     "scene": "grass"
   },
@@ -19,7 +19,7 @@
     "name": "instrumental",
     "ncues": 2,
     "is_practice": true,
-    "ntrials_per_cue": 3,
+    "ntrials_per_cue": 50,
     "theme": "training",
     "scene": "grass"
   },
@@ -59,7 +59,7 @@
     "name": "targets-instrumental",
     "ncues": 2,
     "is_practice": true,
-    "ntrials_per_cue": 3,
+    "ntrials_per_cue": 50,
     "theme": "training",
     "scene": "river"
   },

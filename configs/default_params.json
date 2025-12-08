@@ -13,6 +13,6 @@
 	"bulletsPassThru": false,
 	"maxEntropyPolicy": true,
 	"nactions": 3,
-	"photodiode": {"size": 50},
+	"photodiode": {"size": 120},
 	"debug": false
 }
