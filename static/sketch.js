@@ -25,6 +25,7 @@ let jet;
 let trees = [];
 let boats = [];
 let projectiles = [];
+let projectiles_test = [];
 let explosions = [];
 let animations = [];
 let riverWidth, riverX;
@@ -355,6 +356,23 @@ function showImages(yOffset) {
   noStroke();
 }
 
+function showJet() {
+  jet.update();
+  jet.render();
+  for (let i = projectiles_test.length - 1; i >= 0; i--) {
+    let p = projectiles_test[i];
+    p.update();
+    p.render();
+    if (p.offscreen()) projectiles_test.splice(i, 1);
+  }
+  let action = user.fired;
+  if (action > 0) {
+    if (projectiles_test.length < E.params.MAX_PROJECTILES) {
+      projectiles_test.push(new Projectile(jet.x, jet.y - 30, action));
+    }
+  }
+}
+
 function showInstructions(yOffset) {
 
   textSize(20);
@@ -379,7 +397,7 @@ function drawPauseScreen() {
     text("PAUSED", width / 2, firstLineY);
     if (trial_block.instructions) {
       showInstructions(secondLineY + 100);
-      showImages(height - 0.6*cueWidth);
+      showImages(height - 2*cueWidth);
     }
   } else if (gameMode == STARTING_MODE) {
     text("GAME COMPLETE", width / 2, firstLineY);
@@ -401,10 +419,11 @@ function drawPauseScreen() {
     if (trial_block.is_practice) {
       fill('#9e442f');
       text("Practice round!", width / 2, secondLineY + 40);
+      showJet();
     }
     if (trial_block.instructions) {
       showInstructions(secondLineY + 100);
-      showImages(height - 0.6*cueWidth);
+      showImages(height - 2*cueWidth);
     }
     textSize(32);
     fill('black');
@@ -477,7 +496,7 @@ function checkUserButtonPresses() {
       eventMsg = 'pause';
       gameMode = PAUSE_MODE;
     }
-  } else if (user.pause || user.fired > 0) {
+  } else if (user.pause) {
     // unpause game
     eventMsg = 'unpause';
     gameMode = PLAY_MODE;
