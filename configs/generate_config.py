@@ -64,27 +64,14 @@ def generate_blocks(task_names, themes, ntrials_per_cue=10, nrepeats_per_cycle=2
 
     orders = get_cue_and_theme_orders(task_names, nrepeats_per_cycle, scenes)
 
-    # Two runs total
     for run in range(nrepeats_per_cycle):
-        # Task order
-        run_tasks = task_names
-
-        for task in run_tasks:
-
-            # Copy and shuffle ncues for this task
-            # ncues_list = tasks[task][:]
-            # random.shuffle(ncues_list)
+        for task in task_names:
 
             # Assign one theme for all blocks in this (run, task)
             if task not in ["targets", "locations"]:
                 theme = next(theme_iterator)
             else:
                 theme = ""
-
-            # Scene assignment for the *experimental* blocks
-            # scene_assignments = scenes * ((len(ncues_list) + 1) // 2)
-            # scene_assignments = scene_assignments[:len(ncues_list)]
-            # random.shuffle(scene_assignments)
 
             # ---- ADD PRACTICE BLOCK (RUN 1 ONLY) ----
             if run == 1:
