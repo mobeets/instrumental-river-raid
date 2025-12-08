@@ -47,6 +47,10 @@ app.mount("/configs", StaticFiles(directory=os.path.join(BASE_DIR, "configs")), 
 async def get_index():
     return FileResponse(os.path.join(BASE_DIR, "index.html"))
 
+@app.get("/favicon.ico")
+async def favicon():
+    return FileResponse("static/favicon.ico")
+
 # WebSocket endpoint for logging
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):

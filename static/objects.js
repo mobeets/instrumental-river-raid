@@ -126,6 +126,8 @@ class Boat {
     if (selectedIndex === -1 && this.nTilesPerCue > 1) {
       selectedIndex = this.getSelectedLocationIndex(jet.x);
     }
+    let showEllipse = true;
+    if (this.nTilesPerCue > 1) showEllipse = false;
 
     let strokeColor = 'black';
     for (let i = 0; i < this.nTilesPerCue; i++) {
@@ -134,27 +136,44 @@ class Boat {
       // highlight location, if multiple tiles
       strokeWeight(0);
       noTint();
+      let curStrokeWeight = 1;
       if (selectedIndex !== -1) {
-        if (i === selectedIndex) strokeWeight(5);
+        if (i === selectedIndex) curStrokeWeight = 5;;
         // else tint(255, 128);
       }
 
       if (showAnswers) {
         // text(actionToShow, tileX, this.y);
         fill('black'); noStroke();
-        let circleDiam = cueWidth / 5;
-        if (actionToShow === 1 || actionToShow === 3) {
-          ellipse(tileX, this.y, circleDiam);
-          if (actionToShow === 3) {
-            ellipse(tileX-1.5*circleDiam, this.y, circleDiam);
-            ellipse(tileX+1.5*circleDiam, this.y, circleDiam);
+        if (this.nTilesPerCue === 1 || i === actionToShow-1) {
+          let circleDiam = (this.width / this.nTilesPerCue) / 5;
+
+          if (showEllipse) {
+            if (actionToShow === 1 || actionToShow === 3) {
+              ellipse(tileX, this.y, circleDiam);
+              if (actionToShow === 3) {
+                ellipse(tileX-1.5*circleDiam, this.y, circleDiam);
+                ellipse(tileX+1.5*circleDiam, this.y, circleDiam);
+              }
+            } else {
+              ellipse(tileX-0.75*circleDiam, this.y, circleDiam);
+              ellipse(tileX+0.75*circleDiam, this.y, circleDiam);
+            }
+          } else {
+            textFont('arial');
+            textSize(0.25*cueWidth);
+            text('x', tileX, this.y);
+            textFont(myFont);
           }
-        } else {
-          ellipse(tileX-0.75*circleDiam, this.y, circleDiam);
-          ellipse(tileX+0.75*circleDiam, this.y, circleDiam);
         }
+
+        noFill();
+        strokeWeight(curStrokeWeight);
+        stroke(strokeColor);
+        rect(tileX, this.y, tileW, this.height);
       } else {
         image(this.img, tileX, this.y, tileW, this.height);
+        strokeWeight(curStrokeWeight);
         stroke(strokeColor);
         // strokeWeight(2);
         noFill();

@@ -105,6 +105,12 @@ function newGame(restartGame = false, goBack = false) {
     mustHitLocation = true;
     showProjectileIdentity = false;
     cueWidth = E.params.nactions * baseCueWidth;
+  } else if (trial_block.name === "locations") {
+    immobileMode = false;
+    showAnswers = true;
+    mustHitLocation = true;
+    showProjectileIdentity = false;
+    cueWidth = E.params.nactions * baseCueWidth;
   } else {
     console.log("Invalid game type.");
   }
@@ -346,20 +352,54 @@ function showImages(yOffset) {
     }
 
     if (spriteSheet === undefined) {
-      let action_index = cue;
-
       fill('black'); noStroke();
-      let circleDiam = size / 5;
-      if (action_index+1 === 1 || action_index+1 === 3) {
-        ellipse(xc, y, circleDiam);
-        if (action_index+1 === 3) {
-          ellipse(xc-1.5*circleDiam, y, circleDiam);
-          ellipse(xc+1.5*circleDiam, y, circleDiam);
+      let action_index = cue;
+      let csz = size/nTilesPerCue;
+      let circleDiam = csz / 5;
+
+      if (nTilesPerCue === 1) {
+        let xd = xc;
+        if (action_index+1 === 1 || action_index+1 === 3) {
+          ellipse(xd, y, circleDiam);
+          if (action_index+1 === 3) {
+            ellipse(xd-1.5*circleDiam, y, circleDiam);
+            ellipse(xd+1.5*circleDiam, y, circleDiam);
+          }
+        } else {
+          ellipse(xd-0.75*circleDiam, y, circleDiam);
+          ellipse(xd+0.75*circleDiam, y, circleDiam);
         }
       } else {
-        ellipse(xc-0.75*circleDiam, y, circleDiam);
-        ellipse(xc+0.75*circleDiam, y, circleDiam);
+
+        let xs = [-csz, 0, csz];
+        fill('black'); noStroke();
+
+        let jet_x = jet.x - baseX;
+        for (var i = 0; i < xs.length; i++) {
+          let x1 = xc + xs[i] - csz/2;
+          let x2 = xc + xs[i] + csz/2;
+          let xd = xc + xs[i];
+
+          if (i === action_index) {
+            stroke('black'); strokeWeight(1); fill('black');
+            textFont('arial');
+            textSize(0.5*csz);
+            text('x', xd, y);
+            textFont(myFont);
+          }
+
+          if (jet_x >= x1 && jet_x <= x2) {
+            stroke('black'); strokeWeight(4); noFill();
+            rect(xc + xs[i], y, csz, csz);
+            strokeWeight(1);
+          }
+        }
+
+        stroke('black'); strokeWeight(1); noFill();
+        rect(xc, y, csz, csz);
+        rect(xc, y, nTilesPerCue*csz, csz);
       }
+
     } else {
       let img = spriteSheet.getImage(trial_block.theme_offset + cue);
       if (nTilesPerCue === 1) {
@@ -378,7 +418,7 @@ function showImages(yOffset) {
           let x1 = xc + xs[i] - csz/2;
           let x2 = xc + xs[i] + csz/2;
           if (jet_x >= x1 && jet_x <= x2) {
-            strokeWeight(5);
+            strokeWeight(4);
             rect(xc + xs[i], y, csz, csz);
           }
         }

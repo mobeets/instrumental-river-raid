@@ -1,20 +1,20 @@
 [
 	{
+		"name": "locations",
+		"ncues": 3,
+		"is_practice": true,
+		"ntrials_per_cue": 4,
+		"theme": "",
+		"instructions": "testing",
+		"scene": "grass"
+	},
+	{
 		"name": "locations-instrumental",
 		"ncues": 2,
 		"is_practice": true,
 		"ntrials_per_cue": 4,
 		"theme": "animals_1",
 		"instructions": "testing",
-		"scene": "grass"
-	},
-	{
-		"name": "instrumental",
-		"ncues": 3,
-		"is_practice": true,
-		"ntrials_per_cue": 3,
-		"theme": "animals_1",
-		"instructions": "",
 		"scene": "grass"
 	},
 	{
