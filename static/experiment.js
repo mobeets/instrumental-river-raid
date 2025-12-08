@@ -49,11 +49,12 @@ class Experiment {
 		this.block_configs = Object.values(blocks);
 		this.params = params;
 		this.block_index = -1;
+		this.block_count = -1;
 		this.blocks = [];
 	}
 
-	next_block(restartGame) {
-		if (!restartGame) {
+	next_block(restartGame, goBack) {
+		if (!restartGame && !goBack) {
 			if (this.blocks.length > 0) {
 				// log end of block
 				this.blocks[this.blocks.length-1].log(false);
@@ -64,8 +65,12 @@ class Experiment {
 				return;
 			};
 			this.block_index++;
+		} else if (goBack) {
+			if (this.block_index >= 1) this.block_index--;
 		}
-		let block = new TrialBlock(this.block_index, this, this.block_configs[this.block_index]);
+
+		this.block_count++;
+		let block = new TrialBlock(this.block_index, this.block_count, this, this.block_configs[this.block_index]);
 		this.blocks.push(block);
 		return block;
 	}
@@ -77,7 +82,7 @@ class Experiment {
 	}
 
 	no_more_blocks() {
-		return this.blocks.length >= this.block_configs.length;
+		return this.block_index+1 >= this.block_configs.length;
 	}
 
 	is_complete() {
@@ -165,9 +170,10 @@ function randomR(rows, cols, maxEntropyPolicy = false) {
 }
 
 class TrialBlock {
-	constructor(index, E, {name, ncues, is_practice, ntrials_per_cue, theme, scene}) {
+	constructor(block_index, block_count, E, {name, ncues, is_practice, ntrials_per_cue, theme, instructions, scene}) {
 		this.name = name;
-		this.index = index;
+		this.block_count = block_count;
+		this.block_index = block_index;
 		this.ncues = ncues;
 		this.is_practice = is_practice;
 		this.ntrials_per_cue = ntrials_per_cue;
@@ -175,6 +181,7 @@ class TrialBlock {
 		this.theme_offset = themeOffsets[this.ncues];
 		// this.theme_offset = getNextThemeOffset(this.theme, this.ncues);
 		this.scene = scene;
+		this.instructions = instructions;
 		this.cue_list = this.makeCueSequence(this.ncues, this.ntrials_per_cue);
 		this.R = this.getRewardMatrix(E);
 		this.trial_index = -1;

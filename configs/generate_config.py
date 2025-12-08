@@ -10,6 +10,11 @@ def generate_blocks(themes, ntrials_per_cue=10):
         "instrumental": [2, 3, 4, 5],
         "targets-instrumental": [2, 3, 4, 5]
     }
+    instructions = {
+        "targets": "control an airplane with the joystick \n shoot different blocks by pressing the correct button.",
+        "instrumental": "figure out which button will shoot down each block.",
+        "targets-instrumental": "control an airplane with the joystick \n figure out which button will shoot down each block."
+    }
     scenes = ["grass", "river"]
     all_blocks = []
 
@@ -50,11 +55,13 @@ def generate_blocks(themes, ntrials_per_cue=10):
                     "is_practice": True,
                     "ntrials_per_cue": 50,
                     "theme": "training" if task != "targets" else "",
+                    "instructions": instructions[task],
                     "scene": practice_scene
                 }
                 all_blocks.append(practice_block)
 
             # ---- ADD EXPERIMENTAL BLOCKS ----
+            mini_block_index = 0
             for ncues, scene in zip(ncues_list, scene_assignments):
                 block = {
                     "name": task,
@@ -62,9 +69,11 @@ def generate_blocks(themes, ntrials_per_cue=10):
                     "is_practice": False,
                     "ntrials_per_cue": ntrials_per_cue,
                     "theme": theme,
+                    "instructions": instructions[task],
                     "scene": scene
                 }
                 all_blocks.append(block)
+                mini_block_index += 1
 
     return all_blocks
 

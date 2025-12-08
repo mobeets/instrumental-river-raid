@@ -66,8 +66,8 @@ function preload() {
   config = loadConfig();
 }
 
-function newGame(restartGame = false) {
-  trial_block = E.next_block(restartGame);
+function newGame(restartGame = false, goBack = false) {
+  trial_block = E.next_block(restartGame, goBack);
   if (trial_block === undefined) { gameMode = COMPLETE_MODE; return; }
   spriteSheet = spriteSheets[trial_block.theme];
 
@@ -312,6 +312,52 @@ function draw() {
   photodiode.render();
 }
 
+function showInstructions() {
+  textSize(20);
+  fill('black');
+  text("Instructions:", width / 2, 4*height/8 + 120);
+  textFont('arial');
+  fill('black');
+  text(trial_block.instructions, width / 2, 4*height/8 + 160);
+  textFont(myFont);
+}
+
+function showImages() {
+  imageMode(CENTER);
+  rectMode(CENTER);
+  let size = 50;
+  let x = size;
+  let y = height - size;
+  for (var cue = 0; cue < trial_block.ncues; cue++) {
+    let color = BOAT_COLORS[cue];
+    let xc = x + size*cue;
+    fill(color);
+    rect(xc, y, size, size);
+
+    if (spriteSheet === undefined) {
+      fill('black'); noStroke();
+      let circleDiam = size / 5;
+      if (cue+1 === 1 || cue+1 === 3) {
+        ellipse(xc, y, circleDiam);
+        if (cue+1 === 3) {
+          ellipse(xc-1.5*circleDiam, y, circleDiam);
+          ellipse(xc+1.5*circleDiam, y, circleDiam);
+        }
+      } else {
+        ellipse(xc-0.75*circleDiam, y, circleDiam);
+        ellipse(xc+0.75*circleDiam, y, circleDiam);
+      }
+    } else {
+      let img = spriteSheet.getImage(trial_block.theme_offset + cue);
+      image(img, xc, y, size, size);
+      stroke('black');
+      noFill();
+      rect(xc, y, size, size);
+    }
+  }
+  noStroke();
+}
+
 function drawPauseScreen() {
   textSize(48);
   fill(255);
@@ -319,40 +365,53 @@ function drawPauseScreen() {
   textFont(myFont);
 
   if (gameMode == PAUSE_MODE) {
-    text("PAUSED", width / 2, height / 2);
+    text("PAUSED", width / 2, height / 3);
+    if (trial_block.instructions) {
+      showInstructions();
+    }
   } else if (gameMode == STARTING_MODE) {
-    text("GAME COMPLETE", width / 2, height / 2);
+    text("GAME COMPLETE", width / 2, height / 3);
 
     fill('black');
     textSize(32);
-    text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, 5*height/8 + 0);
-    text("Score: " + trial_block.score.toFixed(0) + " out of " + trial_block.trials.length, width / 2, 5*height/8 + 40);
+    text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, 4*height/8 + 0);
+    text("Score: " + trial_block.score.toFixed(0) + " out of " + trial_block.trials.length, width / 2, 4*height/8 + 40);
   } else if (gameMode == READY_MODE) {
-    text("READY?", width / 2, height / 2);
+    if (trial_block.index === 0) {
+      fill('black');
+      text("Welcome!", width / 2, height / 3);
+    } else {
+      text("Great job!", width / 2, height / 3);
+    }
     fill('black');
     textSize(32);
-    text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, 5*height/8 + 0);
+    text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, 4*height/8 + 0);
     fill('white');
     if (trial_block.is_practice) {
       fill('#9e442f');
-      text("Practice round!", width / 2, 5*height/8 + 40);
+      text("Practice round!", width / 2, 4*height/8 + 40);
     }
+    if (trial_block.instructions) {
+      showInstructions();
+      showImages();
+    }
+    textSize(32);
     fill('black');
-    text("Fire to start", width / 2, 5*height/8 + 80);
+    // text("Fire to start", width / 2, 4*height/8 + 80);
   } else if (gameMode == COMPLETE_MODE) {
-    text("EXPERIMENT COMPLETE", width / 2, height / 2);
+    text("EXPERIMENT COMPLETE", width / 2, height / 3);
     fill('black');
     textSize(32);
-    text("Thank you!", width / 2, 5*height/8 + 0);
+    text("Thank you!", width / 2, 4*height/8 + 0);
   } else {
     console.log("Invalid gameMode");
   }
 
   if (gameMode != COMPLETE_MODE) {
     if (E.params.debug) {
-      text("'N' for next game", width / 2, 5*height/8 + 80);
-      text("'R' to restart current game", width / 2, 5*height/8 + 120);
-      text("'S' to save game data", width / 2, 5*height/8 + 160);
+      text("'N' for next game", width / 2, 4*height/8 + 80);
+      text("'R' to restart current game", width / 2, 4*height/8 + 120);
+      text("'S' to save game data", width / 2, 4*height/8 + 160);
     }
   }
 }
@@ -412,11 +471,15 @@ function checkUserButtonPresses() {
     eventMsg = 'unpause';
     gameMode = PLAY_MODE;
   } else if (user.next_block && gameMode != COMPLETE_MODE) {
-    // start new game
-    eventMsg = 'new game';
+    // go to the next block
+    eventMsg = 'new game (going to next block)';
     newGame(false);
+  } else if (user.back_block && gameMode != COMPLETE_MODE) {
+    // go back a block
+    eventMsg = 'new game (going back a block)';
+    newGame(false, true);
   } else if (user.restart_block) {
-    eventMsg = 'restart game';
+    eventMsg = 'restart block';
     newGame(true);
   } else if (user.save) {
     manuallySaveToJSON(E);

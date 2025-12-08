@@ -7,6 +7,10 @@ class TaskControls {
     return this.u.justPressedKey('p') || this.u.justPressedButton("START");
   }
 
+  get back_block() {
+    return this.u.justPressedKey('b');
+  }
+
   get next_block() {
     return this.u.justPressedKey('n');
   }
