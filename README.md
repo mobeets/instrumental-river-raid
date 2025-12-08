@@ -23,10 +23,11 @@ On the experimenter's side:
 - `p` to pause
 - `r` to restart the current block from trial 1
 - `n` to move to the next block
+- `b` to move to the previous block
 
 On the patient's side (with USB controller connected):
 - Left analog stick controls the jet (left and right only)
-- X, A, B buttons (with XBox controller) fire the projectile
+- X, A, B buttons (with XBox controller) fire projectiles 1, 2, and 3
 - START button to pause
 
 All task controls can be found in `static/task_controls.js`.

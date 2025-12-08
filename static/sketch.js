@@ -312,22 +312,18 @@ function draw() {
   photodiode.render();
 }
 
-function showInstructions() {
-  textSize(20);
-  fill('black');
-  text("Instructions:", width / 2, 4*height/8 + 120);
-  textFont('arial');
-  fill('black');
-  text(trial_block.instructions, width / 2, 4*height/8 + 160);
-  textFont(myFont);
-}
-
-function showImages() {
+function showImages(yOffset) {
   imageMode(CENTER);
   rectMode(CENTER);
-  let size = 50;
-  let x = size;
-  let y = height - size;
+  // let size = 0.5*cueWidth;
+  let size = min(cueWidth, 0.9*width / 6);
+  let total_size = trial_block.ncues * size;
+  push();
+  // translate(width / 2 - total_size / 2 + size / 2, height - size);
+  translate(width / 2 - total_size / 2 + size / 2, yOffset);
+
+  let x = 0;
+  let y = 0;
   for (var cue = 0; cue < trial_block.ncues; cue++) {
     let color = BOAT_COLORS[cue];
     let xc = x + size*cue;
@@ -355,63 +351,78 @@ function showImages() {
       rect(xc, y, size, size);
     }
   }
+  pop();
   noStroke();
+}
+
+function showInstructions(yOffset) {
+
+  textSize(20);
+  fill('black');
+  text("Instructions:", width / 2, yOffset);
+  textFont('arial');
+  fill('black');
+  text(trial_block.instructions, width / 2, yOffset + 40);
+  textFont(myFont);
 }
 
 function drawPauseScreen() {
   textSize(48);
-  fill(255);
+  fill('black');
   textAlign(CENTER, CENTER);
   textFont(myFont);
 
+  let firstLineY = 2 * height / 9;
+  let secondLineY = 3 * height / 9;
+
   if (gameMode == PAUSE_MODE) {
-    text("PAUSED", width / 2, height / 3);
+    text("PAUSED", width / 2, firstLineY);
     if (trial_block.instructions) {
-      showInstructions();
+      showInstructions(secondLineY + 100);
+      showImages(height - 0.6*cueWidth);
     }
   } else if (gameMode == STARTING_MODE) {
-    text("GAME COMPLETE", width / 2, height / 3);
+    text("GAME COMPLETE", width / 2, firstLineY);
 
     fill('black');
     textSize(32);
-    text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, 4*height/8 + 0);
-    text("Score: " + trial_block.score.toFixed(0) + " out of " + trial_block.trials.length, width / 2, 4*height/8 + 40);
+    text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, secondLineY + 0);
+    text("Score: " + trial_block.score.toFixed(0) + " out of " + trial_block.trials.length, width / 2, secondLineY + 40);
   } else if (gameMode == READY_MODE) {
-    if (trial_block.index === 0) {
+    if (trial_block.block_count === 0) {
       fill('black');
-      text("Welcome!", width / 2, height / 3);
+      text("Welcome!", width / 2, firstLineY);
     } else {
-      text("Great job!", width / 2, height / 3);
+      text("Great job!", width / 2, firstLineY);
     }
     fill('black');
     textSize(32);
-    text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, 4*height/8 + 0);
-    fill('white');
+    text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, secondLineY + 0);
     if (trial_block.is_practice) {
       fill('#9e442f');
-      text("Practice round!", width / 2, 4*height/8 + 40);
+      text("Practice round!", width / 2, secondLineY + 40);
     }
     if (trial_block.instructions) {
-      showInstructions();
-      showImages();
+      showInstructions(secondLineY + 100);
+      showImages(height - 0.6*cueWidth);
     }
     textSize(32);
     fill('black');
     // text("Fire to start", width / 2, 4*height/8 + 80);
   } else if (gameMode == COMPLETE_MODE) {
-    text("EXPERIMENT COMPLETE", width / 2, height / 3);
+    text("EXPERIMENT COMPLETE", width / 2, firstLineY);
     fill('black');
     textSize(32);
-    text("Thank you!", width / 2, 4*height/8 + 0);
+    text("Thank you!", width / 2, secondLineY + 0);
   } else {
     console.log("Invalid gameMode");
   }
 
   if (gameMode != COMPLETE_MODE) {
     if (E.params.debug) {
-      text("'N' for next game", width / 2, 4*height/8 + 80);
-      text("'R' to restart current game", width / 2, 4*height/8 + 120);
-      text("'S' to save game data", width / 2, 4*height/8 + 160);
+      text("'N' for next game", width / 2, secondLineY + 80);
+      text("'R' to restart current game", width / 2, secondLineY + 120);
+      text("'S' to save game data", width / 2, secondLineY + 160);
     }
   }
 }
