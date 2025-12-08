@@ -243,7 +243,8 @@ class Projectile {
     this.y = y;
     this.speed = 8;
     this.action = action; // 1..D
-    this.sizes = [8, 8, 8, 8, 8];
+    // this.sizes = [8, 8, 8, 8, 8];
+    this.sizes = [12, 12, 12];
     this.colors = [color(0,0,0), color(0,0,0), color(0,0,0), color(0,0,0), color(0,0,0)];
   }
 
@@ -252,11 +253,27 @@ class Projectile {
   }
 
   render() {
+    let sz = this.sizes[this.action-1];
+    let clr = this.colors[this.action-1];
     push();
     translate(this.x, this.y);
-    fill(this.colors[this.action-1]);
+    fill(clr);
     noStroke();
-    ellipse(0, 0, this.sizes[this.action-1]);
+    if (E.params.projectileShowsNumber) {
+      let csz = sz / Math.sqrt(this.action);
+      if (this.action === 1) {
+        ellipse(0, 0, csz);
+      } else if (this.action === 2) {
+        ellipse(-sz/2, 0, csz);
+        ellipse(sz/2, 0, csz);
+      } else if (this.action === 3) {
+        ellipse(-sz/2, 0, csz);
+        ellipse(sz/2, 0, csz);
+        ellipse(0, -sz/2, csz);
+      }
+    } else {
+      ellipse(0, 0, sz);
+    }
     pop();
   }
 

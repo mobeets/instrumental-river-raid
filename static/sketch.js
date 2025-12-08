@@ -363,7 +363,7 @@ function showJet() {
     let p = projectiles_test[i];
     p.update();
     p.render();
-    if (p.offscreen()) projectiles_test.splice(i, 1);
+    if (p.y < jet.y - 100) projectiles_test.splice(i, 1);
   }
   let action = user.fired;
   if (action > 0) {
