@@ -1,5 +1,4 @@
 import os
-import sys
 from math import ceil, sqrt
 from PIL import Image
 
@@ -54,7 +53,7 @@ def load_and_prepare_image(path, sprite_size):
 
     return canvas
 
-def build_spritesheet(directory, sprite_size, output_path, unsort=True):
+def build_spritesheet(directory, sprite_size, output_path, shuffle=True):
     # Collect all image files
     files = [
         os.path.join(directory, f)
@@ -65,7 +64,7 @@ def build_spritesheet(directory, sprite_size, output_path, unsort=True):
         raise ValueError("No image files found in directory.")
 
     files = sorted(files)
-    if unsort:
+    if shuffle:
         files = spaced_class_sort(files)
 
     # Load & prepare all images
@@ -96,17 +95,12 @@ def build_spritesheet(directory, sprite_size, output_path, unsort=True):
     print(f"Total sprites: {n}, Grid: {cols}x{rows}")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 4:
-        print("Usage: python make_spritesheet.py <directory> <sprite_size> <output.png>")
-        sys.exit(1)
-
-    directory = sys.argv[1]
-    sprite_size = int(sys.argv[2])
-    output_path = sys.argv[3]
-    print(len(sys.argv), sys.argv)
-    if len(sys.argv) > 4:
-        do_unsort = False if sys.argv[4].lower().startswith('f') else True
-    else:
-        do_unsort = True
-
-    build_spritesheet(directory, sprite_size, output_path, do_unsort)
+    import argparse
+    parser = argparse.ArgumentParser(description="Generates a spritesheet from an image directory.")
+    parser.add_argument("directory", help="Path to image files")
+    parser.add_argument("output", help="Path to output .png file")
+    parser.add_argument("--sprite_size", default=64, help="Final size of each sprite (n.b. will force square)")
+    parser.add_argument("--shuffle", action='store_true', help="Path to output .png file")
+    args = parser.parse_args()
+    
+    build_spritesheet(args.directory, args.sprite_size, args.output, args.shuffle)
