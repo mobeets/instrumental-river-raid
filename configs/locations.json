@@ -31,25 +31,25 @@
     "ncues": 2,
     "is_practice": false,
     "ntrials_per_cue": 10,
-    "theme": "animals_1",
+    "theme": "villains_3",
     "instructions": "control an airplane with the joystick\nfigure out which location will destroy each block",
-    "scene": "grass"
-  },
-  {
-    "name": "locations-instrumental",
-    "ncues": 3,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "animals_1",
-    "instructions": "control an airplane with the joystick\nfigure out which location will destroy each block",
-    "scene": "grass"
+    "scene": "river"
   },
   {
     "name": "locations-instrumental",
     "ncues": 5,
     "is_practice": false,
     "ntrials_per_cue": 10,
-    "theme": "animals_1",
+    "theme": "villains_3",
+    "instructions": "control an airplane with the joystick\nfigure out which location will destroy each block",
+    "scene": "river"
+  },
+  {
+    "name": "locations-instrumental",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "villains_3",
     "instructions": "control an airplane with the joystick\nfigure out which location will destroy each block",
     "scene": "grass"
   },
@@ -58,9 +58,9 @@
     "ncues": 4,
     "is_practice": false,
     "ntrials_per_cue": 10,
-    "theme": "animals_1",
+    "theme": "villains_3",
     "instructions": "control an airplane with the joystick\nfigure out which location will destroy each block",
-    "scene": "grass"
+    "scene": "river"
   },
   {
     "name": "locations",
@@ -73,38 +73,38 @@
   },
   {
     "name": "locations-instrumental",
-    "ncues": 5,
+    "ncues": 2,
     "is_practice": false,
     "ntrials_per_cue": 10,
-    "theme": "animals_2",
+    "theme": "villains_4",
     "instructions": "control an airplane with the joystick\nfigure out which location will destroy each block",
-    "scene": "river"
-  },
-  {
-    "name": "locations-instrumental",
-    "ncues": 4,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "animals_2",
-    "instructions": "control an airplane with the joystick\nfigure out which location will destroy each block",
-    "scene": "river"
+    "scene": "grass"
   },
   {
     "name": "locations-instrumental",
     "ncues": 3,
     "is_practice": false,
     "ntrials_per_cue": 10,
-    "theme": "animals_2",
+    "theme": "villains_4",
+    "instructions": "control an airplane with the joystick\nfigure out which location will destroy each block",
+    "scene": "grass"
+  },
+  {
+    "name": "locations-instrumental",
+    "ncues": 4,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "villains_4",
     "instructions": "control an airplane with the joystick\nfigure out which location will destroy each block",
     "scene": "river"
   },
   {
     "name": "locations-instrumental",
-    "ncues": 2,
+    "ncues": 5,
     "is_practice": false,
     "ntrials_per_cue": 10,
-    "theme": "animals_2",
+    "theme": "villains_4",
     "instructions": "control an airplane with the joystick\nfigure out which location will destroy each block",
-    "scene": "river"
+    "scene": "grass"
   }
 ]

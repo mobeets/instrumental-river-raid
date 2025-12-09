@@ -10,6 +10,7 @@ let user;
 let clickSound;
 
 // ===== Globals =====
+let spriteSize = 128;
 let L = 5; // starting lives
 let streakBarMax = 5; // required streak for point bonus
 let streakBonus = 10; // points for filling streak bar
@@ -61,11 +62,15 @@ function preload() {
   jetImg2 = loadImage('assets/jet2.png');
   grassImg = loadImage('assets/grass.png');
   // stoneImg = loadImage('assets/stone.png');
-  spriteSheets.animals_1 = new SquareSpriteSheet('assets/themes/animals_1.png', 64);
-  spriteSheets.animals_2 = new SquareSpriteSheet('assets/themes/animals_2.png', 64);
-  spriteSheets.flowers_food = new SquareSpriteSheet('assets/themes/flowers_food.png', 64);
-  spriteSheets.animals_land = new SquareSpriteSheet('assets/themes/animals_land.png', 64);
-  spriteSheets.training = new SquareSpriteSheet('assets/themes/training.png', 64);
+  spriteSheets.villains_1 = new SquareSpriteSheet('assets/themes/villains_1.png', spriteSize);
+  spriteSheets.villains_2 = new SquareSpriteSheet('assets/themes/villains_2.png', spriteSize);
+  spriteSheets.villains_3 = new SquareSpriteSheet('assets/themes/villains_3.png', spriteSize);
+  spriteSheets.villains_4 = new SquareSpriteSheet('assets/themes/villains_4.png', spriteSize);
+  spriteSheets.animals_1 = new SquareSpriteSheet('assets/themes/animals_1.png', spriteSize);
+  spriteSheets.animals_2 = new SquareSpriteSheet('assets/themes/animals_2.png', spriteSize);
+  spriteSheets.flowers_food = new SquareSpriteSheet('assets/themes/flowers_food.png', spriteSize);
+  spriteSheets.animals_land = new SquareSpriteSheet('assets/themes/animals_land.png', spriteSize);
+  spriteSheets.training = new SquareSpriteSheet('assets/themes/training.png', spriteSize);
   config = loadConfig();
 }
 

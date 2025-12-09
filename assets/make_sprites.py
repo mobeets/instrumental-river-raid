@@ -99,7 +99,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generates a spritesheet from an image directory.")
     parser.add_argument("directory", help="Path to image files")
     parser.add_argument("output", help="Path to output .png file")
-    parser.add_argument("--sprite_size", default=64, help="Final size of each sprite (n.b. will force square)")
+    parser.add_argument("--sprite_size", type=int, default=128, help="Final size of each sprite (n.b. will force square)")
     parser.add_argument("--shuffle", action='store_true', help="Path to output .png file")
     args = parser.parse_args()
     
