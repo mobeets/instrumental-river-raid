@@ -61,6 +61,7 @@ class Experiment {
 			}
 			if (this.no_more_blocks()) {
 				// log end of experiment
+				manuallySaveToJSON(this);
 				this.log(false);
 				return;
 			};
