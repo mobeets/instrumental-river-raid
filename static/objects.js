@@ -284,6 +284,7 @@ class Projectile {
     noStroke();
     if (this.showActionNumber) {
       let csz = sz / Math.sqrt(this.action);
+
       if (this.action === 1) {
         ellipse(0, 0, csz);
       } else if (this.action === 2) {
@@ -292,7 +293,7 @@ class Projectile {
       } else if (this.action === 3) {
         ellipse(-sz/2, 0, csz);
         ellipse(sz/2, 0, csz);
-        ellipse(0, -sz/2, csz);
+        ellipse(0, 0, csz);
       }
     } else {
       ellipse(0, 0, sz);
