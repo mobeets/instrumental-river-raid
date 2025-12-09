@@ -142,7 +142,9 @@ class Boat {
       noTint();
       let curStrokeWeight = 1;
       if (selectedIndex !== -1) {
-        if (i === selectedIndex) curStrokeWeight = 5;;
+        if (i === selectedIndex) {
+          curStrokeWeight = 5;
+        }
         // else tint(255, 128);
       }
 

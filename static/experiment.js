@@ -172,6 +172,16 @@ function randomR(rows, cols, maxEntropyPolicy = false) {
   return R;
 }
 
+function divideRange(x_start, x_end, n_segments) {
+  // subdivide range (x_start, x_end) into n_segments equal segments
+  const result = [];
+  const step = (x_end - x_start) / n_segments;
+  for (let i = 0; i <= n_segments; i++) {
+    result.push(x_start + i * step);
+  }
+  return result;
+}
+
 class TrialBlock {
 	constructor(block_index, block_count, E, {name, ncues, is_practice, ntrials_per_cue, theme, instructions, scene}) {
 		this.name = name;
@@ -185,7 +195,8 @@ class TrialBlock {
 		// this.theme_offset = getNextThemeOffset(this.theme, this.ncues);
 		this.scene = scene;
 		this.instructions = instructions;
-		this.cue_list = this.makeCueSequence(this.ncues, this.ntrials_per_cue);
+		this.cue_locations = [];
+		this.cue_list = [];
 		this.R = this.getRewardMatrix(E);
 		this.trial_index = -1;
 		this.trial;
@@ -228,6 +239,45 @@ class TrialBlock {
 	  return xs;
 	}
 
+	makeLocationSequence(ncues, ntrials_per_cue) {
+		// creates a pseudorandom sequence of integers (0..ntrials_per_cue-1)
+		// for each cue in 0...ncues-1
+	  let locs_per_cue = [];
+	  for (let k = 0; k < ncues; k++) {
+	    // Create array [0, 1, ..., ntrials_per_cue-1]
+	    let locArray = [];
+	    for (let i = 0; i < ntrials_per_cue; i++) {
+	      locArray.push(i);
+	    }
+
+	    // Shuffle in place (Fisher–Yates)
+	    for (let i = locArray.length - 1; i > 0; i--) {
+	      let j = floor(random(i + 1));  // p5.js random integer
+	      [locArray[i], locArray[j]] = [locArray[j], locArray[i]];
+	    }
+
+	    // Append this location list
+	    locs_per_cue.push(locArray);
+	  }
+	  return locs_per_cue;
+	}
+
+	setTrialOrder() {
+		let cue_list = this.makeCueSequence(this.ncues, this.ntrials_per_cue);
+		let loc_list = this.makeLocationSequence(this.ncues, this.ntrials_per_cue);
+		let cue_index = Array(this.ncues).fill(0);
+		let res = [];
+		for (var i = 0; i < cue_list.length; i++) {
+			let cue = cue_list[i];
+			let next_index = cue_index[cue-1];
+			let loc_index = loc_list[cue-1][next_index];
+			cue_index[cue-1]++;
+			res.push({cue: cue, location_index: loc_index});
+		}
+		this.cue_list = res;
+		this.cue_locations = divideRange(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2, this.ntrials_per_cue);
+	}
+
 	next_trial() {
 		if (this.is_complete()) {
 			return;
@@ -236,7 +286,8 @@ class TrialBlock {
 			this.trials[this.trials.length-1].log(false);
 		}
 		this.trial_index++;
-		let trial = new Trial(this.trial_index, this.cue_list[this.trial_index], this.index);
+		let trial_info = this.cue_list[this.trial_index];
+		let trial = new Trial(this.trial_index, this.index, trial_info.cue, trial_info.location_index);
 		trial.log(true);
 		this.trials.push(trial);
 		return trial;
@@ -253,10 +304,11 @@ class TrialBlock {
 }
 
 class Trial {
-	constructor(index, cue, block_index) {
+	constructor(index, block_index, cue, location_index) {
 		this.index = index;
-		this.cue = cue;
 		this.block_index = block_index;
+		this.cue = cue;
+		this.location_index = location_index;
 		this.startTime = millis();
 		this.events = [];
 		this.positions = {time: [], agent: {x: [], y: []}, cue: {x: [], y: []}, projectile: {x: [], y: []}};

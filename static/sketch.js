@@ -109,16 +109,17 @@ function newGame(restartGame = false, goBack = false) {
     showAnswers = false;
     mustHitLocation = true;
     showProjectileIdentity = false;
-    cueWidth = E.params.nactions * baseCueWidth;
+    cueWidth = (2/3) * E.params.nactions * baseCueWidth;
   } else if (trial_block.name === "locations") {
     immobileMode = false;
     showAnswers = true;
     mustHitLocation = true;
     showProjectileIdentity = false;
-    cueWidth = E.params.nactions * baseCueWidth;
+    cueWidth = (2/3) * E.params.nactions * baseCueWidth;
   } else {
     console.log("Invalid game type.");
   }
+  trial_block.setTrialOrder();
   trial_blocks.push(trial_block);
 
   framesInGame = 0;
@@ -221,7 +222,10 @@ function draw() {
         newGame(false);
       } else {
         let nTilesPerCue = mustHitLocation ? E.params.nactions : 1;
-        let boat = new Boat(boatCounter, trial.cue-1, random(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2), -cueWidth, nTilesPerCue);
+
+        let curX = trial_block.cue_locations[trial.location_index];
+        // let curX = riverX + random(cueWidth/2, riverWidth - cueWidth/2);
+        let boat = new Boat(boatCounter, trial.cue-1, curX, -cueWidth, nTilesPerCue);
         boatCounter++;
         trial.trigger(getEventNameWithLocations('cue created', jet, [boat]));
         boats.push(boat);
