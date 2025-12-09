@@ -141,6 +141,9 @@ function makeBalancedOneHotMatrix(rows, cols) {
     }
   }
 
+  // Only keep first K rows
+  M = M.slice(0, rows);
+
   // Shuffle rows (Fisher–Yates)
   for (let i = M.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -148,7 +151,7 @@ function makeBalancedOneHotMatrix(rows, cols) {
   }
 
   // Return first K rows
-  return M.slice(0, rows);
+  return M;
 }
 
 function randomR(rows, cols, maxEntropyPolicy = false) {
