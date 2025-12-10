@@ -6,11 +6,11 @@
 
 To start the server, run the following in a terminal:
 
-`uv run python server.py --log_dir logs --save_name SUBJECT_ID`
+`uv run python server.py --logdir logs`
 
-This will save all trial data, mouse clicks, and key presses locally to the file `logs/SUBJECT_ID.jsonl`.
+This will save all trial data, mouse clicks, and key presses locally to a `.jsonl` file in `logs/`.
 
-To start the task, open a Chrome browser and navigate to `http://0.0.0.0:8000?subject=SUBJECT_ID`.
+To start the task, open a Chrome browser and navigate to `http://0.0.0.0:8000?subject_id=SUBJECT_ID`.
 
 ## Experiment details
 
@@ -28,7 +28,7 @@ On the experimenter's side:
 On the patient's side (with USB controller connected):
 - Left analog stick controls the jet (left and right only)
 - X, A, B buttons (with XBox controller) fire projectiles 1, 2, and 3
-- START button to pause
+- START button to pause/resume
 
 All task controls can be found in `static/task_controls.js`.
 

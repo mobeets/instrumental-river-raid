@@ -13,7 +13,7 @@ function loadConfig() {
 	// call inside preload
 
   const defaults = {
-    subject: 'unknown',
+    subject_id: 'unknown',
     experiment: 'default_experiment',
     params_name: 'default_params',
   };
@@ -24,7 +24,7 @@ function loadConfig() {
 
   // Safe destructuring with fallback defaults
   const {
-    subject = 'unknown',
+    subject_id = 'unknown',
     experiment = 'default_experiment',
     params_name ='default_params',
   } = finalParams;
@@ -38,7 +38,7 @@ function loadConfig() {
   // In preload(), loadJSON() returns the parsed JSON synchronously
   const blocks = loadJSON(blocks_path);
   const params = loadJSON(params_path);
-  return {subject, blocks_path, params_path, blocks, params};
+  return {subject_id, blocks_path, params_path, blocks, params};
 }
 
 class Experiment {
@@ -310,7 +310,6 @@ class Trial {
 		this.block_index = block_index;
 		this.cue = cue;
 		this.location_index = location_index;
-		this.startTime = millis();
 		this.events = [];
 		this.positions = {time: [], agent: {x: [], y: []}, cue: {x: [], y: []}, projectile: {x: [], y: []}};
 	}
@@ -345,6 +344,7 @@ class Trial {
 	  event.trial_index = this.index;
 	  event.cue = this.cue;
 	  event.block_index = this.block_index;
+	  event.time = performance.now();
 		wsLogger.log("Trial event", event, false, callback);
 	}
 
@@ -372,8 +372,17 @@ function manuallySaveToJSON(E) {
   let url = URL.createObjectURL(blob);
   let a = document.createElement('a');
   a.href = url;
-  let saveName = E.subject_id;
-  a.download = `${saveName}.json`;
+  let saveName = wsLogger.log_filename;
+  if (saveName !== undefined && saveName.endsWith('jsonl')) {
+  	saveName = saveName.slice(0, -1); // .json
+  } else {
+  	const params = new URLSearchParams(window.location.search);
+    const subj = params.get("subject_id") || "unknown";
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const rand = Math.random().toString(36).slice(2, 6);
+    saveName = `${subj}-${timestamp}-${rand}.json`;
+  }
+  a.download = saveName;
   a.click();
 
   // Clean up the URL object
