@@ -133,23 +133,10 @@ class Boat {
     let showEllipse = true;
     if (this.nTilesPerCue > 1) showEllipse = false;
 
-    let strokeColor = 'black';
     for (let i = 0; i < this.nTilesPerCue; i++) {
       let tileX = startX + i * tileW;
 
-      // highlight location, if multiple tiles
-      strokeWeight(0);
-      noTint();
-      let curStrokeWeight = 1;
-      if (selectedIndex !== -1) {
-        if (i === selectedIndex) {
-          curStrokeWeight = 5;
-        }
-        // else tint(255, 128);
-      }
-
       if (showAnswers) {
-        // text(actionToShow, tileX, this.y);
         fill('black'); noStroke();
         if (this.nTilesPerCue === 1 || i === actionToShow-1) {
           let circleDiam = (this.width / this.nTilesPerCue) / 5;
@@ -172,20 +159,26 @@ class Boat {
             textFont(myFont);
           }
         }
-
-        noFill();
-        strokeWeight(curStrokeWeight);
-        stroke(strokeColor);
-        rect(tileX, this.y, tileW, this.height);
       } else {
         image(this.img, tileX, this.y, tileW, this.height);
-        strokeWeight(curStrokeWeight);
-        stroke(strokeColor);
-        // strokeWeight(2);
-        noFill();
-        rect(tileX, this.y, tileW, this.height);
       }
+
+      // outline each square
+      strokeWeight(1);
+      stroke('black');
+      noFill();
+      rect(tileX, this.y, tileW, this.height);
     }
+
+    // outline selected square
+    if (selectedIndex !== -1) {
+      let tileX = startX + selectedIndex * tileW;
+      strokeWeight(5);
+      stroke('white');
+      noFill();
+      rect(tileX, this.y, tileW, this.height);
+    }
+
     noStroke();
     pop();
     noTint();

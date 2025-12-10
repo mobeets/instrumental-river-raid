@@ -361,7 +361,7 @@ function showImages(yOffset) {
     }
 
     let xc = x + 1.1*size*cue;
-    fill(color);
+    fill(color); noStroke();
     if (nTilesPerCue === 1) {
       rect(xc, y, size, size);
     } else {
@@ -391,6 +391,10 @@ function showImages(yOffset) {
         let xs = [-csz, 0, csz];
         fill('black'); noStroke();
 
+        stroke('black'); strokeWeight(1); noFill();
+        rect(xc, y, csz, csz);
+        rect(xc, y, nTilesPerCue*csz, csz);
+
         let jet_x = jet.x - baseX;
         for (var i = 0; i < xs.length; i++) {
           let x1 = xc + xs[i] - csz/2;
@@ -406,18 +410,24 @@ function showImages(yOffset) {
           }
 
           if (jet_x >= x1 && jet_x <= x2) {
-            stroke('black'); strokeWeight(4); noFill();
+            stroke('white'); strokeWeight(4); noFill();
             rect(xc + xs[i], y, csz, csz);
             strokeWeight(1);
           }
         }
-
-        stroke('black'); strokeWeight(1); noFill();
-        rect(xc, y, csz, csz);
-        rect(xc, y, nTilesPerCue*csz, csz);
       }
 
     } else {
+
+      stroke('black');
+      strokeWeight(1); 
+      noFill();
+      if (nTilesPerCue === 1) {
+        rect(xc, y, size, size);
+      } else {
+        rect(xc, y, size, size/nTilesPerCue);
+      }
+
       if (nTilesPerCue === 1) {
         image(img, xc, y, size, size);
       } else {
@@ -427,26 +437,19 @@ function showImages(yOffset) {
         image(img, xc + csz, y, csz, csz);
         stroke('black'); strokeWeight(1); noFill();
         rect(xc, y, csz, csz);
-        let jet_x = jet.x - baseX;
 
+        let jet_x = jet.x - baseX;
         let xs = [-csz, 0, csz];
         for (var i = 0; i < xs.length; i++) {
           let x1 = xc + xs[i] - csz/2;
           let x2 = xc + xs[i] + csz/2;
           if (jet_x >= x1 && jet_x <= x2) {
-            strokeWeight(4);
+            stroke('white'); strokeWeight(4);
             rect(xc + xs[i], y, csz, csz);
           }
         }
       }
-      stroke('black');
-      strokeWeight(1); 
-      noFill();
-      if (nTilesPerCue === 1) {
-        rect(xc, y, size, size);
-      } else {
-        rect(xc, y, size, size/nTilesPerCue);
-      }
+      
     }
   }
   pop();
