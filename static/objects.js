@@ -7,11 +7,10 @@ class Grass {
     // compute side widths
     this.sideWidth = (width * (1 - this.percent)) / 2;
     this.scroll = 0;
-    this.speed = driftSpeed; // same as river for consistent drift
   }
 
   update() {
-    this.scroll += this.speed;
+    this.scroll += driftSpeed;
     if (this.scroll >= this.img.height) {
       this.scroll = 0;
     }
@@ -259,7 +258,7 @@ class Projectile {
   constructor(x, y, action, showActionNumber) {
     this.x = x;
     this.y = y;
-    this.speed = 8;
+    this.speed = projectileSpeed;
     this.action = action; // 1..D
     this.sizes = [12, 12, 12];
     this.showActionNumber = showActionNumber;
@@ -325,7 +324,6 @@ class Explosion {
     this.color = color;
     this.maxLife = nframes;
     this.life = nframes;
-    this.speed = driftSpeed;
 
     if (this.x_start === this.x_end) {
       this.xs = [this.x_start];
@@ -336,7 +334,7 @@ class Explosion {
 
   update() {
     this.life--;
-    this.y += this.speed;
+    this.y += driftSpeed;
   }
 
   render() {

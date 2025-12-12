@@ -17,7 +17,10 @@ let streakBonus = 10; // points for filling streak bar
 let framesInGame = 0;
 let R; // reward matrix
 let driftSpeed; // will be set to ensure fixed travel time from top to bottom
+let baseDriftSpeed;
+let practiceDriftSpeed;
 let jetSpeed; // will be set to allow fixed travel time from left to right
+let projectileSpeed;
 let cueWidth;
 let baseCueWidth;
 let immobileMode = false;
@@ -119,6 +122,11 @@ function newGame(restartGame = false, goBack = false) {
   } else {
     console.log("Invalid game type.");
   }
+  if (trial_block.is_practice) {
+    driftSpeed = practiceDriftSpeed;
+  } else {
+    driftSpeed = baseDriftSpeed;
+  }
   trial_block.setTrialOrder();
   trial_blocks.push(trial_block);
 
@@ -147,7 +155,10 @@ function setup() {
   cueWidth = width*E.params.PROP_CUE_WIDTH;
   baseCueWidth = cueWidth;
   driftSpeed = (height-jetOffset) / (E.params.FPS * E.params.ISI_DURATION);
+  baseDriftSpeed = driftSpeed;
+  practiceDriftSpeed = (height-jetOffset) / (E.params.FPS * E.params.PRACTICE_ISI_DURATION);
   jetSpeed = (width-cueWidth) / (E.params.FPS * E.params.JET_SIDETOSIDE_DURATION);
+  projectileSpeed = (height-jetOffset) / (E.params.FPS * E.params.PROJECTILE_TRAVEL_DURATION);
   explosionDuration = Math.ceil(E.params.FPS * E.params.FEEDBACK_DURATION);
   
   let nonPhotodiodeProp = 1 - 2*photodiode.size / width;
@@ -638,7 +649,8 @@ function getRenderInfo() {
     height: height,
     photodiode: photodiode,
     jetSpeed: jetSpeed,
-    driftSpeed: driftSpeed,
+    baseDriftSpeed: baseDriftSpeed,
+    practiceDriftSpeed: practiceDriftSpeed,
     cueWidth: cueWidth,
     boatColors: BOAT_COLORS,
     explosionDuration: explosionDuration
