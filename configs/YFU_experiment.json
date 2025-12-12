@@ -1,23 +1,5 @@
 [
   {
-    "name": "targets",
-    "ncues": 3,
-    "is_practice": true,
-    "ntrials_per_cue": 50,
-    "theme": "",
-    "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
-    "scene": "river"
-  },
-  {
-    "name": "targets",
-    "ncues": 3,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "",
-    "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
-    "scene": "river"
-  },
-  {
     "name": "instrumental",
     "ncues": 2,
     "is_practice": true,
@@ -54,6 +36,24 @@
     "scene": "river"
   },
   {
+    "name": "targets",
+    "ncues": 3,
+    "is_practice": true,
+    "ntrials_per_cue": 50,
+    "theme": "",
+    "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
+    "scene": "river"
+  },
+  {
+    "name": "targets",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "",
+    "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
+    "scene": "river"
+  },
+  {
     "name": "targets-instrumental",
     "ncues": 2,
     "is_practice": true,
@@ -90,15 +90,6 @@
     "scene": "river"
   },
   {
-    "name": "targets",
-    "ncues": 3,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "",
-    "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
-    "scene": "grass"
-  },
-  {
     "name": "instrumental",
     "ncues": 2,
     "is_practice": false,
@@ -123,6 +114,15 @@
     "ntrials_per_cue": 10,
     "theme": "animals",
     "instructions": "figure out which button will destroy each block",
+    "scene": "grass"
+  },
+  {
+    "name": "targets",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "",
+    "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
     "scene": "grass"
   },
   {
