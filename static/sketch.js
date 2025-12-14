@@ -365,7 +365,7 @@ function showImages(yOffset) {
 
     let img, color;
     if (spriteSheet === undefined) {
-      color = BOAT_COLORS[cue];
+      color = trial_block.cue_colors[cue];
     } else {
       color = '#ccc';
       img = spriteSheet.getImage(trial_block.theme_offset + cue);
@@ -381,7 +381,14 @@ function showImages(yOffset) {
 
     if (spriteSheet === undefined) {
       fill('black'); noStroke();
-      let action_index = cue;
+      // let action_index = cue;
+      let action_index = -1;
+      let row = trial_block.R[cue];
+      for (let i = 0; i < row.length; i++) {
+        if (row[i] > 0) {
+          action_index = i;
+        }
+      }
       let csz = size/nTilesPerCue;
       let circleDiam = csz / 5;
 

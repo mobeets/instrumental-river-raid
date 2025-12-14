@@ -198,6 +198,7 @@ class TrialBlock {
 		this.instructions = instructions;
 		this.cue_locations = [];
 		this.cue_list = [];
+		this.cue_colors = shuffle(BOAT_COLORS).slice(0, this.ncues);
 		this.R = this.getRewardMatrix(E);
 		this.trial_index = -1;
 		this.trial;
