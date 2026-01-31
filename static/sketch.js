@@ -631,7 +631,7 @@ function checkUserButtonPresses() {
     eventMsg = 'restart block';
     newGame(true);
   } else if (user.save) {
-    manuallySaveToJSON(E);
+    wsLogger.saveJson(E);
   }
   if (eventMsg !== undefined) {
     wsLogger.log("interaction", {eventMsg});

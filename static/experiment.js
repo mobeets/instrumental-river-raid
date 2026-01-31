@@ -61,7 +61,7 @@ class Experiment {
 			}
 			if (this.no_more_blocks()) {
 				// log end of experiment
-				manuallySaveToJSON(this);
+				wsLogger.saveJson(this);
 				this.log(false);
 				return;
 			};
@@ -362,31 +362,3 @@ class Trial {
     return Object.assign({}, this);
   }
 }
-
-function manuallySaveToJSON(E) {
-  let jsonString = JSON.stringify(E);
-
-  // Create a Blob from the JSON string
-  let blob = new Blob([jsonString], { type: 'application/json' });
-
-  // Create a temporary download link
-  let url = URL.createObjectURL(blob);
-  let a = document.createElement('a');
-  a.href = url;
-  let saveName = wsLogger.log_filename;
-  if (saveName !== undefined && saveName.endsWith('jsonl')) {
-  	saveName = saveName.slice(0, -1); // .json
-  } else {
-  	const params = new URLSearchParams(window.location.search);
-    const subj = params.get("subject_id") || "unknown";
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-    const rand = Math.random().toString(36).slice(2, 6);
-    saveName = `${subj}-${timestamp}-${rand}.json`;
-  }
-  a.download = saveName;
-  a.click();
-
-  // Clean up the URL object
-  URL.revokeObjectURL(url);
-}
-
