@@ -312,27 +312,32 @@ class Trial {
 		this.cue = cue;
 		this.location_index = location_index;
 		this.events = [];
-		this.positions = {time: [], agent: {x: [], y: []}, cue: {x: [], y: []}, projectile: {x: [], y: []}};
+		this.positions = {
+			time: [],
+			agent: {x: [], y: []},
+			cue: {x: [], y: []},
+			projectile: {x: [], y: []}
+		};
 	}
 
 	logPositions(jet, boats, projectiles) {
 		this.positions.time.push(performance.now());
 		this.positions.agent.x.push(jet.x);
-    this.positions.agent.y.push(jet.y);
-    if (boats.length === 1) {
-    	this.positions.cue.x.push(boats[0].x);
-    	this.positions.cue.y.push(boats[0].y);
-    } else {
-    	this.positions.cue.x.push(NaN);
-    	this.positions.cue.y.push(NaN);
-    }
-    if (projectiles.length === 1) {
-    	this.positions.projectile.x.push(projectiles[0].x);
-    	this.positions.projectile.y.push(projectiles[0].y);
-    } else {
-    	this.positions.projectile.x.push(NaN);
-    	this.positions.projectile.y.push(NaN);
-    }
+		this.positions.agent.y.push(jet.y);
+		if (boats.length === 1) {
+			this.positions.cue.x.push(boats[0].x);
+			this.positions.cue.y.push(boats[0].y);
+		} else {
+			this.positions.cue.x.push(NaN);
+			this.positions.cue.y.push(NaN);
+		}
+		if (projectiles.length === 1) {
+			this.positions.projectile.x.push(projectiles[0].x);
+			this.positions.projectile.y.push(projectiles[0].y);
+		} else {
+			this.positions.projectile.x.push(NaN);
+			this.positions.projectile.y.push(NaN);
+		}
 	}
 
 	log(isNew = true) {
