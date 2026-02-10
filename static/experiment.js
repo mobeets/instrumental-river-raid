@@ -60,15 +60,17 @@ class Experiment {
 				this.blocks[this.blocks.length-1].log(false);
 			}
 			if (this.no_more_blocks()) {
-				// log end of experiment
-				wsLogger.saveJson(this);
 				this.log(false);
+				// log experiment
+				wsLogger.saveJson(this);
 				return;
 			};
 			this.block_index++;
 		} else if (goBack) {
 			if (this.block_index >= 1) this.block_index--;
 		}
+		// log experiment
+		wsLogger.saveJson(this);
 
 		this.block_count++;
 		let block = new TrialBlock(this.block_index, this.block_count, this, this.block_configs[this.block_index]);
@@ -289,7 +291,7 @@ class TrialBlock {
 		}
 		this.trial_index++;
 		let trial_info = this.cue_list[this.trial_index];
-		let trial = new Trial(this.trial_index, this.index, trial_info.cue, trial_info.location_index);
+		let trial = new Trial(this.trial_index, this.block_index, trial_info.cue, trial_info.location_index);
 		trial.log(true);
 		this.trials.push(trial);
 		return trial;
@@ -347,23 +349,23 @@ class Trial {
 	}
 
 	logEvent(event, callback) {
-	  event.trial_index = this.index;
-	  event.cue = this.cue;
-	  event.block_index = this.block_index;
-	  event.time = performance.now();
+		event.trial_index = this.index;
+		event.cue = this.cue;
+		event.block_index = this.block_index;
+		event.time = performance.now();
 		wsLogger.log("Trial event", event, false, callback);
 	}
 
 	trigger(event, callback) {
 		if (typeof event === "string") {
-	    event = {name: event};
-	  }
-	  this.logEvent(event, callback);
+			event = {name: event};
+		}
+		this.logEvent(event, callback);
 		this.events.push(event);
 	}
 
 	toJSON() {
-    // outputs all of object's variables as a json object
-    return Object.assign({}, this);
-  }
+		// outputs all of object's variables as a json object
+		return Object.assign({}, this);
+	}
 }
