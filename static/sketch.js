@@ -613,6 +613,7 @@ function checkUserButtonPresses() {
       // pause game
       eventMsg = 'pause';
       gameMode = PAUSE_MODE;
+      wsLogger.saveJson(E); // save experiment
     }
   } else if (user.pause) {
     // unpause game
