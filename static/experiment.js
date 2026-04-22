@@ -175,7 +175,7 @@ function randomR(rows, cols, maxEntropyPolicy = false) {
   return R;
 }
 
-function divideRange(x_start, x_end, n_segments) {
+function divideRange(x_start, x_end, n_segments = 10) {
   // subdivide range (x_start, x_end) into n_segments equal segments
   const result = [];
   const step = (x_end - x_start) / n_segments;
@@ -243,24 +243,30 @@ class TrialBlock {
 	  return xs;
 	}
 
-	makeLocationSequence(ncues, ntrials_per_cue) {
-		// creates a pseudorandom sequence of integers (0..ntrials_per_cue-1)
-		// for each cue in 0...ncues-1
+	makeLocationSequence(ncues, ntrials_per_cue, npositions_per_cue = 10) {
+	  // creates a pseudorandom sequence of integers (0..npositions_per_cue-1)
+	  // for each cue in 0...ncues-1, with total length ntrials_per_cue per cue
 	  let locs_per_cue = [];
 	  for (let k = 0; k < ncues; k++) {
-	    // Create array [0, 1, ..., ntrials_per_cue-1]
 	    let locArray = [];
-	    for (let i = 0; i < ntrials_per_cue; i++) {
-	      locArray.push(i);
+	    let remaining = ntrials_per_cue;
+
+	    while (remaining > 0) {
+	      // Build a shuffled pool of 0..npositions_per_cue-1
+	      let pool = [];
+	      for (let i = 0; i < npositions_per_cue; i++) {
+	        pool.push(i);
+	      }
+	      // Fisher-Yates shuffle
+	      for (let i = pool.length - 1; i > 0; i--) {
+	        let j = floor(random(i + 1));
+	        [pool[i], pool[j]] = [pool[j], pool[i]];
+	      }
+	      // Take only as many as still needed (handles remainder)
+	      locArray = locArray.concat(pool.slice(0, remaining));
+	      remaining -= npositions_per_cue;
 	    }
 
-	    // Shuffle in place (Fisher–Yates)
-	    for (let i = locArray.length - 1; i > 0; i--) {
-	      let j = floor(random(i + 1));  // p5.js random integer
-	      [locArray[i], locArray[j]] = [locArray[j], locArray[i]];
-	    }
-
-	    // Append this location list
 	    locs_per_cue.push(locArray);
 	  }
 	  return locs_per_cue;
@@ -268,7 +274,7 @@ class TrialBlock {
 
 	setTrialOrder() {
 		let cue_list = this.makeCueSequence(this.ncues, this.ntrials_per_cue);
-		let loc_list = this.makeLocationSequence(this.ncues, this.ntrials_per_cue);
+		let loc_list = this.makeLocationSequence(this.ncues, this.ntrials_per_cue, E.params.POSITIONS_PER_CUE);
 		let cue_index = Array(this.ncues).fill(0);
 		let res = [];
 		for (var i = 0; i < cue_list.length; i++) {
@@ -279,7 +285,7 @@ class TrialBlock {
 			res.push({cue: cue, location_index: loc_index});
 		}
 		this.cue_list = res;
-		this.cue_locations = divideRange(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2, this.ntrials_per_cue);
+		this.cue_locations = divideRange(riverX + cueWidth/2, riverX + riverWidth - cueWidth/2, E.params.POSITIONS_PER_CUE);
 	}
 
 	next_trial() {

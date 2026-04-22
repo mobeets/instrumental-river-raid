@@ -15,3 +15,5 @@ wheels/
 # Logs
 logs/*
 !logs/.gitkeep
+
+.conda/
