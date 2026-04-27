@@ -5,7 +5,7 @@ import argparse
 from itertools import cycle
 
 tasks = {
-    "targets": [1, 3],
+    "targets": [3, 3],
     "instrumental": [2, 3, 4],
     "targets-instrumental": [2, 3, 4],
     "locations": [3],
