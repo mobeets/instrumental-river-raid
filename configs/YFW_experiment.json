@@ -174,7 +174,7 @@
     "name": "targets",
     "ncues": 1,
     "is_practice": false,
-    "ntrials_per_cue": 50,
+    "ntrials_per_cue": 20,
     "theme": "",
     "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
     "scene": "river"
