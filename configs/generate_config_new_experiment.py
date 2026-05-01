@@ -130,7 +130,7 @@ if __name__ == "__main__":
                         help="Task to add as end probe block (e.g. 'targets')")
     parser.add_argument("--end_probe_ncues", type=int, default=1,
                     help="Number of cues for end probe block")
-    parser.add_argument("--end_probe_ntrials", type=int, default=50,
+    parser.add_argument("--end_probe_ntrials", type=int, default=30,
                         help="Number of trials per cue for end probe block")
 
     args = parser.parse_args()
