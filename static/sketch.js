@@ -74,6 +74,13 @@ function preload() {
   spriteSheets.flowers_food = new SquareSpriteSheet('assets/themes/flowers_food.png', spriteSize);
   spriteSheets.animals_land = new SquareSpriteSheet('assets/themes/animals_land.png', spriteSize);
   spriteSheets.training = new SquareSpriteSheet('assets/themes/training.png', spriteSize);
+  spriteSheets.carbike = new SquareSpriteSheet('assets/themes/carbike.png', spriteSize);
+  spriteSheets.bustruck = new SquareSpriteSheet('assets/themes/bustruck.png', spriteSize);
+  spriteSheets.building = new SquareSpriteSheet('assets/themes/building.png', spriteSize);
+  spriteSheets.animal_cartoons = new SquareSpriteSheet('assets/themes/animal_cartoons.png', spriteSize);
+  spriteSheets.animals_4 = new SquareSpriteSheet('assets/themes/animals_4.png', spriteSize);
+  spriteSheets.faces = new SquareSpriteSheet('assets/themes/faces.png', spriteSize);
+  spriteSheets.toys = new SquareSpriteSheet('assets/themes/toys.png', spriteSize);
   config = loadConfig();
 }
 
@@ -252,24 +259,30 @@ function draw() {
         // markEvent triggers photodiode/sound
         markEvent();
       }
+
       if (boats[i].collidesWithJet(jet)) {
-        // Collided with jet
-        if (!immobileMode) {
+        if (E.params['target-variant'] && trial_block.name === 'targets') {
+          trial.trigger(getEventNameWithLocations('cue offset - hit', jet, [boats[i]]));
+          trial_block.score++;
+          if (E.params.showHUD) streakbar.hit();
+          let dx = boats[i].width / 2;
+          let cy = boats[i].y - boats[i].height / 3;
+          explosions.push(new Explosion(boats[i].x - dx, boats[i].x + dx, cy, [255, 150, 0], explosionDuration));
+          boats.splice(i, 1);
+        } else if (!immobileMode) {
           trial.trigger(getEventNameWithLocations('cue offset - collision', jet, [boats[i]]));
           boats.splice(i, 1);
           jet.takeHit();
           streakbar.reset();
-          
           explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height, [255, 150, 0], explosionDuration));
-          
           lives--;
         }
       } else if (boats[i].offscreen()) {
-        // trial ends without a hit
         trial.trigger(getEventNameWithLocations('cue offset - offscreen', jet, [boats[i]]));
         boats.splice(i, 1);
       }
     }
+    
 
     // Update and render projectiles
     for (let i = projectiles.length - 1; i >= 0; i--) {
