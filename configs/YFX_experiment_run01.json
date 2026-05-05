@@ -17,15 +17,7 @@
     "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
     "scene": "grass"
   },
-  {
-    "name": "targets",
-    "ncues": 1,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "",
-    "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
-    "scene": "river"
-  },
+  
   {
     "name": "instrumental",
     "ncues": 2,
@@ -45,6 +37,15 @@
     "scene": "grass"
   },
   {
+    "name": "targets",
+    "ncues": 1,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "",
+    "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
+    "scene": "river"
+  },
+  {
     "name": "instrumental",
     "ncues": 2,
     "is_practice": false,
@@ -63,6 +64,15 @@
     "scene": "grass"
   },
   {
+    "name": "targets",
+    "ncues": 1,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "",
+    "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
+    "scene": "grass"
+  },
+  {
     "name": "instrumental",
     "ncues": 3,
     "is_practice": false,
@@ -71,24 +81,8 @@
     "instructions": "figure out which button will destroy each block",
     "scene": "river"
   },
-  {
-    "name": "targets",
-    "ncues": 1,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "",
-    "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
-    "scene": "river"
-  },
-  {
-    "name": "targets",
-    "ncues": 1,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "",
-    "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
-    "scene": "grass"
-  },
+  
+  
   {
     "name": "instrumental",
     "ncues": 2,
@@ -97,6 +91,15 @@
     "theme": "villains_2",
     "instructions": "figure out which button will destroy each block",
     "scene": "grass"
+  },
+  {
+    "name": "targets",
+    "ncues": 1,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "",
+    "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
+    "scene": "river"
   },
   {
     "name": "instrumental",
@@ -107,6 +110,7 @@
     "instructions": "figure out which button will destroy each block",
     "scene": "grass"
   },
+  
   {
     "name": "instrumental",
     "ncues": 3,
@@ -117,15 +121,6 @@
     "scene": "river"
   },
   {
-    "name": "instrumental",
-    "ncues": 5,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "villains_2",
-    "instructions": "figure out which button will destroy each block",
-    "scene": "grass"
-  },
-  {
     "name": "targets",
     "ncues": 1,
     "is_practice": false,
@@ -134,6 +129,16 @@
     "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
     "scene": "grass"
   },
+  {
+    "name": "instrumental",
+    "ncues": 5,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "villains_2",
+    "instructions": "figure out which button will destroy each block",
+    "scene": "grass"
+  },
+  
   {
     "name": "targets",
     "ncues": 1,
