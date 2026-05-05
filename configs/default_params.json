@@ -18,5 +18,6 @@
 	"nactions": 3,
 	"projectileShowsNumber": true,
 	"photodiode": {"size": 120},
-	"debug": false
+	"debug": false,
+	"target-variant": false
 }
