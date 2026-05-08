@@ -1,7 +1,7 @@
 [
   {
     "name": "targets",
-    "ncues": 1,
+    "ncues": 3,
     "is_practice": true,
     "ntrials_per_cue": 50,
     "theme": "",
@@ -10,7 +10,7 @@
   },
   {
     "name": "targets",
-    "ncues": 1,
+    "ncues": 3,
     "is_practice": false,
     "ntrials_per_cue": 10,
     "theme": "",
@@ -38,7 +38,7 @@
   },
   {
     "name": "targets",
-    "ncues": 1,
+    "ncues": 3,
     "is_practice": false,
     "ntrials_per_cue": 10,
     "theme": "",
@@ -65,7 +65,7 @@
   },
   {
     "name": "targets",
-    "ncues": 1,
+    "ncues": 3,
     "is_practice": false,
     "ntrials_per_cue": 10,
     "theme": "",
@@ -94,7 +94,7 @@
   },
   {
     "name": "targets",
-    "ncues": 1,
+    "ncues": 3,
     "is_practice": false,
     "ntrials_per_cue": 10,
     "theme": "",
@@ -122,7 +122,7 @@
   },
   {
     "name": "targets",
-    "ncues": 1,
+    "ncues": 3,
     "is_practice": false,
     "ntrials_per_cue": 10,
     "theme": "",
@@ -141,12 +141,12 @@
   
   {
     "name": "targets",
-    "ncues": 1,
+    "ncues": 3,
     "is_practice": false,
     "ntrials_per_cue": 10,
     "theme": "",
     "instructions": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
-    "scene": "grass"
+    "scene": "animals_land"
   },
   {
     "name": "instrumental",
@@ -186,7 +186,7 @@
   },
   {
     "name": "targets",
-    "ncues": 1,
+    "ncues": 3,
     "is_practice": false,
     "ntrials_per_cue": 30,
     "theme": "",

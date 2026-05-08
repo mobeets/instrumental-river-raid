@@ -6,7 +6,7 @@ from itertools import cycle
 
 tasks = {
     "targets": [3, 3],
-    "instrumental": [2, 3, 4],
+    "instrumental": [2, 3, 4, 5],
     "targets-instrumental": [2, 3, 4],
     "locations": [3],
     "locations-instrumental": [2, 3, 4, 5]
@@ -132,9 +132,10 @@ if __name__ == "__main__":
                     help="Number of cues for end probe block")
     parser.add_argument("--end_probe_ntrials", type=int, default=30,
                         help="Number of trials per cue for end probe block")
+    parser.add_argument("--scenes", nargs="+", default=["grass", "river"])
 
     args = parser.parse_args()
-    blocks = generate_blocks(args.tasks, args.themes, args.ntrials_per_cue, args.nrepeats_per_cycle)
+    blocks = generate_blocks(args.tasks, args.themes, args.ntrials_per_cue, args.nrepeats_per_cycle, args.scenes)
 
     if args.end_probe_task:
         probe = make_end_probe(args.end_probe_task, args.end_probe_ncues, args.end_probe_ntrials, SCENES)
