@@ -6,7 +6,7 @@ from itertools import cycle
 
 tasks = {
     "targets": [3, 3],
-    "instrumental": [2, 3, 4, 5],
+    "instrumental": [2, 3, 4 ],
     "targets-instrumental": [2, 3, 4],
     "locations": [3],
     "locations-instrumental": [2, 3, 4, 5]
