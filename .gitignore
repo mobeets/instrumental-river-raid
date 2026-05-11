@@ -17,3 +17,5 @@ logs/*
 !logs/.gitkeep
 
 .conda/
+logs/*
+!logs/.gitkeep
