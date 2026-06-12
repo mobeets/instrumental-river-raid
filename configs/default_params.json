@@ -11,6 +11,8 @@
 	"MAX_BOATS": 1,
 	"PROP_RIVER_WIDTH": 0.84,
 	"PROP_CUE_WIDTH": 0.2,
+	"PROXIMITY_DURATION": 0.2, 
+	"CUE_ONSET_PAUSE": 0.25,
 	"jetOffset": 60,
 	"showHUD": false,
 	"bulletsPassThru": false,
@@ -19,5 +21,5 @@
 	"projectileShowsNumber": true,
 	"photodiode": {"size": 120},
 	"debug": false,
-	"target-variant": false
+	"target-variant": true
 }

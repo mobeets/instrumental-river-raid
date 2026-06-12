@@ -5,16 +5,16 @@ import argparse
 from itertools import cycle
 
 tasks = {
-    "targets": [3, 3],
-    "instrumental": [2, 3, 4 ],
+    "targets": [3],
+    "instrumental": [2, 3, 4],
     "targets-instrumental": [2, 3, 4],
     "locations": [3],
     "locations-instrumental": [2, 3, 4, 5]
 }
 instructions = {
-    "targets": "control an airplane with the joystick\ndestroy each block by pressing the correct button",
-    "instrumental": "figure out which button will destroy each block",
-    "targets-instrumental": "control an airplane with the joystick\nfigure out which button will destroy each block",
+    "targets": "control the airplane with the joystick\nfly underneath each image to destroy it",
+    "instrumental": "figure out which button will destroy each image",
+    "targets-instrumental": "control the airplane with the joystick\nfigure out which button will destroy each image",
     "locations": "control an airplane with the joystick\ndestroy each block by shooting the marked location",
     "locations-instrumental": "control an airplane with the joystick\nfigure out which location will destroy each block"
 }
@@ -58,6 +58,7 @@ def get_cue_and_theme_orders(task_names, nrepeats_per_cycle, scenes):
 def generate_blocks(task_names, themes, ntrials_per_cue=10, nrepeats_per_cycle=2, scenes=SCENES):
     # Tasks and ncues specification
     all_blocks = []
+    pair_targets_instrumental = "targets" in task_names and "instrumental" in task_names
 
     # Shuffle themes so each (run, task) gets one theme
     theme_iterator = cycle(themes)
@@ -65,25 +66,88 @@ def generate_blocks(task_names, themes, ntrials_per_cue=10, nrepeats_per_cycle=2
     orders = get_cue_and_theme_orders(task_names, nrepeats_per_cycle, scenes)
 
     for run in range(nrepeats_per_cycle):
-        for task in task_names:
+        run_blocks = []  # collect this run's blocks before shuffling
 
-            # Assign one theme for all blocks in this (run, task)
-            if task not in ["targets", "locations"]:
-                theme = next(theme_iterator)
-            else:
-                theme = ""
+        if pair_targets_instrumental:
+            # Draw one shared theme for both targets and instrumental this run
+            theme = next(theme_iterator)
+
+            # Get the pre-randomized ncues and scene assignments for instrumental this run
+            inst_orders = orders["instrumental"][run]
+
+            # List to hold the paired blocks before shuffling
+            paired = []
+
+            # ---- ADD PRACTICE BLOCKS (RUN 1 ONLY) ----
+            if run == 0:
+                for practice_task in ["targets", "instrumental"]:
+                    practice_ncues = min(tasks[practice_task])
+                    practice_scene = random.choice(scenes)
+                    practice_block = {
+                        "name": practice_task,
+                        "ncues": practice_ncues,
+                        "is_practice": True,
+                        "ntrials_per_cue": 50,
+                        "theme": "training" if practice_task == "instrumental" else "",
+                        "instructions": instructions[practice_task],
+                        "scene": practice_scene
+                    }
+                    all_blocks.append(practice_block)
+
+            # Loop over each (ncues, scene) combination for instrumental this run
+            for (ncues, scene_index) in zip(*inst_orders):
+                scene = scenes[scene_index]
+
+                # Create the instrumental block
+                paired.append({
+                    "name": "instrumental",
+                    "ncues": ncues,
+                    "is_practice": False,
+                    "ntrials_per_cue": ntrials_per_cue,
+                    "theme": theme,
+                    "instructions": instructions["instrumental"],
+                    "scene": scene
+                })
+
+                # Create the matching targets block — same theme and ncues as instrumental
+                paired.append({
+                    "name": "targets",
+                    "ncues": ncues,
+                    "is_practice": False,
+                    "ntrials_per_cue": ntrials_per_cue,
+                    "theme": theme,
+                    "instructions": instructions["targets"],
+                    "scene": random.choice(scenes)
+                })
+
+            # Shuffle so targets and instrumental are interleaved randomly
+            random.shuffle(paired)
+
+            # Add this run's paired blocks to run_blocks
+            run_blocks.extend(paired)
+
+        for task in task_names:
+            # Skip targets and instrumental — handled by paired logic above
+            if pair_targets_instrumental and task in ["targets", "instrumental"]:
+                continue
+
+            # Assign theme for this task  # ADDED
+            if task not in ["locations"]:  # ADDED
+                theme = next(theme_iterator)  # ADDED
+            else:  # ADDED
+                theme = ""  # ADDED
 
             # ---- ADD PRACTICE BLOCK (RUN 1 ONLY) ----
             if run == 0:
                 practice_ncues = min(tasks[task])
-                practice_scene = random.choice(scenes)  # can randomize or enforce balancing if needed
+                practice_scene = random.choice(scenes)
 
                 practice_block = {
                     "name": task,
                     "ncues": practice_ncues,
                     "is_practice": True,
                     "ntrials_per_cue": 50,
-                    "theme": "training" if task not in ["targets", "locations"] else "",
+                    "theme": "training" if task not in ["locations"] else "",
                     "instructions": instructions[task],
                     "scene": practice_scene
                 }
@@ -106,6 +170,9 @@ def generate_blocks(task_names, themes, ntrials_per_cue=10, nrepeats_per_cycle=2
                 all_blocks.append(block)
                 mini_block_index += 1
 
+        # After all tasks processed, add run_blocks to all_blocks
+        all_blocks.extend(run_blocks)
+
     return all_blocks
 
 def make_end_probe(task, ncues, ntrials, scenes):
@@ -114,7 +181,7 @@ def make_end_probe(task, ncues, ntrials, scenes):
         "ncues": ncues,
         "is_practice": False,
         "ntrials_per_cue": ntrials,
-        "theme": "" if task in ["targets", "locations"] else "training",
+        "theme": "" if task in ["locations"] else "training",
         "instructions": instructions[task],
         "scene": random.choice(scenes)
     }

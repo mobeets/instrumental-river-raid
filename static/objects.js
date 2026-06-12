@@ -39,6 +39,7 @@ class Jet {
     this.height = 60;
     this.speed = jetSpeed;
     this.hitTime = 0;
+    this.visible = true; // hidden between trials in instrumental
   }
   
   takeHit() {
@@ -49,7 +50,7 @@ class Jet {
 
   update() {
     if (immobileMode) {
-      this.x = width / 2;
+      // this.x = width / 2;
     } else {
       if (user.moveLeft) this.x -= this.speed;
       else if (user.moveRight) this.x += this.speed;
@@ -58,6 +59,7 @@ class Jet {
   }
 
   render() {
+    if (!this.visible) return; // hide jet between trials in instrumental
     imageMode(CENTER);
     if (this.hitTimer > 0 && this.hitTimer % 16 < 8) {
       blendMode(DIFFERENCE);
@@ -78,9 +80,10 @@ class Boat {
     this.x = x;
     this.y = y;
     this.width = cueWidth;
-    if (immobileMode) {
-      this.x = width/2;
-    }
+    this.waitTimer = E.params.CUE_ONSET_PAUSE * E.params.FPS;
+    //if (immobileMode) { // commenting this out so that the plane appears at different positions
+      //this.x = width/2;
+    //}
     this.nTilesPerCue = nTilesPerCue;
     this.height = this.width / nTilesPerCue;
 
@@ -93,11 +96,32 @@ class Boat {
     this.hasBeenSeen = false;
     this.selectedLocationIndex = -1;
     this.correctActionIndex = this.getCorrectActionIndex();
+    this.proximityTimer = 0;      // tracks how long jet has been horizontally underneath
+    this.shouldExplode = false;   // flag for sketch.js to trigger explosion
   }
 
   update() {
-    this.y += this.speed;
-  }
+    if (this.waitTimer > 0) {
+        this.waitTimer--;
+    } else {
+        this.y += this.speed;
+
+        // proximity timer for targets task — explode if jet is underneath long enough
+        // if (trial_block.name === 'targets') {
+        //     let horizontalOverlap = 
+        //         jet.x + jet.width/2 > this.x - this.width/2 &&
+        //         jet.x - jet.width/2 < this.x + this.width/2;
+        //     if (horizontalOverlap) {
+        //         this.proximityTimer += 1/E.params.FPS;
+        //         if (this.proximityTimer >= E.params.PROXIMITY_DURATION) {
+        //             this.shouldExplode = true;
+        //         }
+        //     } else {
+        //         this.proximityTimer = 0;
+        //     }
+        // }
+    }  // ← closes else
+}  // ← closes update()
 
   render() {
     push();
@@ -159,7 +183,9 @@ class Boat {
           }
         }
       } else {
-        image(this.img, tileX, this.y, tileW, this.height);
+          if (this.img !== undefined) {
+              image(this.img, tileX, this.y, tileW, this.height);
+          }
       }
 
       // outline each square

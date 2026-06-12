@@ -104,7 +104,7 @@ function newGame(restartGame = false, goBack = false) {
 
   if (trial_block.name === "targets") {
     immobileMode = false;
-    showAnswers = true;
+    showAnswers = false;
     mustHitLocation = false;
   } else if (trial_block.name === "instrumental") {
     immobileMode = true;
@@ -223,7 +223,17 @@ function draw() {
       background('#496FB6');
     }
   } else {
-    background('gray');
+    if (gameMode == READY_MODE) {
+      let taskBg = {
+          'targets': '#FFF9C4',
+          'instrumental': '#BBDEFB',
+          'targets-instrumental': '#C8E6C9'
+      }[trial_block.name] || 'gray';
+      background(taskBg);
+  } else {
+      background('gray');
+  }
+    
   }
   controls.update();
   checkUserButtonPresses();
@@ -243,8 +253,10 @@ function draw() {
 
         let curX = trial_block.cue_locations[trial.location_index];
         // let curX = riverX + random(cueWidth/2, riverWidth - cueWidth/2);
-        let boat = new Boat(boatCounter, trial.cue-1, curX, -cueWidth, nTilesPerCue);
+        let boat = new Boat(boatCounter, trial.cue-1, curX, cueWidth/2, nTilesPerCue);
         boatCounter++;
+        if (immobileMode) jet.x = curX; // snap jet to boat position for instrumental
+        if (immobileMode) jet.visible = true; // show jet when new boat appears
         trial.trigger(getEventNameWithLocations('cue created', jet, [boat]));
         boats.push(boat);
       }
@@ -253,6 +265,17 @@ function draw() {
     // Update and render boats
     for (let i = boats.length - 1; i >= 0; i--) {
       boats[i].update();
+      // proximity-based explosion for targets task
+      if (trial_block.name === 'targets' && boats[i].shouldExplode) {
+        trial.trigger(getEventNameWithLocations('cue offset - hit', jet, [boats[i]]));
+        trial_block.score++;
+        if (E.params.showHUD) streakbar.hit();
+        let dx = boats[i].width / 2;
+        let cy = boats[i].y - boats[i].height / 3;
+        explosions.push(new Explosion(boats[i].x - dx, boats[i].x + dx, cy, [255, 150, 0], explosionDuration));
+        boats.splice(i, 1);
+        continue;
+      }
 
       if (!boats[i].hasBeenSeen && boats[i].onscreen()) {
         trial.trigger(getEventNameWithLocations('cue onset', jet, [boats[i]]));
@@ -279,6 +302,7 @@ function draw() {
         }
       } else if (boats[i].offscreen()) {
         trial.trigger(getEventNameWithLocations('cue offset - offscreen', jet, [boats[i]]));
+        if (immobileMode) jet.visible = false; // hide jet until next trial
         boats.splice(i, 1);
       }
     }
@@ -301,6 +325,7 @@ function draw() {
           let dx = boats[j].width/2;
           let cy = boats[j].y - boats[j].height/3;
           explosions.push(new Explosion(boats[j].x - dx, boats[j].x + dx, cy, [255, 150, 0], explosionDuration));
+          if (immobileMode) jet.visible = false; // hide jet until next trial
           boats.splice(j, 1);
           projectiles.splice(i, 1);
           break;
@@ -546,16 +571,36 @@ function drawPauseScreen() {
     }
     fill('black');
     textSize(32);
+
     text("Game " + (E.block_index+1).toFixed(0) + " of " + E.block_configs.length.toFixed(0), width / 2, secondLineY + 0);
+
+    // Display task name with task-specific color
+    let taskDisplayName = {
+        'targets': 'Targets',
+        'instrumental': 'Learning',
+        'targets-instrumental': 'Combined: Targets + Learning'
+    }[trial_block.name] || trial_block.name;
+    let taskColor = {
+        'targets': '#6B4A00',
+        'instrumental': '#1a237e',
+        'targets-instrumental': '#1B5E20'
+    }[trial_block.name] || '#1a5276';
+    fill(taskColor);
+    textSize(36);
+    text(taskDisplayName, width / 2, secondLineY + 45);
+
     if (trial_block.is_practice) {
       fill('#9e442f');
-      text("Practice round!", width / 2, secondLineY + 40);
+      textSize(32);
+      text("Practice round!", width / 2, secondLineY + 90);
     }
     if (trial_block.instructions) {
-      showInstructions(secondLineY + 100);
-      showImages(secondLineY + 300);
+      showInstructions(secondLineY + 140);
+      showImages(secondLineY + 340);
       showJet();
     }
+    
+    
     textSize(32);
     fill('black');
     // text("Fire to start", width / 2, 4*height/8 + 80);
@@ -612,7 +657,7 @@ function checkUserButtonPresses() {
     let action = user.fired;
     if (action > 0) {
       if (projectiles.length < E.params.MAX_PROJECTILES) {
-        if (trial !== undefined && boats.length > 0 && boats[0].hasBeenSeen && trial?.canFireAgain === undefined) {
+        if (trial !== undefined && boats.length > 0 && boats[0].hasBeenSeen && trial?.canFireAgain === undefined && trial_block.name !== 'targets') {
           eventMsg = 'projectile fired ' + action.toFixed(0);
           projectiles.push(new Projectile(jet.x, jet.y - 30, action, showProjectileIdentity));
           if (mustHitLocation && boats.length > 0) boats[0].setSelectedLocationIndex(jet.x);

@@ -1,0 +1,15 @@
+{
+  "shared_run": 2,
+  "shared_theme": "animals_land",
+  "targets_unique_theme": "faces",
+  "instrumental_unique_theme": "toys",
+  "ti_unique_theme": "animals_1",
+  "slot_order": [
+    "T1",
+    "I2",
+    "I1",
+    "TI2",
+    "TI1",
+    "T2"
+  ]
+}
