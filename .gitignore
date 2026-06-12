@@ -19,3 +19,4 @@ logs/*
 .conda/
 logs/*
 !logs/.gitkeep
+assets/themes/src/
