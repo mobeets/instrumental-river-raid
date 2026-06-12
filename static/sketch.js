@@ -74,13 +74,13 @@ function preload() {
   spriteSheets.flowers_food = new SquareSpriteSheet('assets/themes/flowers_food.png', spriteSize);
   spriteSheets.animals_land = new SquareSpriteSheet('assets/themes/animals_land.png', spriteSize);
   spriteSheets.training = new SquareSpriteSheet('assets/themes/training.png', spriteSize);
-  spriteSheets.carbike = new SquareSpriteSheet('assets/themes/carbike.png', spriteSize);
-  spriteSheets.bustruck = new SquareSpriteSheet('assets/themes/bustruck.png', spriteSize);
-  spriteSheets.building = new SquareSpriteSheet('assets/themes/building.png', spriteSize);
   spriteSheets.animal_cartoons = new SquareSpriteSheet('assets/themes/animal_cartoons.png', spriteSize);
   spriteSheets.animals_4 = new SquareSpriteSheet('assets/themes/animals_4.png', spriteSize);
   spriteSheets.faces = new SquareSpriteSheet('assets/themes/faces.png', spriteSize);
   spriteSheets.toys = new SquareSpriteSheet('assets/themes/toys.png', spriteSize);
+  spriteSheets.fractal = new SquareSpriteSheet('assets/themes/fractal.png', spriteSize);
+  spriteSheets.abstract_2 = new SquareSpriteSheet('assets/themes/abstract_2.png', spriteSize);
+  spriteSheets.abstract_3 = new SquareSpriteSheet('assets/themes/abstract_3.png', spriteSize);
   config = loadConfig();
 }
 

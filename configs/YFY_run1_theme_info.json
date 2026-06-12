@@ -1,0 +1,15 @@
+{
+  "shared_run": 2,
+  "shared_theme": "animals_land",
+  "targets_unique_theme": "abstract_3",
+  "instrumental_unique_theme": "abstract_2",
+  "ti_unique_theme": "flowers_food",
+  "slot_order": [
+    "T1",
+    "I2",
+    "TI2",
+    "I1",
+    "T2",
+    "TI1"
+  ]
+}
