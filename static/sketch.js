@@ -248,7 +248,7 @@ function draw() {
 
   // ITI 1 — jet appears after previous trial ends
   let iti_p = 1/(E.params.ITI_MEAN_DURATION*E.params.FPS);
-  if (explosions.length === 0 && boats.length === 0 && !jet.visible && !trial_block.is_complete() && random(1) < iti_p) {
+  if (explosions.length === 0 && boats.length === 0 && !jet.visible && random(1) < iti_p) {
       trial = trial_block.next_trial();
       if (trial === undefined) {
           newGame(false);
@@ -327,8 +327,9 @@ function draw() {
                   boats.splice(i, 1);
                   jet.takeHit();
                   streakbar.reset();
-                  explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height, [255, 150, 0], explosionDuration));
                   lives--;
+                  jet.visible = false;  
+                  trial = undefined;     
               } else {
                   trial.trigger(getEventNameWithLocations('cue offset - collision', jet, [boats[i]]));
                   jet.visible = false;
@@ -374,7 +375,7 @@ function draw() {
 
       if (pIsAboveBoat || p.offscreen()) {
         if (E.params.showHUD) streakbar.reset();
-        trial.trigger(getEventNameWithLocations('projectile offset - miss', jet, boats, {action_index: p.action}));
+        if (trial !== undefined) trial.trigger(getEventNameWithLocations('projectile offset - miss', jet, boats, {action_index: p.action}));
         projectiles.splice(i, 1);
       }
     }
