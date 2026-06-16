@@ -283,8 +283,14 @@ function draw() {
         markEvent();
       }
 
-      if (boats[i].collidesWithJet(jet)) {
-        if (E.params['target-variant'] && trial_block.name === 'targets') {
+      let horizontalOverlap = jet.x + jet.width/2 > boats[i].x - boats[i].width/2 &&
+                  jet.x - jet.width/2 < boats[i].x + boats[i].width/2;
+      let boatBottomY = boats[i].y + boats[i].height/2;
+      let jetTopY = jet.y - jet.height/2;
+      let jetBottomY = jet.y + jet.height/2;
+      let boatReachedJet = boatBottomY >= jetTopY && boatBottomY <= jetBottomY;
+
+      if (E.params['target-variant'] && trial_block.name === 'targets' && horizontalOverlap && boatReachedJet) {
           trial.trigger(getEventNameWithLocations('cue offset - hit', jet, [boats[i]]));
           trial_block.score++;
           if (E.params.showHUD) streakbar.hit();
@@ -292,18 +298,17 @@ function draw() {
           let cy = boats[i].y - boats[i].height / 3;
           explosions.push(new Explosion(boats[i].x - dx, boats[i].x + dx, cy, [255, 150, 0], explosionDuration));
           boats.splice(i, 1);
-        } else if (!immobileMode) {
+        } else if (boats[i].collidesWithJet(jet) && !immobileMode) {
           trial.trigger(getEventNameWithLocations('cue offset - collision', jet, [boats[i]]));
           boats.splice(i, 1);
           jet.takeHit();
           streakbar.reset();
           explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height, [255, 150, 0], explosionDuration));
           lives--;
-        }
-      } else if (boats[i].offscreen()) {
-        trial.trigger(getEventNameWithLocations('cue offset - offscreen', jet, [boats[i]]));
-        if (immobileMode) jet.visible = false; // hide jet until next trial
-        boats.splice(i, 1);
+        } else if (boats[i].offscreen()) {
+          trial.trigger(getEventNameWithLocations('cue offset - offscreen', jet, [boats[i]]));
+          if (immobileMode) jet.visible = false;
+          boats.splice(i, 1);
       }
     }
     
@@ -522,7 +527,7 @@ function showJet() {
     if (p.y < jet.y - 100) projectiles_test.splice(i, 1);
   }
   let action = user.fired;
-  if (action > 0) {
+  if (action > 0 && trial_block.name !== 'targets') {
     if (projectiles_test.length < E.params.MAX_PROJECTILES) {
       projectiles_test.push(new Projectile(jet.x, jet.y - 30, action, showProjectileIdentity));
     }
