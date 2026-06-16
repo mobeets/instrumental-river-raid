@@ -47,6 +47,7 @@ const STARTING_MODE = 2;
 const READY_MODE = 3;
 const COMPLETE_MODE = 4;
 let gameMode = READY_MODE;
+let feedbackTimer = 0;  // counts down frames to show feedback text
 
 // ===== Assets =====
 
@@ -274,6 +275,7 @@ function draw() {
         let cy = boats[i].y - boats[i].height / 3;
         explosions.push(new Explosion(boats[i].x - dx, boats[i].x + dx, cy, [255, 150, 0], explosionDuration));
         boats.splice(i, 1);
+        feedbackTimer = E.params.FPS * 0.5;  // ← add this
         continue;
       }
 
@@ -298,13 +300,15 @@ function draw() {
           let cy = boats[i].y - boats[i].height / 3;
           explosions.push(new Explosion(boats[i].x - dx, boats[i].x + dx, cy, [255, 150, 0], explosionDuration));
           boats.splice(i, 1);
+          feedbackTimer = E.params.FPS * 0.5;  // show for 0.5 seconds
+          continue;
         } else if (boats[i].collidesWithJet(jet) && !immobileMode) {
-          trial.trigger(getEventNameWithLocations('cue offset - collision', jet, [boats[i]]));
-          boats.splice(i, 1);
-          jet.takeHit();
-          streakbar.reset();
-          explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height, [255, 150, 0], explosionDuration));
-          lives--;
+            trial.trigger(getEventNameWithLocations('cue offset - collision', jet, [boats[i]]));
+            boats.splice(i, 1);
+            jet.takeHit();
+            streakbar.reset();
+            explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height, [255, 150, 0], explosionDuration));
+            lives--;
         } else if (boats[i].offscreen()) {
           trial.trigger(getEventNameWithLocations('cue offset - offscreen', jet, [boats[i]]));
           if (immobileMode) jet.visible = false;
@@ -333,6 +337,7 @@ function draw() {
           if (immobileMode) jet.visible = false; // hide jet until next trial
           boats.splice(j, 1);
           projectiles.splice(i, 1);
+          feedbackTimer = E.params.FPS * 0.5;  // show feedback
           break;
         } else if (!E.params.bulletsPassThru && p.y < boats[j].y - boats[j].height/2) {
           // bullet is incorrect, so we make it disappear
@@ -363,6 +368,14 @@ function draw() {
       p.render();
     }
     jet.render();
+    if (feedbackTimer > 0) {
+      feedbackTimer--;
+      fill('#6B4A00');
+      textSize(64);
+      textAlign(CENTER, CENTER);
+      textFont(myFont);
+      text("Great!", width/2, height/2);
+}
   }
 
   // Update/render explosions
