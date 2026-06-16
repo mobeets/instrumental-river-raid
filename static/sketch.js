@@ -41,6 +41,7 @@ let BOAT_COLORS = []; // filled later in setup()
 let boatCounter = 0;
 let explosionDuration;
 
+
 const PLAY_MODE = 0;
 const PAUSE_MODE = 1;
 const STARTING_MODE = 2;
@@ -256,8 +257,22 @@ function draw() {
         // let curX = riverX + random(cueWidth/2, riverWidth - cueWidth/2);
         let boat = new Boat(boatCounter, trial.cue-1, curX, cueWidth/2, nTilesPerCue);
         boatCounter++;
-        if (immobileMode) jet.x = curX; // snap jet to boat position for instrumental
-        if (immobileMode) jet.visible = true; // show jet when new boat appears
+        if (trial_block.name === 'instrumental') {
+            jet.x = curX;  // snap to boat position for instrumental
+        } else {
+            jet.x = riverX + random(cueWidth/2, riverWidth - cueWidth/2);  // random position for targets and targets-instrumental
+        }
+        if (trial_block.name === 'instrumental') {
+            jet.x = curX;  // snap to boat position for instrumental
+        } else {
+            // random position that is never directly under the boat
+            let jetX;
+            do {
+                jetX = riverX + random(cueWidth/2, riverWidth - cueWidth/2);
+            } while (abs(jetX - curX) < (cueWidth/2 + jet.width/2));
+            jet.x = jetX;
+        }
+        jet.visible = true;
         trial.trigger(getEventNameWithLocations('cue created', jet, [boat]));
         boats.push(boat);
       }
@@ -311,7 +326,7 @@ function draw() {
             lives--;
         } else if (boats[i].offscreen()) {
           trial.trigger(getEventNameWithLocations('cue offset - offscreen', jet, [boats[i]]));
-          if (immobileMode) jet.visible = false;
+          jet.visible = false;
           boats.splice(i, 1);
       }
     }
@@ -334,7 +349,7 @@ function draw() {
           let dx = boats[j].width/2;
           let cy = boats[j].y - boats[j].height/3;
           explosions.push(new Explosion(boats[j].x - dx, boats[j].x + dx, cy, [255, 150, 0], explosionDuration));
-          if (immobileMode) jet.visible = false; // hide jet until next trial
+          jet.visible = false; // hide jet until next trial
           boats.splice(j, 1);
           projectiles.splice(i, 1);
           feedbackTimer = E.params.FPS * 0.5;  // show feedback
