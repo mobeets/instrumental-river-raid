@@ -264,6 +264,7 @@ function draw() {
               jet.x = jetX;
           }
           jet.visible = true;
+          return;  // ← skip ITI 2 this frame
       }
   }
 

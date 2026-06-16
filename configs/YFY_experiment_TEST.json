@@ -3,7 +3,7 @@
     "name": "targets",
     "ncues": 2,
     "is_practice": true,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "training",
     "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
     "scene": "river"
@@ -12,7 +12,7 @@
     "name": "targets",
     "ncues": 4,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "abstract_3",
     "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
     "scene": "river"
@@ -21,7 +21,7 @@
     "name": "targets",
     "ncues": 2,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "abstract_3",
     "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
     "scene": "grass"
@@ -30,7 +30,7 @@
     "name": "targets",
     "ncues": 3,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "abstract_3",
     "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
     "scene": "river"
@@ -39,7 +39,7 @@
     "name": "instrumental",
     "ncues": 2,
     "is_practice": true,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "training",
     "instructions": "figure out which button will destroy each image",
     "scene": "river"
@@ -48,7 +48,7 @@
     "name": "instrumental",
     "ncues": 2,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "animals_land",
     "instructions": "figure out which button will destroy each image",
     "scene": "grass"
@@ -57,7 +57,7 @@
     "name": "instrumental",
     "ncues": 3,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "animals_land",
     "instructions": "figure out which button will destroy each image",
     "scene": "grass"
@@ -66,7 +66,7 @@
     "name": "instrumental",
     "ncues": 4,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "animals_land",
     "instructions": "figure out which button will destroy each image",
     "scene": "grass"
@@ -75,7 +75,7 @@
     "name": "targets-instrumental",
     "ncues": 2,
     "is_practice": true,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "training",
     "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
     "scene": "grass"
@@ -84,7 +84,7 @@
     "name": "targets-instrumental",
     "ncues": 2,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "animals_land",
     "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
     "scene": "grass"
@@ -93,7 +93,7 @@
     "name": "targets-instrumental",
     "ncues": 4,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "animals_land",
     "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
     "scene": "grass"
@@ -102,7 +102,7 @@
     "name": "targets-instrumental",
     "ncues": 3,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "animals_land",
     "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
     "scene": "river"
@@ -111,7 +111,7 @@
     "name": "instrumental",
     "ncues": 4,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "abstract_2",
     "instructions": "figure out which button will destroy each image",
     "scene": "river"
@@ -120,7 +120,7 @@
     "name": "instrumental",
     "ncues": 2,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "abstract_2",
     "instructions": "figure out which button will destroy each image",
     "scene": "river"
@@ -129,7 +129,7 @@
     "name": "instrumental",
     "ncues": 3,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "abstract_2",
     "instructions": "figure out which button will destroy each image",
     "scene": "river"
@@ -138,7 +138,7 @@
     "name": "targets",
     "ncues": 2,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "animals_land",
     "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
     "scene": "river"
@@ -147,7 +147,7 @@
     "name": "targets",
     "ncues": 3,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "animals_land",
     "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
     "scene": "grass"
@@ -156,7 +156,7 @@
     "name": "targets",
     "ncues": 4,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "animals_land",
     "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
     "scene": "river"
@@ -165,7 +165,7 @@
     "name": "targets-instrumental",
     "ncues": 4,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "flowers_food",
     "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
     "scene": "river"
@@ -174,7 +174,7 @@
     "name": "targets-instrumental",
     "ncues": 3,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "flowers_food",
     "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
     "scene": "river"
@@ -183,7 +183,7 @@
     "name": "targets-instrumental",
     "ncues": 2,
     "is_practice": false,
-    "ntrials_per_cue": 2,
+    "ntrials_per_cue": 1,
     "theme": "flowers_food",
     "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
     "scene": "grass"
