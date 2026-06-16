@@ -13,6 +13,7 @@
 	"PROP_CUE_WIDTH": 0.2,
 	"PROXIMITY_DURATION": 0.2, 
 	"CUE_ONSET_PAUSE": 0.25,
+	"ITI2_MEAN_DURATION": 0.5,
 	"jetOffset": 60,
 	"showHUD": false,
 	"bulletsPassThru": false,
@@ -22,4 +23,5 @@
 	"photodiode": {"size": 120},
 	"debug": false,
 	"target-variant": true
+	
 }

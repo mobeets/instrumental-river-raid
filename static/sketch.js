@@ -146,6 +146,8 @@ function newGame(restartGame = false, goBack = false) {
   projectiles = [];
   explosions = [];
   animations = [];
+  jet.visible = false;  // reset jet visibility for new block
+  trial = undefined;  // reset trial for new block
 }
 
 // ====== p5.js setup and draw ======
@@ -244,39 +246,37 @@ function draw() {
     framesInGame++;
     grass.update();
 
-    // Start next trial if necessary
-    let iti_p = 1/(E.params.ITI_MEAN_DURATION*E.params.FPS);
-    if (explosions.length === 0 && boats.length < E.params.MAX_BOATS && random(1) < iti_p) {
+  // ITI 1 — jet appears after previous trial ends
+  let iti_p = 1/(E.params.ITI_MEAN_DURATION*E.params.FPS);
+  if (explosions.length === 0 && boats.length === 0 && !jet.visible && !trial_block.is_complete() && random(1) < iti_p) {
       trial = trial_block.next_trial();
       if (trial === undefined) {
-        newGame(false);
+          newGame(false);
       } else {
-        let nTilesPerCue = mustHitLocation ? E.params.nactions : 1;
-
-        let curX = trial_block.cue_locations[trial.location_index];
-        // let curX = riverX + random(cueWidth/2, riverWidth - cueWidth/2);
-        let boat = new Boat(boatCounter, trial.cue-1, curX, cueWidth/2, nTilesPerCue);
-        boatCounter++;
-        if (trial_block.name === 'instrumental') {
-            jet.x = curX;  // snap to boat position for instrumental
-        } else {
-            jet.x = riverX + random(cueWidth/2, riverWidth - cueWidth/2);  // random position for targets and targets-instrumental
-        }
-        if (trial_block.name === 'instrumental') {
-            jet.x = curX;  // snap to boat position for instrumental
-        } else {
-            // random position that is never directly under the boat
-            let jetX;
-            do {
-                jetX = riverX + random(cueWidth/2, riverWidth - cueWidth/2);
-            } while (abs(jetX - curX) < (cueWidth/2 + jet.width/2));
-            jet.x = jetX;
-        }
-        jet.visible = true;
-        trial.trigger(getEventNameWithLocations('cue created', jet, [boat]));
-        boats.push(boat);
+          let curX = trial_block.cue_locations[trial.location_index];
+          if (trial_block.name === 'instrumental') {
+              jet.x = curX;
+          } else {
+              let jetX;
+              do {
+                  jetX = riverX + random(cueWidth/2, riverWidth - cueWidth/2);
+              } while (abs(jetX - curX) < (cueWidth/2 + jet.width/2));
+              jet.x = jetX;
+          }
+          jet.visible = true;
       }
-    }
+  }
+
+  // ITI 2 — boat appears after jet has been visible for a bit
+  let iti2_p = 1/(E.params.ITI2_MEAN_DURATION*E.params.FPS);
+  if (explosions.length === 0 && boats.length === 0 && jet.visible && trial !== undefined && random(1) < iti2_p) {
+      let nTilesPerCue = mustHitLocation ? E.params.nactions : 1;
+      let curX = trial_block.cue_locations[trial.location_index];
+      let boat = new Boat(boatCounter, trial.cue-1, curX, cueWidth/2, nTilesPerCue);
+      boatCounter++;
+      trial.trigger(getEventNameWithLocations('cue created', jet, [boat]));
+      boats.push(boat);
+  }
 
     // Update and render boats
     for (let i = boats.length - 1; i >= 0; i--) {
@@ -290,6 +290,8 @@ function draw() {
         let cy = boats[i].y - boats[i].height / 3;
         explosions.push(new Explosion(boats[i].x - dx, boats[i].x + dx, cy, [255, 150, 0], explosionDuration));
         boats.splice(i, 1);
+        jet.visible = false;   // ← add
+        trial = undefined;     // ← add
         feedbackTimer = E.params.FPS * 0.5;  // ← add this
         continue;
       }
@@ -307,30 +309,39 @@ function draw() {
       let jetBottomY = jet.y + jet.height/2;
       let boatReachedJet = boatBottomY >= jetTopY && boatBottomY <= jetBottomY;
 
-      if (E.params['target-variant'] && trial_block.name === 'targets' && horizontalOverlap && boatReachedJet) {
-          trial.trigger(getEventNameWithLocations('cue offset - hit', jet, [boats[i]]));
-          trial_block.score++;
-          if (E.params.showHUD) streakbar.hit();
-          let dx = boats[i].width / 2;
-          let cy = boats[i].y - boats[i].height / 3;
-          explosions.push(new Explosion(boats[i].x - dx, boats[i].x + dx, cy, [255, 150, 0], explosionDuration));
-          boats.splice(i, 1);
-          feedbackTimer = E.params.FPS * 0.5;  // show for 0.5 seconds
-          continue;
-        } else if (boats[i].collidesWithJet(jet) && !immobileMode) {
-            trial.trigger(getEventNameWithLocations('cue offset - collision', jet, [boats[i]]));
-            boats.splice(i, 1);
-            jet.takeHit();
-            streakbar.reset();
-            explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height, [255, 150, 0], explosionDuration));
-            lives--;
-        } else if (boats[i].offscreen()) {
-          trial.trigger(getEventNameWithLocations('cue offset - offscreen', jet, [boats[i]]));
-          jet.visible = false;
-          boats.splice(i, 1);
-      }
-    }
-    
+    if (E.params['target-variant'] && trial_block.name === 'targets' && horizontalOverlap && boatReachedJet) {
+              trial.trigger(getEventNameWithLocations('cue offset - hit', jet, [boats[i]]));
+              trial_block.score++;
+              if (E.params.showHUD) streakbar.hit();
+              let dx = boats[i].width / 2;
+              let cy = boats[i].y - boats[i].height / 3;
+              explosions.push(new Explosion(boats[i].x - dx, boats[i].x + dx, cy, [255, 150, 0], explosionDuration));
+              boats.splice(i, 1);
+              jet.visible = false;
+              trial = undefined;
+              feedbackTimer = E.params.FPS * 0.5;
+              continue;
+          } else if (boats[i].collidesWithJet(jet)) {
+              if (!immobileMode && trial_block.name !== 'targets-instrumental') {
+                  trial.trigger(getEventNameWithLocations('cue offset - collision', jet, [boats[i]]));
+                  boats.splice(i, 1);
+                  jet.takeHit();
+                  streakbar.reset();
+                  explosions.push(new Explosion(jet.x, jet.x, jet.y-jet.height, [255, 150, 0], explosionDuration));
+                  lives--;
+              } else {
+                  trial.trigger(getEventNameWithLocations('cue offset - collision', jet, [boats[i]]));
+                  jet.visible = false;
+                  trial = undefined;
+                  boats.splice(i, 1);
+              }
+          } else if (boats[i].offscreen()) {
+              trial.trigger(getEventNameWithLocations('cue offset - offscreen', jet, [boats[i]]));
+              jet.visible = false;
+              trial = undefined;
+              boats.splice(i, 1);
+          }
+        }
 
     // Update and render projectiles
     for (let i = projectiles.length - 1; i >= 0; i--) {
@@ -350,6 +361,7 @@ function draw() {
           let cy = boats[j].y - boats[j].height/3;
           explosions.push(new Explosion(boats[j].x - dx, boats[j].x + dx, cy, [255, 150, 0], explosionDuration));
           jet.visible = false; // hide jet until next trial
+          trial = undefined;   // ← add
           boats.splice(j, 1);
           projectiles.splice(i, 1);
           feedbackTimer = E.params.FPS * 0.5;  // show feedback
