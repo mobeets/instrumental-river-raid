@@ -330,43 +330,43 @@ function draw() {
       let jetBottomY = jet.y + jet.height/2;
       let boatReachedJet = boatBottomY >= jetTopY && boatBottomY <= jetBottomY;
 
-    if (E.params['target-variant'] && trial_block.name === 'targets' && horizontalOverlap && boatReachedJet) {
-              trial.trigger(getEventNameWithLocations('cue offset - hit', jet, [boats[i]]));
-              trial_block.score++;
-              if (E.params.showHUD) streakbar.hit();
-              let dx = boats[i].width / 2;
-              let cy = boats[i].y - boats[i].height / 3;
-              explosions.push(new Explosion(boats[i].x - dx, boats[i].x + dx, cy, [255, 150, 0], explosionDuration));
-              boats.splice(i, 1);
-              jet.visible = false;
-              trial = undefined;
-              feedbackTimer = E.params.FPS * 0.5;
-              continue;
-        } else if (boats[i].offscreen()) {
-          let offscreenName;
-          if (trial_block.name === 'targets') {
-              offscreenName = boats[i].wasEverAligned ? 'cue offset - offscreen - too late' : 'cue offset - offscreen - wrong position';
-          } else if (trial_block.name === 'targets-instrumental') {
-              if (!boats[i].jetAligned && !boats[i].firedDuringTrial) {
-                  offscreenName = 'cue offset - offscreen - wrong position, no fire';
-              } else if (boats[i].jetAligned && !boats[i].firedDuringTrial) {
-                  offscreenName = 'cue offset - offscreen - right position, no fire';
-              } else if (boats[i].firedDuringTrial && !boats[i].correctButtonFired) {
-                  offscreenName = 'cue offset - offscreen - right position, wrong button';
-              } else if (boats[i].firedDuringTrial && boats[i].correctButtonFired && !boats[i].jetAligned) {
-                  offscreenName = 'cue offset - offscreen - wrong position, right button';
-              } else {
-                  offscreenName = 'cue offset - offscreen';
-              }
+      if (E.params['target-variant'] && trial_block.name === 'targets' && horizontalOverlap && boatReachedJet) {
+        trial.trigger(getEventNameWithLocations('cue offset - hit', jet, [boats[i]]));
+        trial_block.score++;
+        if (E.params.showHUD) streakbar.hit();
+        let dx = boats[i].width / 2;
+        let cy = boats[i].y - boats[i].height / 3;
+        explosions.push(new Explosion(boats[i].x - dx, boats[i].x + dx, cy, [255, 150, 0], explosionDuration));
+        boats.splice(i, 1);
+        jet.visible = false;
+        trial = undefined;
+        feedbackTimer = E.params.FPS * 0.5;
+        continue;
+      } else if (boats[i].offscreen()) {
+        let offscreenName;
+        if (trial_block.name === 'targets') {
+          offscreenName = boats[i].wasEverAligned ? 'cue offset - offscreen - too late' : 'cue offset - offscreen - wrong position';
+        } else if (trial_block.name === 'targets-instrumental') {
+          if (!boats[i].jetAligned && !boats[i].firedDuringTrial) {
+              offscreenName = 'cue offset - offscreen - wrong position, no fire';
+          } else if (boats[i].jetAligned && !boats[i].firedDuringTrial) {
+              offscreenName = 'cue offset - offscreen - right position, no fire';
+          } else if (boats[i].firedDuringTrial && !boats[i].correctButtonFired) {
+              offscreenName = 'cue offset - offscreen - right position, wrong button';
+          } else if (boats[i].firedDuringTrial && boats[i].correctButtonFired && !boats[i].jetAligned) {
+              offscreenName = 'cue offset - offscreen - wrong position, right button';
           } else {
               offscreenName = 'cue offset - offscreen';
           }
-          trial.trigger(getEventNameWithLocations(offscreenName, jet, [boats[i]]));
-          jet.visible = false;
-          trial = undefined;
-          boats.splice(i, 1);
-      }
+        } else {
+          offscreenName = 'cue offset - offscreen';
         }
+        trial.trigger(getEventNameWithLocations(offscreenName, jet, [boats[i]]));
+        jet.visible = false;
+        trial = undefined;
+        boats.splice(i, 1);
+      }
+    }
 
     // Update and render projectiles
     for (let i = projectiles.length - 1; i >= 0; i--) {
