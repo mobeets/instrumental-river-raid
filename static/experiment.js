@@ -362,7 +362,7 @@ class Trial {
 		wsLogger.log("Trial event", event, false, callback);
 	}
 
-	trigger(event, callback) {
+	trigger(event, callback) { // this is creating events in json
 		if (typeof event === "string") {
 			event = {name: event};
 		}

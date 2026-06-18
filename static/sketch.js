@@ -40,6 +40,7 @@ let lives = L;
 let BOAT_COLORS = []; // filled later in setup()
 let boatCounter = 0;
 let explosionDuration;
+let iti2MinTimer = 0; // timer to implement minimum time for ITI2
 
 
 const PLAY_MODE = 0;
@@ -263,19 +264,26 @@ function draw() {
               } while (abs(jetX - curX) < (cueWidth/2 + jet.width/2));
               jet.x = jetX;
           }
-          jet.visible = true;
+          jet.visible = true; // add some kind of signal to logger
+          trial.trigger(getEventNameWithLocations('agent onset', jet, []));
+          iti2MinTimer = Math.ceil(E.params.ITI2_MIN_DURATION * E.params.FPS); // adds at least 0.25 second after plane appears
           return;  // ← skip ITI 2 this frame
       }
   }
 
   // ITI 2 — boat appears after jet has been visible for a bit
   let iti2_p = 1/(E.params.ITI2_MEAN_DURATION*E.params.FPS);
-  if (explosions.length === 0 && boats.length === 0 && jet.visible && trial !== undefined && random(1) < iti2_p) {
+  
+  if (iti2MinTimer > 0) iti2MinTimer--;
+  if (explosions.length === 0 && boats.length === 0 && jet.visible && trial !== undefined && iti2MinTimer === 0 && random(1) < iti2_p) {
       let nTilesPerCue = mustHitLocation ? E.params.nactions : 1;
       let curX = trial_block.cue_locations[trial.location_index];
       let boat = new Boat(boatCounter, trial.cue-1, curX, cueWidth/2, nTilesPerCue);
+      boat.jetAligned = false;
+      boat.firedDuringTrial = false;
+      boat.correctButtonFired = false;
       boatCounter++;
-      trial.trigger(getEventNameWithLocations('cue created', jet, [boat]));
+      trial.trigger(getEventNameWithLocations('cue created', jet, [boat])); // similar to this
       boats.push(boat);
   }
 
@@ -302,9 +310,9 @@ function draw() {
         // markEvent triggers photodiode/sound
         markEvent();
       }
-
       let horizontalOverlap = jet.x + jet.width/2 > boats[i].x - boats[i].width/2 &&
                   jet.x - jet.width/2 < boats[i].x + boats[i].width/2;
+      if (horizontalOverlap && trial_block.name === 'targets-instrumental') boats[i].jetAligned = true;
       let boatBottomY = boats[i].y + boats[i].height/2;
       let jetTopY = jet.y - jet.height/2;
       let jetBottomY = jet.y + jet.height/2;
@@ -322,27 +330,28 @@ function draw() {
               trial = undefined;
               feedbackTimer = E.params.FPS * 0.5;
               continue;
-          } else if (boats[i].collidesWithJet(jet)) {
-              if (!immobileMode && trial_block.name !== 'targets-instrumental') {
-                  trial.trigger(getEventNameWithLocations('cue offset - collision', jet, [boats[i]]));
-                  boats.splice(i, 1);
-                  jet.takeHit();
-                  streakbar.reset();
-                  lives--;
-                  jet.visible = false;  
-                  trial = undefined;     
-              } else {
-                  trial.trigger(getEventNameWithLocations('cue offset - collision', jet, [boats[i]]));
-                  jet.visible = false;
-                  trial = undefined;
-                  boats.splice(i, 1);
-              }
           } else if (boats[i].offscreen()) {
-              trial.trigger(getEventNameWithLocations('cue offset - offscreen', jet, [boats[i]]));
-              jet.visible = false;
-              trial = undefined;
-              boats.splice(i, 1);
-          }
+            let offscreenName;
+            if (trial_block.name === 'targets-instrumental') {
+                if (!boats[i].jetAligned && !boats[i].firedDuringTrial) {
+                    offscreenName = 'cue offset - offscreen';
+                } else if (boats[i].jetAligned && !boats[i].firedDuringTrial) {
+                    offscreenName = 'cue offset - offscreen - no fire';
+                } else if (boats[i].firedDuringTrial && !boats[i].correctButtonFired) {
+                    offscreenName = 'cue offset - offscreen - wrong button';
+                } else if (boats[i].firedDuringTrial && boats[i].correctButtonFired && !boats[i].jetAligned) {
+                    offscreenName = 'cue offset - offscreen - wrong position';
+                } else {
+                    offscreenName = 'cue offset - offscreen';
+                }
+            } else {
+                offscreenName = 'cue offset - offscreen';
+            }
+            trial.trigger(getEventNameWithLocations(offscreenName, jet, [boats[i]]));
+            jet.visible = false;
+            trial = undefined;
+            boats.splice(i, 1);
+        }
         }
 
     // Update and render projectiles
@@ -711,6 +720,10 @@ function checkUserButtonPresses() {
 
           trial.trigger(getEventNameWithLocations('projectile onset', jet, boats, {action_index: action}));
           trial.canFireAgain = false;
+          if (boats.length > 0) {
+              boats[0].firedDuringTrial = true;
+              boats[0].correctButtonFired = (action - 1 === boats[0].correctActionIndex);
+          }
         }
       }
     }
