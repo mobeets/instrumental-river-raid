@@ -389,7 +389,7 @@ function draw() {
           trial = undefined;   // ← add
           boats.splice(j, 1);
           projectiles.splice(i, 1);
-          feedbackTimer = E.params.FPS * 0.5;  // show feedback
+          feedbackTimer = explosionDuration; // show feedback
           break;
         } else if (!E.params.bulletsPassThru && p.y < boats[j].y - boats[j].height/2) {
           // bullet is incorrect, so we make it disappear
@@ -582,7 +582,6 @@ function showImages(yOffset) {
           }
         }
       }
-      
     }
   }
   pop();
