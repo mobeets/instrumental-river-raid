@@ -312,7 +312,7 @@ function draw() {
         boats.splice(i, 1);
         jet.visible = false;   // ← add
         trial = undefined;     // ← add
-        feedbackTimer = E.params.FPS * 0.5;  // ← add this
+        feedbackTimer = explosionDuration;
         continue;
       }
 
@@ -340,7 +340,7 @@ function draw() {
         boats.splice(i, 1);
         jet.visible = false;
         trial = undefined;
-        feedbackTimer = E.params.FPS * 0.5;
+        feedbackTimer = explosionDuration;
         continue;
       } else if (boats[i].offscreen()) {
         let offscreenName;
@@ -438,6 +438,9 @@ function draw() {
       textAlign(CENTER, CENTER);
       textFont(myFont);
       text("Great!", width/2, height/2);
+      if (feedbackTimer === 0) {
+        if (trial !== undefined) trial.trigger(getEventNameWithLocations('feedback offset', jet, []));
+      }
     }
   }
 
