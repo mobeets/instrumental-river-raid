@@ -85,12 +85,19 @@ function preload() {
   spriteSheets.abstract_1 = new SquareSpriteSheet('assets/themes/abstract_1.png', spriteSize);
   spriteSheets.abstract_2 = new SquareSpriteSheet('assets/themes/abstract_2.png', spriteSize);
   spriteSheets.abstract_3 = new SquareSpriteSheet('assets/themes/abstract_3.png', spriteSize);
+  spriteSheets.abstract4 = new SquareSpriteSheet('assets/themes/abstract4.png', spriteSize);
   spriteSheets.abstract_1_v1 = new SquareSpriteSheet('assets/themes/abstract_1_v1.png', spriteSize);
   spriteSheets.abstract_1_v2 = new SquareSpriteSheet('assets/themes/abstract_1_v2.png', spriteSize);
   spriteSheets.abstract_1_v3 = new SquareSpriteSheet('assets/themes/abstract_1_v3.png', spriteSize);
   spriteSheets.abstract_2_v1 = new SquareSpriteSheet('assets/themes/abstract_2_v1.png', spriteSize);
   spriteSheets.abstract_2_v2 = new SquareSpriteSheet('assets/themes/abstract_2_v2.png', spriteSize);
   spriteSheets.abstract_2_v3 = new SquareSpriteSheet('assets/themes/abstract_2_v3.png', spriteSize);
+  spriteSheets.abstract_3_v1 = new SquareSpriteSheet('assets/themes/abstract_3_v1.png', spriteSize);
+  spriteSheets.abstract_3_v2 = new SquareSpriteSheet('assets/themes/abstract_3_v2.png', spriteSize);
+  spriteSheets.abstract_3_v3 = new SquareSpriteSheet('assets/themes/abstract_3_v3.png', spriteSize);
+  spriteSheets.abstract_4_v1 = new SquareSpriteSheet('assets/themes/abstract_4_v1.png', spriteSize);
+  spriteSheets.abstract_4_v2 = new SquareSpriteSheet('assets/themes/abstract_4_v2.png', spriteSize);
+  spriteSheets.abstract_4_v3 = new SquareSpriteSheet('assets/themes/abstract_4_v3.png', spriteSize);
   config = loadConfig();
 }
 

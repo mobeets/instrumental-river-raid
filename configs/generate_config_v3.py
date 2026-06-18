@@ -289,7 +289,8 @@ def assign_themes_to_slots(final_order, versioned_themes, max_attempts=10000):
 
 
 def generate_blocks(task_names, base_themes, n_versions=3,
-                    ntrials_per_cue=10, nrepeats_per_cycle=2, scenes=SCENES):
+                    ntrials_per_cue=10, nrepeats_per_cycle=2, scenes=SCENES,
+                    ntrials_per_cue_targets=None):
     """
     DIFFERENCE FROM v2: signature changed.
     - v2: generate_blocks(task_names, themes, ntrials_per_cue, nrepeats_per_cycle, scenes)
@@ -363,8 +364,9 @@ def generate_blocks(task_names, base_themes, n_versions=3,
         name, run, orders_, paired = slots[slot_key]
         theme = theme_assignment[slot_key]
         if name == 'targets':
+            _ntrials = ntrials_per_cue_targets if ntrials_per_cue_targets is not None else ntrials_per_cue
             built_slots[slot_key] = make_slot(name, run, orders_, theme,
-                                              ntrials_per_cue, scenes, paired_with=paired)
+                                              _ntrials, scenes, paired_with=paired)
         else:
             built_slots[slot_key] = make_slot(name, run, orders_, theme,
                                               ntrials_per_cue, scenes)
@@ -401,6 +403,8 @@ if __name__ == "__main__":
     parser.add_argument("--tasks", nargs="+", default=DEFAULT_TASKS)
     parser.add_argument("--output", "-o", default="blocks.json")
     parser.add_argument("--ntrials_per_cue", type=int, default=10)
+    parser.add_argument("--ntrials_per_cue_targets", type=int, default=None,
+                        help="Override ntrials_per_cue for targets task only (default: same as --ntrials_per_cue)")
     parser.add_argument("--nrepeats_per_cycle", type=int, default=2)
     parser.add_argument("--end_probe_task", type=str, default=None)
     parser.add_argument("--end_probe_ncues", type=int, default=1)
@@ -413,9 +417,12 @@ if __name__ == "__main__":
         f"Expected exactly 2 base themes, got {len(args.base_themes)}: {args.base_themes}"
     )
 
+    ntrials_targets = args.ntrials_per_cue_targets if args.ntrials_per_cue_targets is not None else args.ntrials_per_cue
+
     blocks, theme_info = generate_blocks(
         args.tasks, args.base_themes, args.n_versions,
-        args.ntrials_per_cue, args.nrepeats_per_cycle, args.scenes
+        args.ntrials_per_cue, args.nrepeats_per_cycle, args.scenes,
+        ntrials_per_cue_targets=ntrials_targets
     )
 
     if args.end_probe_task:

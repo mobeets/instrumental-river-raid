@@ -6,17 +6,17 @@
   "slot_order": [
     "I1",
     "T2",
+    "TI2",
     "T1",
     "I2",
-    "TI1",
-    "TI2"
+    "TI1"
   ],
   "slot_theme_assignment": {
     "T2": "abstract_1_v3",
-    "T1": "abstract_2_v1",
+    "T1": "abstract_2_v2",
     "I1": "abstract_1_v1",
-    "I2": "abstract_2_v3",
-    "TI1": "abstract_1_v2",
-    "TI2": "abstract_2_v2"
+    "I2": "abstract_2_v1",
+    "TI2": "abstract_2_v3",
+    "TI1": "abstract_1_v2"
   }
 }

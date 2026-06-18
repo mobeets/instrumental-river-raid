@@ -10,19 +10,19 @@
   },
   {
     "name": "instrumental",
-    "ncues": 2,
+    "ncues": 4,
     "is_practice": false,
     "ntrials_per_cue": 10,
-    "theme": "abstract_1_v1",
+    "theme": "abstract_3_v1",
     "instructions": "figure out which button will destroy each image",
     "scene": "river"
   },
   {
     "name": "instrumental",
-    "ncues": 4,
+    "ncues": 2,
     "is_practice": false,
     "ntrials_per_cue": 10,
-    "theme": "abstract_1_v1",
+    "theme": "abstract_3_v1",
     "instructions": "figure out which button will destroy each image",
     "scene": "river"
   },
@@ -31,7 +31,7 @@
     "ncues": 3,
     "is_practice": false,
     "ntrials_per_cue": 10,
-    "theme": "abstract_1_v1",
+    "theme": "abstract_3_v1",
     "instructions": "figure out which button will destroy each image",
     "scene": "river"
   },
@@ -46,19 +46,19 @@
   },
   {
     "name": "targets",
-    "ncues": 2,
+    "ncues": 4,
     "is_practice": false,
     "ntrials_per_cue": 3,
-    "theme": "abstract_1_v3",
+    "theme": "abstract_3_v3",
     "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
     "scene": "river"
   },
   {
     "name": "targets",
-    "ncues": 4,
+    "ncues": 2,
     "is_practice": false,
     "ntrials_per_cue": 3,
-    "theme": "abstract_1_v3",
+    "theme": "abstract_3_v3",
     "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
     "scene": "river"
   },
@@ -67,8 +67,116 @@
     "ncues": 3,
     "is_practice": false,
     "ntrials_per_cue": 3,
-    "theme": "abstract_1_v3",
+    "theme": "abstract_3_v3",
     "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
+    "scene": "river"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 2,
+    "is_practice": true,
+    "ntrials_per_cue": 50,
+    "theme": "training",
+    "instructions": "figure out which button will destroy each image",
+    "scene": "river"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 4,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "abstract_4_v2",
+    "instructions": "figure out which button will destroy each image",
+    "scene": "river"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 2,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "abstract_4_v2",
+    "instructions": "figure out which button will destroy each image",
+    "scene": "river"
+  },
+  {
+    "name": "instrumental",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "abstract_4_v2",
+    "instructions": "figure out which button will destroy each image",
+    "scene": "river"
+  },
+  {
+    "name": "targets",
+    "ncues": 2,
+    "is_practice": true,
+    "ntrials_per_cue": 50,
+    "theme": "training",
+    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
+    "scene": "river"
+  },
+  {
+    "name": "targets",
+    "ncues": 4,
+    "is_practice": false,
+    "ntrials_per_cue": 3,
+    "theme": "abstract_4_v1",
+    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
+    "scene": "river"
+  },
+  {
+    "name": "targets",
+    "ncues": 2,
+    "is_practice": false,
+    "ntrials_per_cue": 3,
+    "theme": "abstract_4_v1",
+    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
+    "scene": "river"
+  },
+  {
+    "name": "targets",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 3,
+    "theme": "abstract_4_v1",
+    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
+    "scene": "river"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 2,
+    "is_practice": true,
+    "ntrials_per_cue": 50,
+    "theme": "training",
+    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
+    "scene": "river"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 4,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "abstract_3_v2",
+    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
+    "scene": "river"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "abstract_3_v2",
+    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
+    "scene": "river"
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 2,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "theme": "abstract_3_v2",
+    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
     "scene": "river"
   },
   {
@@ -85,7 +193,7 @@
     "ncues": 2,
     "is_practice": false,
     "ntrials_per_cue": 10,
-    "theme": "abstract_2_v3",
+    "theme": "abstract_4_v3",
     "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
     "scene": "river"
   },
@@ -94,7 +202,7 @@
     "ncues": 3,
     "is_practice": false,
     "ntrials_per_cue": 10,
-    "theme": "abstract_2_v3",
+    "theme": "abstract_4_v3",
     "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
     "scene": "river"
   },
@@ -103,115 +211,7 @@
     "ncues": 4,
     "is_practice": false,
     "ntrials_per_cue": 10,
-    "theme": "abstract_2_v3",
-    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
-    "scene": "river"
-  },
-  {
-    "name": "targets",
-    "ncues": 2,
-    "is_practice": true,
-    "ntrials_per_cue": 50,
-    "theme": "training",
-    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
-    "scene": "river"
-  },
-  {
-    "name": "targets",
-    "ncues": 2,
-    "is_practice": false,
-    "ntrials_per_cue": 3,
-    "theme": "abstract_2_v2",
-    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
-    "scene": "river"
-  },
-  {
-    "name": "targets",
-    "ncues": 4,
-    "is_practice": false,
-    "ntrials_per_cue": 3,
-    "theme": "abstract_2_v2",
-    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
-    "scene": "river"
-  },
-  {
-    "name": "targets",
-    "ncues": 3,
-    "is_practice": false,
-    "ntrials_per_cue": 3,
-    "theme": "abstract_2_v2",
-    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
-    "scene": "river"
-  },
-  {
-    "name": "instrumental",
-    "ncues": 2,
-    "is_practice": true,
-    "ntrials_per_cue": 50,
-    "theme": "training",
-    "instructions": "figure out which button will destroy each image",
-    "scene": "river"
-  },
-  {
-    "name": "instrumental",
-    "ncues": 2,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "abstract_2_v1",
-    "instructions": "figure out which button will destroy each image",
-    "scene": "river"
-  },
-  {
-    "name": "instrumental",
-    "ncues": 4,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "abstract_2_v1",
-    "instructions": "figure out which button will destroy each image",
-    "scene": "river"
-  },
-  {
-    "name": "instrumental",
-    "ncues": 3,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "abstract_2_v1",
-    "instructions": "figure out which button will destroy each image",
-    "scene": "river"
-  },
-  {
-    "name": "targets-instrumental",
-    "ncues": 2,
-    "is_practice": true,
-    "ntrials_per_cue": 50,
-    "theme": "training",
-    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
-    "scene": "river"
-  },
-  {
-    "name": "targets-instrumental",
-    "ncues": 3,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "abstract_1_v2",
-    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
-    "scene": "river"
-  },
-  {
-    "name": "targets-instrumental",
-    "ncues": 4,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "abstract_1_v2",
-    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
-    "scene": "river"
-  },
-  {
-    "name": "targets-instrumental",
-    "ncues": 2,
-    "is_practice": false,
-    "ntrials_per_cue": 10,
-    "theme": "abstract_1_v2",
+    "theme": "abstract_4_v3",
     "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
     "scene": "river"
   }
