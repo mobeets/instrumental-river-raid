@@ -19,7 +19,7 @@ instructions = {
     "locations-instrumental": "control an airplane with the joystick\nfigure out which location will destroy each block"
 }
 DEFAULT_TASKS = ["targets", "instrumental", "targets-instrumental"]
-SCENES = ["grass", "river"]
+SCENES = ["river", "river"]
 
 # NEW: Valid orderings of the 4 shuffled slots where I1 and TI1 are never adjacent
 VALID_SLOT_ORDERS = [
@@ -259,7 +259,7 @@ if __name__ == "__main__":
                         help="Number of cues for end probe block")
     parser.add_argument("--end_probe_ntrials", type=int, default=30,
                         help="Number of trials per cue for end probe block")
-    parser.add_argument("--scenes", nargs="+", default=["grass", "river"])
+    parser.add_argument("--scenes", nargs="+", default=["river", "river"])
 
     args = parser.parse_args()
     blocks, theme_info = generate_blocks(

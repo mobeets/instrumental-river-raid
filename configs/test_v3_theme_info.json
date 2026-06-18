@@ -1,0 +1,22 @@
+{
+  "base_themes": [
+    "abstract_1",
+    "abstract_2"
+  ],
+  "slot_order": [
+    "T1",
+    "I2",
+    "TI2",
+    "I1",
+    "T2",
+    "TI1"
+  ],
+  "slot_theme_assignment": {
+    "T1": "abstract_2_v2",
+    "T2": "abstract_1_v3",
+    "I2": "abstract_2_v3",
+    "I1": "abstract_1_v1",
+    "TI2": "abstract_1_v2",
+    "TI1": "abstract_2_v1"
+  }
+}
