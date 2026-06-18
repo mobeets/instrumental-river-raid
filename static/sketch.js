@@ -85,7 +85,7 @@ function preload() {
   spriteSheets.abstract_1 = new SquareSpriteSheet('assets/themes/abstract_1.png', spriteSize);
   spriteSheets.abstract_2 = new SquareSpriteSheet('assets/themes/abstract_2.png', spriteSize);
   spriteSheets.abstract_3 = new SquareSpriteSheet('assets/themes/abstract_3.png', spriteSize);
-  spriteSheets.abstract4 = new SquareSpriteSheet('assets/themes/abstract4.png', spriteSize);
+  spriteSheets.abstract_4 = new SquareSpriteSheet('assets/themes/abstract_4.png', spriteSize);
   spriteSheets.abstract_1_v1 = new SquareSpriteSheet('assets/themes/abstract_1_v1.png', spriteSize);
   spriteSheets.abstract_1_v2 = new SquareSpriteSheet('assets/themes/abstract_1_v2.png', spriteSize);
   spriteSheets.abstract_1_v3 = new SquareSpriteSheet('assets/themes/abstract_1_v3.png', spriteSize);
@@ -420,14 +420,6 @@ function draw() {
       p.render();
     }
     jet.render();
-    if (feedbackTimer > 0) {
-      feedbackTimer--;
-      fill('#6B4A00');
-      textSize(64);
-      textAlign(CENTER, CENTER);
-      textFont(myFont);
-      text("Great!", width/2, height/2);
-}
   }
 
   // Update/render explosions
@@ -435,6 +427,18 @@ function draw() {
     explosions[i].update();
     explosions[i].render();
     if (explosions[i].isDead()) explosions.splice(i, 1);
+  }
+
+  // Display feedback
+  if (gameMode == PLAY_MODE) {
+    if (feedbackTimer > 0) {
+      feedbackTimer--;
+      fill('white');
+      textSize(64);
+      textAlign(CENTER, CENTER);
+      textFont(myFont);
+      text("Great!", width/2, height/2);
+    }
   }
 
   if (E.params.showHUD) {
@@ -754,7 +758,7 @@ function checkUserButtonPresses() {
     // unpause game
     eventMsg = 'unpause';
     gameMode = PLAY_MODE;
-    jet.x = width / 2;
+    // jet.x = width / 2;
   } else if (user.next_block && gameMode != COMPLETE_MODE) {
     // go to the next block
     eventMsg = 'new game (going to next block)';
