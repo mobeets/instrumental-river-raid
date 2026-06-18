@@ -573,8 +573,11 @@ function showImages(yOffset) {
 }
 
 function showJet() {
+  let wasVisible = jet.visible;   
+  jet.visible = true;              // force visible for preview
   jet.update();
   jet.render();
+  jet.visible = wasVisible;       // ← restore original state
   for (let i = projectiles_test.length - 1; i >= 0; i--) {
     let p = projectiles_test[i];
     p.update();
