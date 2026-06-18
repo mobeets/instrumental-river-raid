@@ -222,11 +222,7 @@ function getEventNameWithLocations(eventName, jet, boats, extra_info) {
 function draw() {
   frameRate(E.params.FPS);
   if (gameMode == PLAY_MODE) {
-    if (trial_block.scene === 'grass') {
-      background(34, 139, 34);
-    } else {
-      background('#496FB6');
-    }
+    background('#496FB6');
   } else {
     if (gameMode == READY_MODE) {
       let taskBg = {

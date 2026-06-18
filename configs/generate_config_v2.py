@@ -218,9 +218,7 @@ def generate_blocks(task_names, themes, ntrials_per_cue=10, nrepeats_per_cycle=2
 
     final_order = first_pair_option + remaining_order
 
-    # NEW: assemble blocks with practice prepended to first occurrence of each task
-    practice_added = set()
-
+    # Assemble blocks with practice prepended to every slot
     for slot_key in final_order:
         # Determine task name from slot key
         if slot_key.startswith('TI'):
@@ -230,10 +228,8 @@ def generate_blocks(task_names, themes, ntrials_per_cue=10, nrepeats_per_cycle=2
         else:
             task = 'instrumental'
 
-        # Add practice block before first occurrence of each task
-        if task not in practice_added:
-            all_blocks.append(make_practice(task, scenes))
-            practice_added.add(task)
+        # Add practice block before every slot
+        all_blocks.append(make_practice(task, scenes))
 
         # Add the slot's blocks
         all_blocks.extend(slots[slot_key])
