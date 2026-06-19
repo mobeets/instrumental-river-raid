@@ -418,6 +418,7 @@ function draw() {
       boat.firedDuringTrial = false;
       boat.correctButtonFired = false;
       boat.wasEverAligned = false;
+      boat.firstAlignTime = false;
       boatCounter++;
       trial.trigger(getEventNameWithLocations("cue created", jet, [boat])); // similar to this
       boats.push(boat);
@@ -461,10 +462,21 @@ function draw() {
       let horizontalOverlap =
         jet.x + jet.width / 2 > boats[i].x - boats[i].width / 2 &&
         jet.x - jet.width / 2 < boats[i].x + boats[i].width / 2;
-      if (horizontalOverlap && trial_block.name === "targets-instrumental")
+      if (
+        horizontalOverlap &&
+        (trial_block.name === "targets-instrumental" ||
+          trial_block.name === "targets")
+      ) {
         boats[i].jetAligned = true;
-      if (horizontalOverlap && trial_block.name === "targets")
         boats[i].wasEverAligned = true;
+        if (!boats[i].firstAlignTime) {
+          boats[i].firstAlignTime = true;
+          trial.trigger(
+            getEventNameWithLocations("position match", jet, [boats[i]]), // for reaction time of T (position is aligned with cue)
+          );
+        }
+      }
+
       let boatBottomY = boats[i].y + boats[i].height / 2;
       let jetTopY = jet.y - jet.height / 2;
       let jetBottomY = jet.y + jet.height / 2;
