@@ -368,6 +368,7 @@ function draw() {
       explosions.length === 0 &&
       boats.length === 0 &&
       !jet.visible &&
+      iti1MinTimer === 0 &&
       random(1) < iti_p
     ) {
       trial = trial_block.next_trial();
