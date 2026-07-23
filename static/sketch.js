@@ -189,6 +189,30 @@ function preload() {
     "assets/themes/abstract_4_v3.png",
     spriteSize,
   );
+  spriteSheets.voss_1_v1 = new SquareSpriteSheet(
+    "assets/themes/voss_1_v1.png",
+    spriteSize,
+  );
+  spriteSheets.voss_1_v2 = new SquareSpriteSheet(
+    "assets/themes/voss_1_v2.png",
+    spriteSize,
+  );
+  spriteSheets.voss_1_v3 = new SquareSpriteSheet(
+    "assets/themes/voss_1_v3.png",
+    spriteSize,
+  );
+  spriteSheets.voss_2_v1 = new SquareSpriteSheet(
+    "assets/themes/voss_2_v1.png",
+    spriteSize,
+  );
+  spriteSheets.voss_2_v2 = new SquareSpriteSheet(
+    "assets/themes/voss_2_v2.png",
+    spriteSize,
+  );
+  spriteSheets.voss_2_v3 = new SquareSpriteSheet(
+    "assets/themes/voss_2_v3.png",
+    spriteSize,
+  );
   config = loadConfig();
 }
 

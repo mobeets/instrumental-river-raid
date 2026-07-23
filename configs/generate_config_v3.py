@@ -1,6 +1,14 @@
 """
 generate_config_v3.py
 
+Example usage:
+
+python configs/generate_config_v3.py \
+  --base_themes abstract_1 abstract_2 \
+  --ntrials_per_cue 10 \
+  --ntrials_per_cue_targets 10 \
+  --output configs/YFY_experiment_run01.json
+
 DIFFERENCES FROM v2:
 --------------------
 1. THEME SYSTEM COMPLETELY REPLACED:
