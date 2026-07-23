@@ -60,7 +60,7 @@ let jetImg;
 let grassImg;
 let stoneImg;
 let spriteSheet;
-let spriteSheetMap; // v4: index->identity map JSON loaded alongside the session sheet
+let spriteSheets = {};
 function preload() {
   clickSound = new Audio("assets/click.mp3");
   myFont = loadFont("assets/LuckiestGuy-Regular.ttf");
@@ -69,51 +69,151 @@ function preload() {
   jetImg2 = loadImage("assets/jet2.png");
   grassImg = loadImage("assets/grass.png");
   // stoneImg = loadImage('assets/stone.png');
-  // ---- v4: single per-session stimulus spritesheet + index->identity map ----
-  // Replaces the old per-theme spritesheets (villains_*, abstract_*_v*, voss_*, ...)
-  // and the make_sprites.py / shuffle_spritesheets.py asset pipeline. The sheet
-  // holds the fixed 18-image stimulus pool (+ training images); each cue's identity
-  // resolves to a sprite cell via the logged map (see spriteIndexForCue below).
-  // Sheet name comes from URL param ?sheet=... (default "session_stimuli").
-  let sheetName = getUrlParams().sheet || "session_stimuli";
-  spriteSheet = new SquareSpriteSheet(
-    `assets/themes/${sheetName}.png`,
+  spriteSheets.villains_1 = new SquareSpriteSheet(
+    "assets/themes/villains_1.png",
     spriteSize,
   );
-  spriteSheetMap = loadJSON(`assets/themes/${sheetName}_map.json`);
+  spriteSheets.villains_2 = new SquareSpriteSheet(
+    "assets/themes/villains_2.png",
+    spriteSize,
+  );
+  spriteSheets.villains_3 = new SquareSpriteSheet(
+    "assets/themes/villains_3.png",
+    spriteSize,
+  );
+  spriteSheets.villains_4 = new SquareSpriteSheet(
+    "assets/themes/villains_4.png",
+    spriteSize,
+  );
+  spriteSheets.animals_1 = new SquareSpriteSheet(
+    "assets/themes/animals_1.png",
+    spriteSize,
+  );
+  spriteSheets.animals_2 = new SquareSpriteSheet(
+    "assets/themes/animals_2.png",
+    spriteSize,
+  );
+  spriteSheets.flowers_food = new SquareSpriteSheet(
+    "assets/themes/flowers_food.png",
+    spriteSize,
+  );
+  spriteSheets.animals_land = new SquareSpriteSheet(
+    "assets/themes/animals_land.png",
+    spriteSize,
+  );
+  spriteSheets.training = new SquareSpriteSheet(
+    "assets/themes/training.png",
+    spriteSize,
+  );
+  spriteSheets.animal_cartoons = new SquareSpriteSheet(
+    "assets/themes/animal_cartoons.png",
+    spriteSize,
+  );
+  spriteSheets.animals_4 = new SquareSpriteSheet(
+    "assets/themes/animals_4.png",
+    spriteSize,
+  );
+  spriteSheets.faces = new SquareSpriteSheet(
+    "assets/themes/faces.png",
+    spriteSize,
+  );
+  spriteSheets.toys = new SquareSpriteSheet(
+    "assets/themes/toys.png",
+    spriteSize,
+  );
+  spriteSheets.fractal = new SquareSpriteSheet(
+    "assets/themes/fractal.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_1 = new SquareSpriteSheet(
+    "assets/themes/abstract_1.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_2 = new SquareSpriteSheet(
+    "assets/themes/abstract_2.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_3 = new SquareSpriteSheet(
+    "assets/themes/abstract_3.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_4 = new SquareSpriteSheet(
+    "assets/themes/abstract_4.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_1_v1 = new SquareSpriteSheet(
+    "assets/themes/abstract_1_v1.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_1_v2 = new SquareSpriteSheet(
+    "assets/themes/abstract_1_v2.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_1_v3 = new SquareSpriteSheet(
+    "assets/themes/abstract_1_v3.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_2_v1 = new SquareSpriteSheet(
+    "assets/themes/abstract_2_v1.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_2_v2 = new SquareSpriteSheet(
+    "assets/themes/abstract_2_v2.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_2_v3 = new SquareSpriteSheet(
+    "assets/themes/abstract_2_v3.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_3_v1 = new SquareSpriteSheet(
+    "assets/themes/abstract_3_v1.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_3_v2 = new SquareSpriteSheet(
+    "assets/themes/abstract_3_v2.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_3_v3 = new SquareSpriteSheet(
+    "assets/themes/abstract_3_v3.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_4_v1 = new SquareSpriteSheet(
+    "assets/themes/abstract_4_v1.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_4_v2 = new SquareSpriteSheet(
+    "assets/themes/abstract_4_v2.png",
+    spriteSize,
+  );
+  spriteSheets.abstract_4_v3 = new SquareSpriteSheet(
+    "assets/themes/abstract_4_v3.png",
+    spriteSize,
+  );
+  spriteSheets.voss_1_v1 = new SquareSpriteSheet(
+    "assets/themes/voss_1_v1.png",
+    spriteSize,
+  );
+  spriteSheets.voss_1_v2 = new SquareSpriteSheet(
+    "assets/themes/voss_1_v2.png",
+    spriteSize,
+  );
+  spriteSheets.voss_1_v3 = new SquareSpriteSheet(
+    "assets/themes/voss_1_v3.png",
+    spriteSize,
+  );
+  spriteSheets.voss_2_v1 = new SquareSpriteSheet(
+    "assets/themes/voss_2_v1.png",
+    spriteSize,
+  );
+  spriteSheets.voss_2_v2 = new SquareSpriteSheet(
+    "assets/themes/voss_2_v2.png",
+    spriteSize,
+  );
+  spriteSheets.voss_2_v3 = new SquareSpriteSheet(
+    "assets/themes/voss_2_v3.png",
+    spriteSize,
+  );
   config = loadConfig();
-}
-
-// ---- v4: resolve a cue's sprite cell from the logged index->identity map ----
-let _spriteIdxByManifest = null;
-let _spriteIdxByFilename = null;
-function buildSpriteLookups() {
-  _spriteIdxByManifest = {};
-  _spriteIdxByFilename = {};
-  let sprites = spriteSheetMap.sprites;
-  for (let i = 0; i < sprites.length; i++) {
-    let s = sprites[i];
-    if (s.manifest_index !== null && s.manifest_index !== undefined) {
-      _spriteIdxByManifest[s.manifest_index] = s.sprite_index;
-    }
-    if (s.filename) _spriteIdxByFilename[s.filename] = s.sprite_index;
-  }
-}
-function spriteIndexForCue(cueRec) {
-  if (_spriteIdxByManifest === null) buildSpriteLookups();
-  if (
-    cueRec.manifest_index !== null &&
-    cueRec.manifest_index !== undefined &&
-    cueRec.manifest_index in _spriteIdxByManifest
-  ) {
-    return _spriteIdxByManifest[cueRec.manifest_index];
-  }
-  // training / fallback: match by filename
-  if (cueRec.filename && cueRec.filename in _spriteIdxByFilename) {
-    return _spriteIdxByFilename[cueRec.filename];
-  }
-  console.error("spriteIndexForCue: no sprite for cue", cueRec);
-  return 0;
 }
 
 function newGame(restartGame = false, goBack = false) {
@@ -122,7 +222,7 @@ function newGame(restartGame = false, goBack = false) {
     gameMode = COMPLETE_MODE;
     return;
   }
-  // v4: single per-session spriteSheet is set once in preload(); no per-block switch.
+  spriteSheet = spriteSheets[trial_block.theme];
 
   gameMode = READY_MODE;
 
@@ -610,9 +710,7 @@ function showImages(yOffset) {
       color = trial_block.cue_colors[cue];
     } else {
       color = "#ccc";
-      // v4: resolve the preview image via explicit cue identity (matches Boat);
-      // `cue` is 0-indexed here, and trial_block.cues is 0-indexed too.
-      img = spriteSheet.getImage(spriteIndexForCue(trial_block.cues[cue]));
+      img = spriteSheet.getImage(trial_block.theme_offset + cue);
     }
 
     let xc = x + 1.1 * size * cue;

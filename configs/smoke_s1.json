@@ -1,0 +1,812 @@
+[
+  {
+    "name": "instrumental",
+    "ncues": 2,
+    "is_practice": true,
+    "ntrials_per_cue": 50,
+    "instructions": "figure out which button will destroy each image",
+    "scene": "river",
+    "run": null,
+    "set_size": 2,
+    "varies": null,
+    "block_type": "practice",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "training",
+        "texture": null,
+        "manifest_index": null,
+        "filename": "training-1.png",
+        "training": true
+      },
+      {
+        "cue_index": 2,
+        "shape": "training",
+        "texture": null,
+        "manifest_index": null,
+        "filename": "training-2.png",
+        "training": true
+      }
+    ]
+  },
+  {
+    "name": "instrumental",
+    "ncues": 2,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "figure out which button will destroy each image",
+    "scene": "river",
+    "run": 2,
+    "set_size": 2,
+    "varies": "texture",
+    "block_type": "single_dim",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "square",
+        "texture": "hatch",
+        "manifest_index": 6,
+        "filename": "06_square_hatch.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "square",
+        "texture": "solid",
+        "manifest_index": 7,
+        "filename": "07_square_solid.png"
+      }
+    ]
+  },
+  {
+    "name": "instrumental",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "figure out which button will destroy each image",
+    "scene": "river",
+    "run": 2,
+    "set_size": 3,
+    "varies": "shape",
+    "block_type": "single_dim",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "triangle",
+        "texture": "outline",
+        "manifest_index": 1,
+        "filename": "01_triangle_outline.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "square",
+        "texture": "outline",
+        "manifest_index": 5,
+        "filename": "05_square_outline.png"
+      },
+      {
+        "cue_index": 3,
+        "shape": "heart",
+        "texture": "outline",
+        "manifest_index": 13,
+        "filename": "13_heart_outline.png"
+      }
+    ]
+  },
+  {
+    "name": "instrumental",
+    "ncues": 4,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "figure out which button will destroy each image",
+    "scene": "river",
+    "run": 2,
+    "set_size": 4,
+    "varies": "both",
+    "block_type": "factorial_2x2",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "circle",
+        "texture": "outline",
+        "manifest_index": 9,
+        "filename": "09_circle_outline.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "circle",
+        "texture": "hatch",
+        "manifest_index": 10,
+        "filename": "10_circle_hatch.png"
+      },
+      {
+        "cue_index": 3,
+        "shape": "crescent",
+        "texture": "outline",
+        "manifest_index": 17,
+        "filename": "17_crescent_outline.png"
+      },
+      {
+        "cue_index": 4,
+        "shape": "crescent",
+        "texture": "hatch",
+        "manifest_index": 18,
+        "filename": "18_crescent_hatch.png"
+      }
+    ]
+  },
+  {
+    "name": "targets",
+    "ncues": 2,
+    "is_practice": true,
+    "ntrials_per_cue": 50,
+    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
+    "scene": "river",
+    "run": null,
+    "set_size": 2,
+    "varies": null,
+    "block_type": "practice",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "training",
+        "texture": null,
+        "manifest_index": null,
+        "filename": "training-1.png",
+        "training": true
+      },
+      {
+        "cue_index": 2,
+        "shape": "training",
+        "texture": null,
+        "manifest_index": null,
+        "filename": "training-2.png",
+        "training": true
+      }
+    ]
+  },
+  {
+    "name": "targets",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
+    "scene": "river",
+    "run": 2,
+    "set_size": 3,
+    "varies": "shape",
+    "block_type": "single_dim",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "triangle",
+        "texture": "outline",
+        "manifest_index": 1,
+        "filename": "01_triangle_outline.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "square",
+        "texture": "outline",
+        "manifest_index": 5,
+        "filename": "05_square_outline.png"
+      },
+      {
+        "cue_index": 3,
+        "shape": "heart",
+        "texture": "outline",
+        "manifest_index": 13,
+        "filename": "13_heart_outline.png"
+      }
+    ]
+  },
+  {
+    "name": "targets",
+    "ncues": 4,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
+    "scene": "river",
+    "run": 2,
+    "set_size": 4,
+    "varies": "both",
+    "block_type": "factorial_2x2",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "circle",
+        "texture": "outline",
+        "manifest_index": 9,
+        "filename": "09_circle_outline.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "circle",
+        "texture": "hatch",
+        "manifest_index": 10,
+        "filename": "10_circle_hatch.png"
+      },
+      {
+        "cue_index": 3,
+        "shape": "crescent",
+        "texture": "outline",
+        "manifest_index": 17,
+        "filename": "17_crescent_outline.png"
+      },
+      {
+        "cue_index": 4,
+        "shape": "crescent",
+        "texture": "hatch",
+        "manifest_index": 18,
+        "filename": "18_crescent_hatch.png"
+      }
+    ]
+  },
+  {
+    "name": "targets",
+    "ncues": 2,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
+    "scene": "river",
+    "run": 2,
+    "set_size": 2,
+    "varies": "texture",
+    "block_type": "single_dim",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "square",
+        "texture": "hatch",
+        "manifest_index": 6,
+        "filename": "06_square_hatch.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "square",
+        "texture": "solid",
+        "manifest_index": 7,
+        "filename": "07_square_solid.png"
+      }
+    ]
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 2,
+    "is_practice": true,
+    "ntrials_per_cue": 50,
+    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
+    "scene": "river",
+    "run": null,
+    "set_size": 2,
+    "varies": null,
+    "block_type": "practice",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "training",
+        "texture": null,
+        "manifest_index": null,
+        "filename": "training-1.png",
+        "training": true
+      },
+      {
+        "cue_index": 2,
+        "shape": "training",
+        "texture": null,
+        "manifest_index": null,
+        "filename": "training-2.png",
+        "training": true
+      }
+    ]
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 2,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
+    "scene": "river",
+    "run": 1,
+    "set_size": 2,
+    "varies": "shape",
+    "block_type": "single_dim",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "circle",
+        "texture": "solid",
+        "manifest_index": 11,
+        "filename": "11_circle_solid.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "crescent",
+        "texture": "solid",
+        "manifest_index": 19,
+        "filename": "19_crescent_solid.png"
+      }
+    ]
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
+    "scene": "river",
+    "run": 1,
+    "set_size": 3,
+    "varies": "texture",
+    "block_type": "single_dim",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "star",
+        "texture": "outline",
+        "manifest_index": 21,
+        "filename": "21_star_outline.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "star",
+        "texture": "hatch",
+        "manifest_index": 22,
+        "filename": "22_star_hatch.png"
+      },
+      {
+        "cue_index": 3,
+        "shape": "star",
+        "texture": "solid",
+        "manifest_index": 23,
+        "filename": "23_star_solid.png"
+      }
+    ]
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 4,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
+    "scene": "river",
+    "run": 1,
+    "set_size": 4,
+    "varies": "both",
+    "block_type": "factorial_2x2",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "triangle",
+        "texture": "hatch",
+        "manifest_index": 2,
+        "filename": "02_triangle_hatch.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "triangle",
+        "texture": "solid",
+        "manifest_index": 3,
+        "filename": "03_triangle_solid.png"
+      },
+      {
+        "cue_index": 3,
+        "shape": "heart",
+        "texture": "hatch",
+        "manifest_index": 14,
+        "filename": "14_heart_hatch.png"
+      },
+      {
+        "cue_index": 4,
+        "shape": "heart",
+        "texture": "solid",
+        "manifest_index": 15,
+        "filename": "15_heart_solid.png"
+      }
+    ]
+  },
+  {
+    "name": "instrumental",
+    "ncues": 2,
+    "is_practice": true,
+    "ntrials_per_cue": 50,
+    "instructions": "figure out which button will destroy each image",
+    "scene": "river",
+    "run": null,
+    "set_size": 2,
+    "varies": null,
+    "block_type": "practice",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "training",
+        "texture": null,
+        "manifest_index": null,
+        "filename": "training-1.png",
+        "training": true
+      },
+      {
+        "cue_index": 2,
+        "shape": "training",
+        "texture": null,
+        "manifest_index": null,
+        "filename": "training-2.png",
+        "training": true
+      }
+    ]
+  },
+  {
+    "name": "instrumental",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "figure out which button will destroy each image",
+    "scene": "river",
+    "run": 1,
+    "set_size": 3,
+    "varies": "texture",
+    "block_type": "single_dim",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "star",
+        "texture": "outline",
+        "manifest_index": 21,
+        "filename": "21_star_outline.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "star",
+        "texture": "hatch",
+        "manifest_index": 22,
+        "filename": "22_star_hatch.png"
+      },
+      {
+        "cue_index": 3,
+        "shape": "star",
+        "texture": "solid",
+        "manifest_index": 23,
+        "filename": "23_star_solid.png"
+      }
+    ]
+  },
+  {
+    "name": "instrumental",
+    "ncues": 2,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "figure out which button will destroy each image",
+    "scene": "river",
+    "run": 1,
+    "set_size": 2,
+    "varies": "shape",
+    "block_type": "single_dim",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "circle",
+        "texture": "solid",
+        "manifest_index": 11,
+        "filename": "11_circle_solid.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "crescent",
+        "texture": "solid",
+        "manifest_index": 19,
+        "filename": "19_crescent_solid.png"
+      }
+    ]
+  },
+  {
+    "name": "instrumental",
+    "ncues": 4,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "figure out which button will destroy each image",
+    "scene": "river",
+    "run": 1,
+    "set_size": 4,
+    "varies": "both",
+    "block_type": "factorial_2x2",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "triangle",
+        "texture": "hatch",
+        "manifest_index": 2,
+        "filename": "02_triangle_hatch.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "triangle",
+        "texture": "solid",
+        "manifest_index": 3,
+        "filename": "03_triangle_solid.png"
+      },
+      {
+        "cue_index": 3,
+        "shape": "heart",
+        "texture": "hatch",
+        "manifest_index": 14,
+        "filename": "14_heart_hatch.png"
+      },
+      {
+        "cue_index": 4,
+        "shape": "heart",
+        "texture": "solid",
+        "manifest_index": 15,
+        "filename": "15_heart_solid.png"
+      }
+    ]
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 2,
+    "is_practice": true,
+    "ntrials_per_cue": 50,
+    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
+    "scene": "river",
+    "run": null,
+    "set_size": 2,
+    "varies": null,
+    "block_type": "practice",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "training",
+        "texture": null,
+        "manifest_index": null,
+        "filename": "training-1.png",
+        "training": true
+      },
+      {
+        "cue_index": 2,
+        "shape": "training",
+        "texture": null,
+        "manifest_index": null,
+        "filename": "training-2.png",
+        "training": true
+      }
+    ]
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 4,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
+    "scene": "river",
+    "run": 2,
+    "set_size": 4,
+    "varies": "both",
+    "block_type": "factorial_2x2",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "circle",
+        "texture": "outline",
+        "manifest_index": 9,
+        "filename": "09_circle_outline.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "circle",
+        "texture": "hatch",
+        "manifest_index": 10,
+        "filename": "10_circle_hatch.png"
+      },
+      {
+        "cue_index": 3,
+        "shape": "crescent",
+        "texture": "outline",
+        "manifest_index": 17,
+        "filename": "17_crescent_outline.png"
+      },
+      {
+        "cue_index": 4,
+        "shape": "crescent",
+        "texture": "hatch",
+        "manifest_index": 18,
+        "filename": "18_crescent_hatch.png"
+      }
+    ]
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
+    "scene": "river",
+    "run": 2,
+    "set_size": 3,
+    "varies": "shape",
+    "block_type": "single_dim",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "triangle",
+        "texture": "outline",
+        "manifest_index": 1,
+        "filename": "01_triangle_outline.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "square",
+        "texture": "outline",
+        "manifest_index": 5,
+        "filename": "05_square_outline.png"
+      },
+      {
+        "cue_index": 3,
+        "shape": "heart",
+        "texture": "outline",
+        "manifest_index": 13,
+        "filename": "13_heart_outline.png"
+      }
+    ]
+  },
+  {
+    "name": "targets-instrumental",
+    "ncues": 2,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "control the airplane with the joystick\nfigure out which button will destroy each image",
+    "scene": "river",
+    "run": 2,
+    "set_size": 2,
+    "varies": "texture",
+    "block_type": "single_dim",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "square",
+        "texture": "hatch",
+        "manifest_index": 6,
+        "filename": "06_square_hatch.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "square",
+        "texture": "solid",
+        "manifest_index": 7,
+        "filename": "07_square_solid.png"
+      }
+    ]
+  },
+  {
+    "name": "targets",
+    "ncues": 2,
+    "is_practice": true,
+    "ntrials_per_cue": 50,
+    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
+    "scene": "river",
+    "run": null,
+    "set_size": 2,
+    "varies": null,
+    "block_type": "practice",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "training",
+        "texture": null,
+        "manifest_index": null,
+        "filename": "training-1.png",
+        "training": true
+      },
+      {
+        "cue_index": 2,
+        "shape": "training",
+        "texture": null,
+        "manifest_index": null,
+        "filename": "training-2.png",
+        "training": true
+      }
+    ]
+  },
+  {
+    "name": "targets",
+    "ncues": 2,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
+    "scene": "river",
+    "run": 1,
+    "set_size": 2,
+    "varies": "shape",
+    "block_type": "single_dim",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "circle",
+        "texture": "solid",
+        "manifest_index": 11,
+        "filename": "11_circle_solid.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "crescent",
+        "texture": "solid",
+        "manifest_index": 19,
+        "filename": "19_crescent_solid.png"
+      }
+    ]
+  },
+  {
+    "name": "targets",
+    "ncues": 4,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
+    "scene": "river",
+    "run": 1,
+    "set_size": 4,
+    "varies": "both",
+    "block_type": "factorial_2x2",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "triangle",
+        "texture": "hatch",
+        "manifest_index": 2,
+        "filename": "02_triangle_hatch.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "triangle",
+        "texture": "solid",
+        "manifest_index": 3,
+        "filename": "03_triangle_solid.png"
+      },
+      {
+        "cue_index": 3,
+        "shape": "heart",
+        "texture": "hatch",
+        "manifest_index": 14,
+        "filename": "14_heart_hatch.png"
+      },
+      {
+        "cue_index": 4,
+        "shape": "heart",
+        "texture": "solid",
+        "manifest_index": 15,
+        "filename": "15_heart_solid.png"
+      }
+    ]
+  },
+  {
+    "name": "targets",
+    "ncues": 3,
+    "is_practice": false,
+    "ntrials_per_cue": 10,
+    "instructions": "control the airplane with the joystick\nfly underneath each image to destroy it",
+    "scene": "river",
+    "run": 1,
+    "set_size": 3,
+    "varies": "texture",
+    "block_type": "single_dim",
+    "cues": [
+      {
+        "cue_index": 1,
+        "shape": "star",
+        "texture": "outline",
+        "manifest_index": 21,
+        "filename": "21_star_outline.png"
+      },
+      {
+        "cue_index": 2,
+        "shape": "star",
+        "texture": "hatch",
+        "manifest_index": 22,
+        "filename": "22_star_hatch.png"
+      },
+      {
+        "cue_index": 3,
+        "shape": "star",
+        "texture": "solid",
+        "manifest_index": 23,
+        "filename": "23_star_solid.png"
+      }
+    ]
+  }
+]

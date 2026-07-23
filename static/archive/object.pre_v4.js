@@ -91,11 +91,7 @@ class Boat {
     this.cue = cue;
     this.color = trial_block.cue_colors[this.cue];
     if (spriteSheet !== undefined) {
-      // v4: identity is explicit per cue; resolve the sprite cell via the
-      // logged per-session index->identity map (see spriteIndexForCue in sketch.js).
-      // this.cue is 0-indexed (Boat is constructed with trial.cue - 1).
-      let cueRec = trial_block.cues[this.cue];
-      this.img = spriteSheet.getImage(spriteIndexForCue(cueRec));
+      this.img = spriteSheet.getImage(trial_block.theme_offset + this.cue);
     }
     this.hasBeenSeen = false;
     this.selectedLocationIndex = -1;

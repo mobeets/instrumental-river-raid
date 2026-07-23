@@ -194,7 +194,7 @@ class TrialBlock {
     block_index,
     block_count,
     E,
-    { name, ncues, is_practice, ntrials_per_cue, theme, instructions, scene, cues },
+    { name, ncues, is_practice, ntrials_per_cue, theme, instructions, scene },
   ) {
     this.name = name;
     this.block_count = block_count;
@@ -203,8 +203,7 @@ class TrialBlock {
     this.is_practice = is_practice;
     this.ntrials_per_cue = ntrials_per_cue;
     this.theme = theme;
-    this.cues = cues; // v4: explicit per-cue identity [{cue_index, shape, texture, manifest_index, filename}]
-    this.theme_offset = themeOffsets[this.ncues]; // v4: no longer used for image lookup (see objects.js Boat)
+    this.theme_offset = themeOffsets[this.ncues];
     // this.theme_offset = getNextThemeOffset(this.theme, this.ncues);
     this.scene = scene;
     this.instructions = instructions;

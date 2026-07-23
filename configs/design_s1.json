@@ -1,0 +1,367 @@
+{
+  "session_seed": 101,
+  "dropped_texture": "dotted",
+  "shapes": [
+    "triangle",
+    "square",
+    "circle",
+    "heart",
+    "crescent",
+    "star"
+  ],
+  "textures": [
+    "outline",
+    "hatch",
+    "solid"
+  ],
+  "run_recipes": {
+    "1": "A",
+    "2": "B"
+  },
+  "recipe_legend": {
+    "A": "k2 varies shape, k3 varies texture",
+    "B": "k2 varies texture, k3 varies shape",
+    "k4": "2x2 factorial (both vary)"
+  },
+  "pool": [
+    {
+      "shape": "triangle",
+      "texture": "outline",
+      "manifest_index": 1,
+      "filename": "01_triangle_outline.png"
+    },
+    {
+      "shape": "triangle",
+      "texture": "hatch",
+      "manifest_index": 2,
+      "filename": "02_triangle_hatch.png"
+    },
+    {
+      "shape": "triangle",
+      "texture": "solid",
+      "manifest_index": 3,
+      "filename": "03_triangle_solid.png"
+    },
+    {
+      "shape": "square",
+      "texture": "outline",
+      "manifest_index": 5,
+      "filename": "05_square_outline.png"
+    },
+    {
+      "shape": "square",
+      "texture": "hatch",
+      "manifest_index": 6,
+      "filename": "06_square_hatch.png"
+    },
+    {
+      "shape": "square",
+      "texture": "solid",
+      "manifest_index": 7,
+      "filename": "07_square_solid.png"
+    },
+    {
+      "shape": "circle",
+      "texture": "outline",
+      "manifest_index": 9,
+      "filename": "09_circle_outline.png"
+    },
+    {
+      "shape": "circle",
+      "texture": "hatch",
+      "manifest_index": 10,
+      "filename": "10_circle_hatch.png"
+    },
+    {
+      "shape": "circle",
+      "texture": "solid",
+      "manifest_index": 11,
+      "filename": "11_circle_solid.png"
+    },
+    {
+      "shape": "heart",
+      "texture": "outline",
+      "manifest_index": 13,
+      "filename": "13_heart_outline.png"
+    },
+    {
+      "shape": "heart",
+      "texture": "hatch",
+      "manifest_index": 14,
+      "filename": "14_heart_hatch.png"
+    },
+    {
+      "shape": "heart",
+      "texture": "solid",
+      "manifest_index": 15,
+      "filename": "15_heart_solid.png"
+    },
+    {
+      "shape": "crescent",
+      "texture": "outline",
+      "manifest_index": 17,
+      "filename": "17_crescent_outline.png"
+    },
+    {
+      "shape": "crescent",
+      "texture": "hatch",
+      "manifest_index": 18,
+      "filename": "18_crescent_hatch.png"
+    },
+    {
+      "shape": "crescent",
+      "texture": "solid",
+      "manifest_index": 19,
+      "filename": "19_crescent_solid.png"
+    },
+    {
+      "shape": "star",
+      "texture": "outline",
+      "manifest_index": 21,
+      "filename": "21_star_outline.png"
+    },
+    {
+      "shape": "star",
+      "texture": "hatch",
+      "manifest_index": 22,
+      "filename": "22_star_hatch.png"
+    },
+    {
+      "shape": "star",
+      "texture": "solid",
+      "manifest_index": 23,
+      "filename": "23_star_solid.png"
+    }
+  ],
+  "cells": [
+    {
+      "run": 1,
+      "set_size": 2,
+      "varies": "shape",
+      "block_type": "single_dim",
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "circle",
+          "texture": "solid",
+          "manifest_index": 11,
+          "filename": "11_circle_solid.png"
+        },
+        {
+          "cue_index": 2,
+          "shape": "crescent",
+          "texture": "solid",
+          "manifest_index": 19,
+          "filename": "19_crescent_solid.png"
+        }
+      ],
+      "shapes": [
+        "circle",
+        "crescent"
+      ],
+      "textures": [
+        "solid"
+      ]
+    },
+    {
+      "run": 1,
+      "set_size": 3,
+      "varies": "texture",
+      "block_type": "single_dim",
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "star",
+          "texture": "outline",
+          "manifest_index": 21,
+          "filename": "21_star_outline.png"
+        },
+        {
+          "cue_index": 2,
+          "shape": "star",
+          "texture": "hatch",
+          "manifest_index": 22,
+          "filename": "22_star_hatch.png"
+        },
+        {
+          "cue_index": 3,
+          "shape": "star",
+          "texture": "solid",
+          "manifest_index": 23,
+          "filename": "23_star_solid.png"
+        }
+      ],
+      "shapes": [
+        "star"
+      ],
+      "textures": [
+        "outline",
+        "hatch",
+        "solid"
+      ]
+    },
+    {
+      "run": 1,
+      "set_size": 4,
+      "varies": "both",
+      "block_type": "factorial_2x2",
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "triangle",
+          "texture": "hatch",
+          "manifest_index": 2,
+          "filename": "02_triangle_hatch.png"
+        },
+        {
+          "cue_index": 2,
+          "shape": "triangle",
+          "texture": "solid",
+          "manifest_index": 3,
+          "filename": "03_triangle_solid.png"
+        },
+        {
+          "cue_index": 3,
+          "shape": "heart",
+          "texture": "hatch",
+          "manifest_index": 14,
+          "filename": "14_heart_hatch.png"
+        },
+        {
+          "cue_index": 4,
+          "shape": "heart",
+          "texture": "solid",
+          "manifest_index": 15,
+          "filename": "15_heart_solid.png"
+        }
+      ],
+      "shapes": [
+        "triangle",
+        "heart"
+      ],
+      "textures": [
+        "hatch",
+        "solid"
+      ]
+    },
+    {
+      "run": 2,
+      "set_size": 2,
+      "varies": "texture",
+      "block_type": "single_dim",
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "square",
+          "texture": "hatch",
+          "manifest_index": 6,
+          "filename": "06_square_hatch.png"
+        },
+        {
+          "cue_index": 2,
+          "shape": "square",
+          "texture": "solid",
+          "manifest_index": 7,
+          "filename": "07_square_solid.png"
+        }
+      ],
+      "shapes": [
+        "square"
+      ],
+      "textures": [
+        "hatch",
+        "solid"
+      ]
+    },
+    {
+      "run": 2,
+      "set_size": 3,
+      "varies": "shape",
+      "block_type": "single_dim",
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "triangle",
+          "texture": "outline",
+          "manifest_index": 1,
+          "filename": "01_triangle_outline.png"
+        },
+        {
+          "cue_index": 2,
+          "shape": "square",
+          "texture": "outline",
+          "manifest_index": 5,
+          "filename": "05_square_outline.png"
+        },
+        {
+          "cue_index": 3,
+          "shape": "heart",
+          "texture": "outline",
+          "manifest_index": 13,
+          "filename": "13_heart_outline.png"
+        }
+      ],
+      "shapes": [
+        "triangle",
+        "square",
+        "heart"
+      ],
+      "textures": [
+        "outline"
+      ]
+    },
+    {
+      "run": 2,
+      "set_size": 4,
+      "varies": "both",
+      "block_type": "factorial_2x2",
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "circle",
+          "texture": "outline",
+          "manifest_index": 9,
+          "filename": "09_circle_outline.png"
+        },
+        {
+          "cue_index": 2,
+          "shape": "circle",
+          "texture": "hatch",
+          "manifest_index": 10,
+          "filename": "10_circle_hatch.png"
+        },
+        {
+          "cue_index": 3,
+          "shape": "crescent",
+          "texture": "outline",
+          "manifest_index": 17,
+          "filename": "17_crescent_outline.png"
+        },
+        {
+          "cue_index": 4,
+          "shape": "crescent",
+          "texture": "hatch",
+          "manifest_index": 18,
+          "filename": "18_crescent_hatch.png"
+        }
+      ],
+      "shapes": [
+        "circle",
+        "crescent"
+      ],
+      "textures": [
+        "outline",
+        "hatch"
+      ]
+    }
+  ],
+  "validation": {
+    "pool_orthogonal_6x3": true,
+    "exact_partition": true,
+    "run_set_sizes_ok": true,
+    "k4_is_full_2x2": true,
+    "single_dim_ok": true,
+    "within_run_alternation": true,
+    "cross_run_balance": true
+  }
+}
