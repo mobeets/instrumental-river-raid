@@ -315,19 +315,11 @@ class TrialBlock {
     }
     this.trial_index++;
     let trial_info = this.cue_list[this.trial_index];
-    // --- v5 logger: resolve this cue's identity from the block's cues array
-    // (this.cues is 0-indexed; trial_info.cue is 1..ncues, matching the Boat lookup).
-    let cue_identity =
-      this.cues && this.cues[trial_info.cue - 1]
-        ? this.cues[trial_info.cue - 1]
-        : null;
-    // --- end v5 logger
     let trial = new Trial(
       this.trial_index,
       this.block_index,
       trial_info.cue,
       trial_info.location_index,
-      cue_identity, // v5 logger
     );
     trial.log(true);
     this.trials.push(trial);
@@ -345,15 +337,11 @@ class TrialBlock {
 }
 
 class Trial {
-  constructor(index, block_index, cue, location_index, cue_identity = null) {
+  constructor(index, block_index, cue, location_index) {
     this.index = index;
     this.block_index = block_index;
     this.cue = cue;
     this.location_index = location_index;
-    // --- v5 logger: full cue identity for this trial (shape/texture/manifest_index/
-    // filename). Lands in the start/end-of-Trial log lines via toJSON().
-    this.cue_identity = cue_identity;
-    // --- end v5 logger
     this.events = [];
     this.positions = {
       time: [],
@@ -393,15 +381,6 @@ class Trial {
     event.trial_index = this.index;
     event.cue = this.cue;
     event.block_index = this.block_index;
-    // --- v5 logger: make every event self-describing (what + where).
-    // filename is intentionally omitted here (kept at trial/block level only).
-    if (this.cue_identity) {
-      event.shape = this.cue_identity.shape;
-      event.texture = this.cue_identity.texture;
-      event.manifest_index = this.cue_identity.manifest_index;
-    }
-    event.location_index = this.location_index;
-    // --- end v5 logger
     event.time = performance.now();
     wsLogger.log("Trial event", event, false, callback);
   }
