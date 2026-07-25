@@ -3,11 +3,11 @@
   "dropped_texture": "dotted",
   "shapes": [
     "triangle",
-    "square",
     "circle",
     "heart",
-    "crescent",
-    "star"
+    "diamond",
+    "star",
+    "hexagon"
   ],
   "textures": [
     "outline",
@@ -43,94 +43,94 @@
       "filename": "03_triangle_solid.png"
     },
     {
-      "shape": "square",
+      "shape": "circle",
       "texture": "outline",
       "manifest_index": 5,
-      "filename": "05_square_outline.png"
+      "filename": "05_circle_outline.png"
     },
     {
-      "shape": "square",
+      "shape": "circle",
       "texture": "hatch",
       "manifest_index": 6,
-      "filename": "06_square_hatch.png"
+      "filename": "06_circle_hatch.png"
     },
     {
-      "shape": "square",
+      "shape": "circle",
       "texture": "solid",
       "manifest_index": 7,
-      "filename": "07_square_solid.png"
+      "filename": "07_circle_solid.png"
     },
     {
-      "shape": "circle",
+      "shape": "heart",
       "texture": "outline",
       "manifest_index": 9,
-      "filename": "09_circle_outline.png"
+      "filename": "09_heart_outline.png"
     },
     {
-      "shape": "circle",
+      "shape": "heart",
       "texture": "hatch",
       "manifest_index": 10,
-      "filename": "10_circle_hatch.png"
+      "filename": "10_heart_hatch.png"
     },
     {
-      "shape": "circle",
+      "shape": "heart",
       "texture": "solid",
       "manifest_index": 11,
-      "filename": "11_circle_solid.png"
+      "filename": "11_heart_solid.png"
     },
     {
-      "shape": "heart",
+      "shape": "diamond",
       "texture": "outline",
       "manifest_index": 13,
-      "filename": "13_heart_outline.png"
+      "filename": "13_diamond_outline.png"
     },
     {
-      "shape": "heart",
+      "shape": "diamond",
       "texture": "hatch",
       "manifest_index": 14,
-      "filename": "14_heart_hatch.png"
+      "filename": "14_diamond_hatch.png"
     },
     {
-      "shape": "heart",
+      "shape": "diamond",
       "texture": "solid",
       "manifest_index": 15,
-      "filename": "15_heart_solid.png"
+      "filename": "15_diamond_solid.png"
     },
     {
-      "shape": "crescent",
+      "shape": "star",
       "texture": "outline",
       "manifest_index": 17,
-      "filename": "17_crescent_outline.png"
+      "filename": "17_star_outline.png"
     },
     {
-      "shape": "crescent",
+      "shape": "star",
       "texture": "hatch",
       "manifest_index": 18,
-      "filename": "18_crescent_hatch.png"
+      "filename": "18_star_hatch.png"
     },
     {
-      "shape": "crescent",
+      "shape": "star",
       "texture": "solid",
       "manifest_index": 19,
-      "filename": "19_crescent_solid.png"
+      "filename": "19_star_solid.png"
     },
     {
-      "shape": "star",
+      "shape": "hexagon",
       "texture": "outline",
       "manifest_index": 21,
-      "filename": "21_star_outline.png"
+      "filename": "21_hexagon_outline.png"
     },
     {
-      "shape": "star",
+      "shape": "hexagon",
       "texture": "hatch",
       "manifest_index": 22,
-      "filename": "22_star_hatch.png"
+      "filename": "22_hexagon_hatch.png"
     },
     {
-      "shape": "star",
+      "shape": "hexagon",
       "texture": "solid",
       "manifest_index": 23,
-      "filename": "23_star_solid.png"
+      "filename": "23_hexagon_solid.png"
     }
   ],
   "cells": [
@@ -142,22 +142,22 @@
       "cues": [
         {
           "cue_index": 1,
-          "shape": "circle",
+          "shape": "heart",
           "texture": "solid",
           "manifest_index": 11,
-          "filename": "11_circle_solid.png"
+          "filename": "11_heart_solid.png"
         },
         {
           "cue_index": 2,
-          "shape": "crescent",
+          "shape": "star",
           "texture": "solid",
           "manifest_index": 19,
-          "filename": "19_crescent_solid.png"
+          "filename": "19_star_solid.png"
         }
       ],
       "shapes": [
-        "circle",
-        "crescent"
+        "heart",
+        "star"
       ],
       "textures": [
         "solid"
@@ -171,28 +171,28 @@
       "cues": [
         {
           "cue_index": 1,
-          "shape": "star",
+          "shape": "hexagon",
           "texture": "outline",
           "manifest_index": 21,
-          "filename": "21_star_outline.png"
+          "filename": "21_hexagon_outline.png"
         },
         {
           "cue_index": 2,
-          "shape": "star",
+          "shape": "hexagon",
           "texture": "hatch",
           "manifest_index": 22,
-          "filename": "22_star_hatch.png"
+          "filename": "22_hexagon_hatch.png"
         },
         {
           "cue_index": 3,
-          "shape": "star",
+          "shape": "hexagon",
           "texture": "solid",
           "manifest_index": 23,
-          "filename": "23_star_solid.png"
+          "filename": "23_hexagon_solid.png"
         }
       ],
       "shapes": [
-        "star"
+        "hexagon"
       ],
       "textures": [
         "outline",
@@ -222,22 +222,22 @@
         },
         {
           "cue_index": 3,
-          "shape": "heart",
+          "shape": "diamond",
           "texture": "hatch",
           "manifest_index": 14,
-          "filename": "14_heart_hatch.png"
+          "filename": "14_diamond_hatch.png"
         },
         {
           "cue_index": 4,
-          "shape": "heart",
+          "shape": "diamond",
           "texture": "solid",
           "manifest_index": 15,
-          "filename": "15_heart_solid.png"
+          "filename": "15_diamond_solid.png"
         }
       ],
       "shapes": [
         "triangle",
-        "heart"
+        "diamond"
       ],
       "textures": [
         "hatch",
@@ -252,21 +252,21 @@
       "cues": [
         {
           "cue_index": 1,
-          "shape": "square",
+          "shape": "circle",
           "texture": "hatch",
           "manifest_index": 6,
-          "filename": "06_square_hatch.png"
+          "filename": "06_circle_hatch.png"
         },
         {
           "cue_index": 2,
-          "shape": "square",
+          "shape": "circle",
           "texture": "solid",
           "manifest_index": 7,
-          "filename": "07_square_solid.png"
+          "filename": "07_circle_solid.png"
         }
       ],
       "shapes": [
-        "square"
+        "circle"
       ],
       "textures": [
         "hatch",
@@ -288,23 +288,23 @@
         },
         {
           "cue_index": 2,
-          "shape": "square",
+          "shape": "circle",
           "texture": "outline",
           "manifest_index": 5,
-          "filename": "05_square_outline.png"
+          "filename": "05_circle_outline.png"
         },
         {
           "cue_index": 3,
-          "shape": "heart",
+          "shape": "diamond",
           "texture": "outline",
           "manifest_index": 13,
-          "filename": "13_heart_outline.png"
+          "filename": "13_diamond_outline.png"
         }
       ],
       "shapes": [
         "triangle",
-        "square",
-        "heart"
+        "circle",
+        "diamond"
       ],
       "textures": [
         "outline"
@@ -318,36 +318,36 @@
       "cues": [
         {
           "cue_index": 1,
-          "shape": "circle",
+          "shape": "heart",
           "texture": "outline",
           "manifest_index": 9,
-          "filename": "09_circle_outline.png"
+          "filename": "09_heart_outline.png"
         },
         {
           "cue_index": 2,
-          "shape": "circle",
+          "shape": "heart",
           "texture": "hatch",
           "manifest_index": 10,
-          "filename": "10_circle_hatch.png"
+          "filename": "10_heart_hatch.png"
         },
         {
           "cue_index": 3,
-          "shape": "crescent",
+          "shape": "star",
           "texture": "outline",
           "manifest_index": 17,
-          "filename": "17_crescent_outline.png"
+          "filename": "17_star_outline.png"
         },
         {
           "cue_index": 4,
-          "shape": "crescent",
+          "shape": "star",
           "texture": "hatch",
           "manifest_index": 18,
-          "filename": "18_crescent_hatch.png"
+          "filename": "18_star_hatch.png"
         }
       ],
       "shapes": [
-        "circle",
-        "crescent"
+        "heart",
+        "star"
       ],
       "textures": [
         "outline",

@@ -45,7 +45,7 @@ from itertools import combinations
 from collections import Counter, defaultdict
 from pathlib import Path
 
-SHAPES = ["triangle", "square", "circle", "heart", "crescent", "star"]
+SHAPES = ["triangle", "circle", "heart", "diamond", "star", "hexagon"]
 ALL_TEXTURES = ["outline", "hatch", "solid", "dotted"]  # manifest column order
 DEFAULT_DROPPED_TEXTURE = "dotted"
 SET_SIZES = [2, 3, 4]

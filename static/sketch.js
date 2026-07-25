@@ -51,6 +51,10 @@ const READY_MODE = 3;
 const COMPLETE_MODE = 4;
 let gameMode = READY_MODE;
 let feedbackTimer = 0; // counts down frames to show feedback text
+// v5: response lockout + self-paced drift (set from params in setup)
+let responseLockout = false;   // lock movement + fire during the cue-hold window
+let driftOnResponse = false;   // boat descends only once the player acts
+let responseTimeoutFrames = 0; // optional safety: 0 = disabled
 
 // ===== Assets =====
 
@@ -99,6 +103,15 @@ function buildSpriteLookups() {
     if (s.filename) _spriteIdxByFilename[s.filename] = s.sprite_index;
   }
 }
+// v5: responses are locked from agent onset until the cue-hold ends (GO).
+function beforeGo() {
+  if (boats.length === 0) return trialActive && jet.visible; // jet up, cue not yet shown
+  return boats[0].waitTimer > 0; // cue shown but still in the locked hold
+}
+function responsesLocked() {
+  return responseLockout && beforeGo();
+}
+
 function spriteIndexForCue(cueRec) {
   if (_spriteIdxByManifest === null) buildSpriteLookups();
   if (
@@ -208,6 +221,11 @@ function setup() {
   projectileSpeed =
     (height - jetOffset) / (E.params.FPS * E.params.PROJECTILE_TRAVEL_DURATION);
   explosionDuration = Math.ceil(E.params.FPS * E.params.FEEDBACK_DURATION);
+
+  // v5: lockout / self-paced drift (default off -> original behavior)
+  responseLockout = E.params.RESPONSE_LOCKOUT ?? false;
+  driftOnResponse = E.params.DRIFT_STARTS_ON_RESPONSE ?? false;
+  responseTimeoutFrames = Math.ceil((E.params.RESPONSE_TIMEOUT ?? 0) * E.params.FPS);
 
   let nonPhotodiodeProp = 1 - (2 * photodiode.size) / width;
   // n.b. if E.params.PROP_RIVER_WIDTH < nonPhotodiodeProp, the photodiode will block the view of some Boat objects
@@ -473,6 +491,27 @@ function draw() {
         trialActive = false;
         iti1MinTimer = 0;
         boats.splice(i, 1);
+      }
+    }
+
+    // v5: GO (cue-hold released) + self-paced drift onset
+    if (boats.length > 0) {
+      let b = boats[0];
+      if (b.released && !b.goLogged) {
+        b.goLogged = true;
+        trial.trigger(getEventNameWithLocations("go", jet, [b]));
+      }
+      if (b.released && driftOnResponse && !b.driftStarted) {
+        if (user.moveLeft || user.moveRight || user.fired > 0) {
+          b.driftStarted = true;
+          trial.trigger(getEventNameWithLocations("response onset", jet, [b]));
+        } else if (responseTimeoutFrames > 0) {
+          b.framesSinceGo++;
+          if (b.framesSinceGo >= responseTimeoutFrames) {
+            b.driftStarted = true; // safety: let a non-response resolve as a miss
+            trial.trigger(getEventNameWithLocations("response timeout", jet, [b]));
+          }
+        }
       }
     }
 
@@ -899,6 +938,7 @@ function checkUserButtonPresses() {
       if (projectiles.length < E.params.MAX_PROJECTILES) {
         if (
           trialActive &&
+          !responsesLocked() &&
           boats.length > 0 &&
           boats[0].hasBeenSeen &&
           trial?.canFireAgain === undefined &&

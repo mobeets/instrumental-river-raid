@@ -49,8 +49,9 @@ class Jet {
   }
 
   update() {
-    if (immobileMode) {
-      // this.x = width / 2;
+    if (immobileMode || responsesLocked()) {
+      // v5: locked -- jet holds position (immobile in instrumental, or during
+      // the cue-hold lockout before GO)
     } else {
       if (user.moveLeft) this.x -= this.speed;
       else if (user.moveRight) this.x += this.speed;
@@ -102,11 +103,20 @@ class Boat {
     this.correctActionIndex = this.getCorrectActionIndex();
     this.proximityTimer = 0;      // tracks how long jet has been horizontally underneath
     this.shouldExplode = false;   // flag for sketch.js to trigger explosion
+    // v5: cue-hold lockout + self-paced drift state
+    this.released = false;        // set when the locked cue-hold (waitTimer) ends -> GO
+    this.goLogged = false;        // whether the 'go' event has fired
+    this.driftStarted = false;    // whether the boat has begun descending
+    this.framesSinceGo = 0;       // for optional RESPONSE_TIMEOUT
   }
 
   update() {
     if (this.waitTimer > 0) {
+        // v5: locked cue-hold window (cue visible, stationary, responses locked)
         this.waitTimer--;
+        if (this.waitTimer === 0) this.released = true; // hold over -> GO
+    } else if (driftOnResponse && !this.driftStarted) {
+        // v5: self-paced -- boat stays frozen until the player acts (see sketch.js)
     } else {
         this.y += this.speed;
 

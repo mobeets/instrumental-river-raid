@@ -1,5 +1,5 @@
 {
-	"ISI_DURATION": 2.0,
+	"ISI_DURATION": 1.5,
 	"PRACTICE_ISI_DURATION": 2.0,
 	"FEEDBACK_DURATION": 0.5,
 	"ITI_MEAN_DURATION": 0.2,
@@ -14,14 +14,16 @@
 	"PROP_RIVER_WIDTH": 0.84,
 	"PROP_CUE_WIDTH": 0.2,
 	"PROXIMITY_DURATION": 0.2,
-	"CUE_ONSET_PAUSE": 0.25,
+	"CUE_ONSET_PAUSE": 0.6,
 	"jetOffset": 60,
 	"showHUD": false,
 	"bulletsPassThru": false,
 	"maxEntropyPolicy": true,
 	"nactions": 3,
 	"projectileShowsNumber": true,
-	"photodiode": {"size": 120},
+	"photodiode": {
+		"size": 120
+	},
 	"debug": false,
 	"target-variant": true,
 	"RESPONSE_LOCKOUT": false,

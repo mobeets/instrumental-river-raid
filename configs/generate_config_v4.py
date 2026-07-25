@@ -68,7 +68,7 @@ INSTRUCTIONS = {
 }
 TASK_TOKENS = ["T", "T", "I", "I", "TI", "TI"]
 DEFAULT_SCENE = "river"
-DEFAULT_TRAINING_IMAGES = ["training-1.png", "training-2.png"]
+DEFAULT_TRAINING_IMAGES = ["train_square_white.png", "train_crescent_dotted.png"]
 
 
 # ---------------------------------------------------------------------------
@@ -171,8 +171,8 @@ def make_task_block(task, cell, ntrials_per_cue):
 
 def build_config(design_path, session_index, seed=None,
                  ntrials_per_cue=10, ntrials_per_cue_targets=None,
-                 ntrials_practice=50, training_images=None,
-                 interleave_all=False):
+                 ntrials_practice_first=50, ntrials_practice_second=4,
+                 training_images=None, interleave_all=False):
     if seed is not None:
         random.seed(seed)
     training_images = training_images or DEFAULT_TRAINING_IMAGES
@@ -185,10 +185,14 @@ def build_config(design_path, session_index, seed=None,
 
     blocks = []
     order_report = []
+    practice_seen = defaultdict(int)  # per-task encounter counter
     for slot in slots:
         task, run = slot["task"], slot["run"]
-        # Practice glued in front of its slot.
-        blocks.append(make_practice_block(task, training_images, ntrials_practice))
+        # Practice glued in front of its slot; more trials the FIRST time a task
+        # type appears (buffer, skipped manually), fewer on the second encounter.
+        practice_seen[task] += 1
+        npract = ntrials_practice_first if practice_seen[task] == 1 else ntrials_practice_second
+        blocks.append(make_practice_block(task, training_images, npract))
 
         # Sub-block (set-size) order within the slot is shuffled.
         set_sizes = sorted(cells_by_run[run].keys())  # [2,3,4]
@@ -242,7 +246,10 @@ def main():
     ap.add_argument("--seed", type=int, default=None, help="RNG seed for ORDER randomization (not identity).")
     ap.add_argument("--ntrials_per_cue", type=int, default=10)
     ap.add_argument("--ntrials_per_cue_targets", type=int, default=None)
-    ap.add_argument("--ntrials_practice", type=int, default=50)
+    ap.add_argument("--ntrials_practice_first", type=int, default=50,
+                    help="Practice trials/cue on the FIRST time a task type appears.")
+    ap.add_argument("--ntrials_practice_second", type=int, default=4,
+                    help="Practice trials/cue on the SECOND occurrence of a task type.")
     ap.add_argument("--training-images", nargs=2, default=None)
     ap.add_argument("--allow-back-to-back", action="store_true",
                     help="Disable no-back-to-back for sessions 2 & 3 (session 1 rules always apply). "
@@ -253,7 +260,8 @@ def main():
         args.design, args.session_index, seed=args.seed,
         ntrials_per_cue=args.ntrials_per_cue,
         ntrials_per_cue_targets=args.ntrials_per_cue_targets,
-        ntrials_practice=args.ntrials_practice,
+        ntrials_practice_first=args.ntrials_practice_first,
+        ntrials_practice_second=args.ntrials_practice_second,
         training_images=args.training_images,
         interleave_all=not args.allow_back_to_back,
     )

@@ -7,9 +7,9 @@
     "I",
     "T",
     "TI",
+    "T",
     "I",
-    "TI",
-    "T"
+    "TI"
   ],
   "interleave_all": true,
   "slots": [
@@ -20,11 +20,6 @@
       "run": 2,
       "sub_block_order": [
         {
-          "set_size": 2,
-          "varies": "texture",
-          "block_type": "single_dim"
-        },
-        {
           "set_size": 3,
           "varies": "shape",
           "block_type": "single_dim"
@@ -33,6 +28,11 @@
           "set_size": 4,
           "varies": "both",
           "block_type": "factorial_2x2"
+        },
+        {
+          "set_size": 2,
+          "varies": "texture",
+          "block_type": "single_dim"
         }
       ]
     },
@@ -40,10 +40,15 @@
       "slot_position": 1,
       "task": "targets",
       "token": "T",
-      "run": 2,
+      "run": 1,
       "sub_block_order": [
         {
           "set_size": 3,
+          "varies": "texture",
+          "block_type": "single_dim"
+        },
+        {
+          "set_size": 2,
           "varies": "shape",
           "block_type": "single_dim"
         },
@@ -51,11 +56,6 @@
           "set_size": 4,
           "varies": "both",
           "block_type": "factorial_2x2"
-        },
-        {
-          "set_size": 2,
-          "varies": "texture",
-          "block_type": "single_dim"
         }
       ]
     },
@@ -84,18 +84,18 @@
     },
     {
       "slot_position": 3,
-      "task": "instrumental",
-      "token": "I",
-      "run": 1,
+      "task": "targets",
+      "token": "T",
+      "run": 2,
       "sub_block_order": [
         {
           "set_size": 3,
-          "varies": "texture",
+          "varies": "shape",
           "block_type": "single_dim"
         },
         {
           "set_size": 2,
-          "varies": "shape",
+          "varies": "texture",
           "block_type": "single_dim"
         },
         {
@@ -107,9 +107,9 @@
     },
     {
       "slot_position": 4,
-      "task": "targets-instrumental",
-      "token": "TI",
-      "run": 2,
+      "task": "instrumental",
+      "token": "I",
+      "run": 1,
       "sub_block_order": [
         {
           "set_size": 4,
@@ -117,12 +117,12 @@
           "block_type": "factorial_2x2"
         },
         {
-          "set_size": 3,
+          "set_size": 2,
           "varies": "shape",
           "block_type": "single_dim"
         },
         {
-          "set_size": 2,
+          "set_size": 3,
           "varies": "texture",
           "block_type": "single_dim"
         }
@@ -130,24 +130,24 @@
     },
     {
       "slot_position": 5,
-      "task": "targets",
-      "token": "T",
-      "run": 1,
+      "task": "targets-instrumental",
+      "token": "TI",
+      "run": 2,
       "sub_block_order": [
         {
-          "set_size": 2,
+          "set_size": 3,
           "varies": "shape",
+          "block_type": "single_dim"
+        },
+        {
+          "set_size": 2,
+          "varies": "texture",
           "block_type": "single_dim"
         },
         {
           "set_size": 4,
           "varies": "both",
           "block_type": "factorial_2x2"
-        },
-        {
-          "set_size": 3,
-          "varies": "texture",
-          "block_type": "single_dim"
         }
       ]
     }
