@@ -135,29 +135,42 @@ function getNextThemeOffset(theme, ncues) {
 }
 
 function makeBalancedOneHotMatrix(rows, cols) {
-  // Smallest N such that N*cols ≥ rows
-  const N = Math.ceil(rows / cols);
+  // v5: balanced reward matrix (rows = cues, cols = actions/buttons).
+  // Every button is used floor(rows/cols) times, and the remaining (rows % cols)
+  // extra uses go to a UNIFORMLY RANDOM subset of distinct buttons. This makes
+  // each button equally likely to be used regardless of cue count:
+  //   k=2 -> a random 2 of the 3 buttons (each used once)
+  //   k=3 -> all 3 buttons (each used once)
+  //   k=4 -> all 3 buttons, with one UNIFORMLY RANDOM button doubled
+  const base = Math.floor(rows / cols);   // times every button appears
+  const remainder = rows % cols;          // buttons that get one extra use
 
-  // Build stacked identity (size N*cols x cols)
+  // Randomly choose which buttons get the extra use (Fisher-Yates on indices).
+  let buttonOrder = [];
+  for (let i = 0; i < cols; i++) buttonOrder.push(i);
+  for (let i = buttonOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [buttonOrder[i], buttonOrder[j]] = [buttonOrder[j], buttonOrder[i]];
+  }
+  const extraButtons = new Set(buttonOrder.slice(0, remainder));
+
+  // Assemble the multiset of one-hot rows.
   let M = [];
-  for (let n = 0; n < N; n++) {
-    for (let i = 0; i < cols; i++) {
+  for (let b = 0; b < cols; b++) {
+    const count = base + (extraButtons.has(b) ? 1 : 0);
+    for (let c = 0; c < count; c++) {
       let row = Array(cols).fill(0);
-      row[i] = 1;
+      row[b] = 1;
       M.push(row);
     }
   }
 
-  // Only keep first K rows
-  M = M.slice(0, rows);
-
-  // Shuffle rows (Fisher–Yates)
+  // Shuffle rows (randomizes which cue gets which button).
   for (let i = M.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [M[i], M[j]] = [M[j], M[i]];
   }
 
-  // Return first K rows
   return M;
 }
 
