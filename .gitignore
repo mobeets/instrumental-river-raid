@@ -20,3 +20,7 @@ logs/*
 logs/*
 !logs/.gitkeep
 assets/themes/src/
+
+# session logs
+logs/*
+!logs/.gitkeep
