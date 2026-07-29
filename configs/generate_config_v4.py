@@ -95,13 +95,19 @@ def sample_slot_order(session_index, interleave_all=False, max_attempts=100000):
         seq = TASK_TOKENS[:]
         random.shuffle(seq)
         if session_index == 1:
-            if _first_is_pure(seq) and _ti_after_both_pure(seq) and _no_back_to_back(seq):
+            if (
+                _first_is_pure(seq)
+                and _ti_after_both_pure(seq)
+                and _no_back_to_back(seq)
+            ):
                 return seq
         else:
             if interleave_all and not _no_back_to_back(seq):
                 continue
             return seq
-    raise RuntimeError(f"Could not sample a valid slot order for session {session_index}")
+    raise RuntimeError(
+        f"Could not sample a valid slot order for session {session_index}"
+    )
 
 
 def assign_runs(slot_tokens):
@@ -114,7 +120,9 @@ def assign_runs(slot_tokens):
     for pos, tok in enumerate(slot_tokens):
         run = run_choices[tok][counters[tok]]
         counters[tok] += 1
-        slots.append({"task": TASK_FULL[tok], "token": tok, "run": run, "order_pos": pos})
+        slots.append(
+            {"task": TASK_FULL[tok], "token": tok, "run": run, "order_pos": pos}
+        )
     return slots
 
 
@@ -132,8 +140,14 @@ def load_design(path):
 
 def make_practice_block(task, training_images, ntrials_practice):
     cues = [
-        {"cue_index": i + 1, "shape": "training", "texture": None,
-         "manifest_index": None, "filename": fn, "training": True}
+        {
+            "cue_index": i + 1,
+            "shape": "training",
+            "texture": None,
+            "manifest_index": None,
+            "filename": fn,
+            "training": True,
+        }
         for i, fn in enumerate(training_images[:2])
     ]
     return {
@@ -169,14 +183,25 @@ def make_task_block(task, cell, ntrials_per_cue):
     }
 
 
-def build_config(design_path, session_index, seed=None,
-                 ntrials_per_cue=10, ntrials_per_cue_targets=None,
-                 ntrials_practice_first=50, ntrials_practice_second=4,
-                 training_images=None, interleave_all=False):
+def build_config(
+    design_path,
+    session_index,
+    seed=None,
+    ntrials_per_cue=10,
+    ntrials_per_cue_targets=None,
+    ntrials_practice_first=10,
+    ntrials_practice_second=0,
+    training_images=None,
+    interleave_all=False,
+):
     if seed is not None:
         random.seed(seed)
     training_images = training_images or DEFAULT_TRAINING_IMAGES
-    ntrials_targets = ntrials_per_cue_targets if ntrials_per_cue_targets is not None else ntrials_per_cue
+    ntrials_targets = (
+        ntrials_per_cue_targets
+        if ntrials_per_cue_targets is not None
+        else ntrials_per_cue
+    )
 
     design, cells_by_run = load_design(design_path)
 
@@ -188,11 +213,17 @@ def build_config(design_path, session_index, seed=None,
     practice_seen = defaultdict(int)  # per-task encounter counter
     for slot in slots:
         task, run = slot["task"], slot["run"]
-        # Practice glued in front of its slot; more trials the FIRST time a task
-        # type appears (buffer, skipped manually), fewer on the second encounter.
+        # Practice glued in front of its slot, ONLY on the first time a task type
+        # appears (encounter-based). A trial count of 0 means "no practice block"
+        # -- used for second encounters by default (participant already learned it).
         practice_seen[task] += 1
-        npract = ntrials_practice_first if practice_seen[task] == 1 else ntrials_practice_second
-        blocks.append(make_practice_block(task, training_images, npract))
+        npract = (
+            ntrials_practice_first
+            if practice_seen[task] == 1
+            else ntrials_practice_second
+        )
+        if npract and npract > 0:
+            blocks.append(make_practice_block(task, training_images, npract))
 
         # Sub-block (set-size) order within the slot is shuffled.
         set_sizes = sorted(cells_by_run[run].keys())  # [2,3,4]
@@ -203,13 +234,22 @@ def build_config(design_path, session_index, seed=None,
             cell = cells_by_run[run][k]
             nt = ntrials_targets if task == "targets" else ntrials_per_cue
             blocks.append(make_task_block(task, cell, nt))
-            sub.append({"set_size": k, "varies": cell["varies"],
-                        "block_type": cell["block_type"]})
-        order_report.append({
-            "slot_position": slot["order_pos"],
-            "task": task, "token": slot["token"], "run": run,
-            "sub_block_order": sub,
-        })
+            sub.append(
+                {
+                    "set_size": k,
+                    "varies": cell["varies"],
+                    "block_type": cell["block_type"],
+                }
+            )
+        order_report.append(
+            {
+                "slot_position": slot["order_pos"],
+                "task": task,
+                "token": slot["token"],
+                "run": run,
+                "sub_block_order": sub,
+            }
+        )
 
     info = {
         "session_index": session_index,
@@ -224,14 +264,19 @@ def build_config(design_path, session_index, seed=None,
 
 
 def render_order_report(info):
-    lines = [f"SESSION {info['session_index']}  "
-             f"(design seed={info['design_seed']}, source={info['design_source']})",
-             f"slot task order: {' -> '.join(info['slot_token_order'])}",
-             ""]
+    lines = [
+        f"SESSION {info['session_index']}  "
+        f"(design seed={info['design_seed']}, source={info['design_source']})",
+        f"slot task order: {' -> '.join(info['slot_token_order'])}",
+        "",
+    ]
     for s in info["slots"]:
-        subs = ", ".join(f"k{d['set_size']}({d['varies']})" for d in s["sub_block_order"])
-        lines.append(f"  slot {s['slot_position']}: "
-                     f"{s['task']:<22} run {s['run']}   [{subs}]")
+        subs = ", ".join(
+            f"k{d['set_size']}({d['varies']})" for d in s["sub_block_order"]
+        )
+        lines.append(
+            f"  slot {s['slot_position']}: {s['task']:<22} run {s['run']}   [{subs}]"
+        )
     return "\n".join(lines)
 
 
@@ -239,25 +284,49 @@ def render_order_report(info):
 # CLI
 # ---------------------------------------------------------------------------
 def main():
-    ap = argparse.ArgumentParser(description="Generate a per-session River Raid config from a frozen design JSON.")
-    ap.add_argument("--design", required=True, help="Path to frozen session-design JSON.")
+    ap = argparse.ArgumentParser(
+        description="Generate a per-session River Raid config from a frozen design JSON."
+    )
+    ap.add_argument(
+        "--design", required=True, help="Path to frozen session-design JSON."
+    )
     ap.add_argument("--session-index", type=int, required=True, choices=[1, 2, 3])
     ap.add_argument("--output", "-o", default="config.json")
-    ap.add_argument("--seed", type=int, default=None, help="RNG seed for ORDER randomization (not identity).")
+    ap.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="RNG seed for ORDER randomization (not identity).",
+    )
     ap.add_argument("--ntrials_per_cue", type=int, default=10)
     ap.add_argument("--ntrials_per_cue_targets", type=int, default=None)
-    ap.add_argument("--ntrials_practice_first", type=int, default=50,
-                    help="Practice trials/cue on the FIRST time a task type appears.")
-    ap.add_argument("--ntrials_practice_second", type=int, default=4,
-                    help="Practice trials/cue on the SECOND occurrence of a task type.")
+    ap.add_argument(
+        "--ntrials_practice_first",
+        type=int,
+        default=10,
+        help="Practice trials/cue on the FIRST time a task type appears "
+        "(10 = one full pass through all 10 positions per cue).",
+    )
+    ap.add_argument(
+        "--ntrials_practice_second",
+        type=int,
+        default=0,
+        help="Practice trials/cue on the SECOND occurrence of a task type "
+        "(0 = no practice block on the second encounter).",
+    )
     ap.add_argument("--training-images", nargs=2, default=None)
-    ap.add_argument("--allow-back-to-back", action="store_true",
-                    help="Disable no-back-to-back for sessions 2 & 3 (session 1 rules always apply). "
-                         "Default: interleaving is enforced for all three sessions.")
+    ap.add_argument(
+        "--allow-back-to-back",
+        action="store_true",
+        help="Disable no-back-to-back for sessions 2 & 3 (session 1 rules always apply). "
+        "Default: interleaving is enforced for all three sessions.",
+    )
     args = ap.parse_args()
 
     blocks, info = build_config(
-        args.design, args.session_index, seed=args.seed,
+        args.design,
+        args.session_index,
+        seed=args.seed,
         ntrials_per_cue=args.ntrials_per_cue,
         ntrials_per_cue_targets=args.ntrials_per_cue_targets,
         ntrials_practice_first=args.ntrials_practice_first,
