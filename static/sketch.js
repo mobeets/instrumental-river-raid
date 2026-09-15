@@ -40,6 +40,7 @@ let lives = L;
 let BOAT_COLORS = []; // filled later in setup()
 let boatCounter = 0;
 let explosionDuration;
+let iti1MinDurationFrames; // holds ITI1_MIN_DURATION converted to frames, set once in setup()
 let iti2MinTimer = 0; // timer to implement minimum time for ITI2
 let iti1MinTimer = 0; // timer to implement minimum time for ITI1, that way ITI 1 doesn't start until the feedback period is over
 let trialActive = false;
@@ -52,8 +53,8 @@ const COMPLETE_MODE = 4;
 let gameMode = READY_MODE;
 let feedbackTimer = 0; // counts down frames to show feedback text
 // v5: response lockout + self-paced drift (set from params in setup)
-let responseLockout = false;   // lock movement + fire during the cue-hold window
-let driftOnResponse = false;   // boat descends only once the player acts
+let responseLockout = false; // lock movement + fire during the cue-hold window
+let driftOnResponse = false; // boat descends only once the player acts
 let responseTimeoutFrames = 0; // optional safety: 0 = disabled
 
 // ===== Assets =====
@@ -194,7 +195,7 @@ function newGame(restartGame = false, goBack = false) {
   animations = [];
   jet.visible = false; // reset jet visibility for new block
   trialActive = false; // reset trial for new block
-  iti1MinTimer = 0;
+  iti1MinTimer = iti1MinDurationFrames;
 }
 
 // ====== p5.js setup and draw ======
@@ -222,10 +223,14 @@ function setup() {
     (height - jetOffset) / (E.params.FPS * E.params.PROJECTILE_TRAVEL_DURATION);
   explosionDuration = Math.ceil(E.params.FPS * E.params.FEEDBACK_DURATION);
 
+  iti1MinDurationFrames = Math.ceil(E.params.FPS * E.params.ITI1_MIN_DURATION); // calculates the number of frames that covers 0.2 sec
+
   // v5: lockout / self-paced drift (default off -> original behavior)
   responseLockout = E.params.RESPONSE_LOCKOUT ?? false;
   driftOnResponse = E.params.DRIFT_STARTS_ON_RESPONSE ?? false;
-  responseTimeoutFrames = Math.ceil((E.params.RESPONSE_TIMEOUT ?? 0) * E.params.FPS);
+  responseTimeoutFrames = Math.ceil(
+    (E.params.RESPONSE_TIMEOUT ?? 0) * E.params.FPS,
+  );
 
   let nonPhotodiodeProp = 1 - (2 * photodiode.size) / width;
   // n.b. if E.params.PROP_RIVER_WIDTH < nonPhotodiodeProp, the photodiode will block the view of some Boat objects
@@ -391,7 +396,7 @@ function draw() {
         jet.visible = false; // ← add
         // removed trial = undefined;     // ← add
         trialActive = false;
-        iti1MinTimer = explosionDuration;
+        iti1MinTimer = explosionDuration + iti1MinDurationFrames; // both frame counts added together, giving 30 + 12 = 42 frames at 60fps (0.5s + 0.2s = 0.7s).
         feedbackTimer = explosionDuration;
         continue;
       }
@@ -450,7 +455,7 @@ function draw() {
         jet.visible = false;
         // removed: trial = undefined;
         trialActive = false;
-        iti1MinTimer = explosionDuration;
+        iti1MinTimer = explosionDuration + iti1MinDurationFrames;
         feedbackTimer = explosionDuration;
         continue;
       } else if (boats[i].offscreen()) {
@@ -489,7 +494,7 @@ function draw() {
         jet.visible = false;
         // removed trial = undefined;
         trialActive = false;
-        iti1MinTimer = 0;
+        iti1MinTimer = iti1MinDurationFrames; // reset ITI1 timer to ensure minimum wait before next trial for miss/offscreen
         boats.splice(i, 1);
       }
     }
@@ -509,7 +514,9 @@ function draw() {
           b.framesSinceGo++;
           if (b.framesSinceGo >= responseTimeoutFrames) {
             b.driftStarted = true; // safety: let a non-response resolve as a miss
-            trial.trigger(getEventNameWithLocations("response timeout", jet, [b]));
+            trial.trigger(
+              getEventNameWithLocations("response timeout", jet, [b]),
+            );
           }
         }
       }
@@ -544,7 +551,7 @@ function draw() {
           );
           jet.visible = false;
           trialActive = false;
-          iti1MinTimer = explosionDuration;
+          iti1MinTimer = explosionDuration + iti1MinDurationFrames;
           boats.splice(j, 1);
           projectiles.splice(i, 1);
           feedbackTimer = explosionDuration;
