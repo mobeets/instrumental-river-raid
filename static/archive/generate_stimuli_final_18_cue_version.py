@@ -1,21 +1,23 @@
 """
-River Raid stimulus generator (v3 shape set -- 9 shapes, single texture).
+River Raid stimulus generator (v2 shape set).
 
-Task shapes: triangle, circle, heart, diamond, star, hexagon, arrow, xcross, trapezoid
-Texture: solid (single, uniform texture across all task shapes)
+Task shapes (row order): triangle, circle, heart, diamond, star, hexagon
+Textures (column order):  outline, hatch, solid, dotted
+  (dotted is dropped from the live pool by the design layer; it is still
+   generated here so the 24-image manifest indexing stays stable.)
 
 Also emits the two TRAINING images into <OUTPUT_DIR>/training/:
     train_square_white.png    -- square, white fill, black border
     train_crescent_dotted.png -- crescent, dotted texture
 These deliberately use shapes/textures that never appear in the task pool
-(square and crescent are not task shapes; dotted is not a task texture), so
+(square and crescent are not task shapes; dotted is the dropped texture), so
 practice cues can't be confused with real cues.
 
 All shapes are auto-centered and scaled to a common bounding-box extent so
 apparent size is matched across the set.
 
 Output:
-    stimuli_out_final/01_triangle_solid.png ... 09_trapezoid_solid.png
+    stimuli_out_final/01_triangle_outline.png ... 24_hexagon_dotted.png
     stimuli_out_final/manifest.csv
     stimuli_out_final/training/train_square_white.png
     stimuli_out_final/training/train_crescent_dotted.png
@@ -41,15 +43,15 @@ FIGSIZE_INCHES = CANVAS_SIZE_PX / DPI
 BACKGROUND_COLOR = "#f2f2f2"
 OUTPUT_DIR = Path("stimuli_out_final")
 
-# Task shape set (v3) -- 9 distinct shapes, single texture.
-SHAPES = [
-    "triangle", "circle", "heart", "diamond", "star", "hexagon",
-    "arrow", "xcross", "trapezoid",
-]
+# Task shape set (v2).
+SHAPES = ["triangle", "circle", "heart", "diamond", "star", "hexagon"]
 
-# Single uniform texture for every task shape.
+# (name, matplotlib hatch pattern or None, facecolor)
 TEXTURES = [
+    ("outline", None, "none"),
+    ("hatch", "//", "none"),
     ("solid", None, "black"),
+    ("dotted", "...", "none"),
 ]
 
 TARGET_MAX_DIM = 0.66  # common bounding-box extent target, in 0-1 coords
@@ -169,44 +171,6 @@ def hexagon_raw(r=0.4, n_points=6):
     return verts, codes
 
 
-def arrow_raw():
-    # Upward-pointing arrow: single closed polygon (tip, two barbs, shaft).
-    verts = [
-        (0.0, 0.45),
-        (0.24, 0.05),
-        (0.09, 0.05),
-        (0.09, -0.42),
-        (-0.09, -0.42),
-        (-0.09, 0.05),
-        (-0.24, 0.05),
-        (0.0, 0.45),
-    ]
-    codes = [M] + [L] * (len(verts) - 2) + [C]
-    return verts, codes
-
-
-def xcross_raw(arm_half_width=0.10, arm_length=0.42):
-    # "X" mark (multiplication-sign style, not a "+"): a plus-sign polygon
-    # rotated 45 degrees.
-    w, ln = arm_half_width, arm_length
-    plus_verts = [
-        (w, ln), (w, w), (ln, w), (ln, -w), (w, -w), (w, -ln),
-        (-w, -ln), (-w, -w), (-ln, -w), (-ln, w), (-w, w), (-w, ln),
-    ]
-    angle = np.pi / 4
-    cos_a, sin_a = np.cos(angle), np.sin(angle)
-    verts = [(x * cos_a - y * sin_a, x * sin_a + y * cos_a) for x, y in plus_verts]
-    verts.append(verts[0])
-    codes = [M] + [L] * (len(verts) - 2) + [C]
-    return verts, codes
-
-
-def trapezoid_raw():
-    verts = [(-0.25, 0.3), (0.25, 0.3), (0.42, -0.3), (-0.42, -0.3), (-0.25, 0.3)]
-    codes = [M, L, L, L, C]
-    return verts, codes
-
-
 SHAPE_RAW_FUNCS = {
     "triangle": triangle_raw,
     "square": square_raw,      # training only
@@ -216,9 +180,6 @@ SHAPE_RAW_FUNCS = {
     "star": star_raw,
     "diamond": diamond_raw,
     "hexagon": hexagon_raw,
-    "arrow": arrow_raw,
-    "xcross": xcross_raw,
-    "trapezoid": trapezoid_raw,
 }
 
 
@@ -267,10 +228,12 @@ def main():
         writer.writerow(["index", "shape", "texture", "filename"])
         writer.writerows(manifest)
 
-    # ---- Training pair (shapes not in the task pool) ----
+    # ---- Training pair (off-set shapes/textures, not in the task pool) ----
     train_dir = OUTPUT_DIR / "training"
     train_dir.mkdir(parents=True, exist_ok=True)
+    # White square: white fill, black border, slightly heavier edge for visibility.
     render_shape("square", None, "white", train_dir / "train_square_white.png", edge_lw=2.4)
+    # Dotted crescent.
     render_shape("crescent", "...", "none", train_dir / "train_crescent_dotted.png")
 
     print(f"Wrote {idx - 1} pool images + manifest to {OUTPUT_DIR}/")

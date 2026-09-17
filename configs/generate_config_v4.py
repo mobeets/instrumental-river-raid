@@ -132,10 +132,10 @@ def assign_runs(slot_tokens):
 def load_design(path):
     with open(path) as f:
         design = json.load(f)
-    cells_by_run = defaultdict(dict)  # run -> {set_size: cell}
+    cells_by_task_run = defaultdict(dict)  # (task, run) -> {set_size: cell}
     for cell in design["cells"]:
-        cells_by_run[cell["run"]][cell["set_size"]] = cell
-    return design, cells_by_run
+        cells_by_task_run[(cell["task"], cell["run"])][cell["set_size"]] = cell
+    return design, cells_by_task_run
 
 
 def make_practice_block(task, training_images, ntrials_practice):
@@ -203,7 +203,7 @@ def build_config(
         else ntrials_per_cue
     )
 
-    design, cells_by_run = load_design(design_path)
+    design, cells_by_task_run = load_design(design_path)
 
     slot_tokens = sample_slot_order(session_index, interleave_all)
     slots = assign_runs(slot_tokens)
@@ -226,12 +226,12 @@ def build_config(
             blocks.append(make_practice_block(task, training_images, npract))
 
         # Sub-block (set-size) order within the slot is shuffled.
-        set_sizes = sorted(cells_by_run[run].keys())  # [2,3,4]
+        set_sizes = sorted(cells_by_task_run[(task, run)].keys())  # [2,3,4]
         random.shuffle(set_sizes)
 
         sub = []
         for k in set_sizes:
-            cell = cells_by_run[run][k]
+            cell = cells_by_task_run[(task, run)][k]
             nt = ntrials_targets if task == "targets" else ntrials_per_cue
             blocks.append(make_task_block(task, cell, nt))
             sub.append(

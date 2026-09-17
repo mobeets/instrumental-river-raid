@@ -15,10 +15,10 @@ manifest_index) is recoverable.
 Layout matches objects.js SquareSpriteSheet.getImage(): row-major, cols columns,
 sprite_index i -> (col=i%cols, row=i//cols). cols = ceil(sqrt(n)).
 
-Because the locked design uses a FIXED pool (9 shapes x 1 texture -- solid),
-the sheet content is identical across sessions -- so in practice one sheet
-serves all sessions. It is still written per-session-named for provenance and
-to stay future-proof if the pool ever varies.
+Because the locked design uses a FIXED pool (6 shapes x 3 textures; dotted
+dropped), the sheet content is identical across sessions -- so in practice one
+sheet serves all three sessions. It is still written per-session-named for
+provenance and to stay future-proof if the pool ever varies.
 
 Usage:
     python build_session_spritesheet.py \
@@ -37,8 +37,8 @@ from pathlib import Path
 
 from PIL import Image
 
-ALL_TEXTURES = ["solid"]
-DEFAULT_DROPPED = None  # no texture is dropped -- the pool generator only emits "solid"
+ALL_TEXTURES = ["outline", "hatch", "solid", "dotted"]
+DEFAULT_DROPPED = "dotted"
 SPRITE_SIZE = 128
 
 
@@ -74,12 +74,9 @@ def build(stimuli_dir, manifest_path, training_dir, name, out_dir,
 
     manifest = load_manifest(manifest_path)
     # Canonical, stable ordering: stimulus pool sorted by manifest_index, then training.
-    # dropped_texture is None by default now (the v3 generator only emits "solid",
-    # so there's nothing to filter out) -- kept as a parameter for future-proofing
-    # in case a dropped/training-adjacent texture is ever reintroduced.
     pool = sorted([m for m in manifest if m["texture"] != dropped_texture],
                   key=lambda m: m["manifest_index"])
-    assert len(pool) == 9, f"Expected 9 pool images, got {len(pool)}"
+    assert len(pool) == 18, f"Expected 18 pool images, got {len(pool)}"
 
     entries = []  # (identity dict, source path)
     for m in pool:
@@ -128,7 +125,7 @@ def build(stimuli_dir, manifest_path, training_dir, name, out_dir,
     # Hard checks: identities unique, indices contiguous, layout consistent.
     assert [s["sprite_index"] for s in sprites_meta] == list(range(n)), "non-contiguous sprite indices"
     stim = [(s["shape"], s["texture"]) for s in sprites_meta if not s["training"]]
-    assert len(set(stim)) == 9, "duplicate stimulus identities in sheet"
+    assert len(set(stim)) == 18, "duplicate stimulus identities in sheet"
 
     print(f"Wrote {sheet_path}  ({cols}x{rows}, {n} sprites)")
     print(f"Wrote {map_path}")
@@ -142,7 +139,7 @@ def main():
     ap.add_argument("--training-dir", default=None, help="Folder of training images (optional).")
     ap.add_argument("--name", default="session_stimuli")
     ap.add_argument("--out-dir", default="assets/themes")
-    ap.add_argument("--dropped-texture", default=DEFAULT_DROPPED, choices=ALL_TEXTURES + [None])
+    ap.add_argument("--dropped-texture", default=DEFAULT_DROPPED, choices=ALL_TEXTURES)
     ap.add_argument("--sprite-size", type=int, default=SPRITE_SIZE)
     args = ap.parse_args()
     build(args.stimuli_dir, args.manifest, args.training_dir, args.name,
