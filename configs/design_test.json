@@ -1,0 +1,754 @@
+{
+  "session_seed": 21,
+  "dropped_texture": null,
+  "textures": [
+    "solid"
+  ],
+  "pool": [
+    {
+      "shape": "triangle",
+      "texture": "solid",
+      "manifest_index": 1,
+      "filename": "01_triangle_solid.png"
+    },
+    {
+      "shape": "circle",
+      "texture": "solid",
+      "manifest_index": 2,
+      "filename": "02_circle_solid.png"
+    },
+    {
+      "shape": "heart",
+      "texture": "solid",
+      "manifest_index": 3,
+      "filename": "03_heart_solid.png"
+    },
+    {
+      "shape": "diamond",
+      "texture": "solid",
+      "manifest_index": 4,
+      "filename": "04_diamond_solid.png"
+    },
+    {
+      "shape": "star",
+      "texture": "solid",
+      "manifest_index": 5,
+      "filename": "05_star_solid.png"
+    },
+    {
+      "shape": "hexagon",
+      "texture": "solid",
+      "manifest_index": 6,
+      "filename": "06_hexagon_solid.png"
+    },
+    {
+      "shape": "arrow",
+      "texture": "solid",
+      "manifest_index": 7,
+      "filename": "07_arrow_solid.png"
+    },
+    {
+      "shape": "xcross",
+      "texture": "solid",
+      "manifest_index": 8,
+      "filename": "08_xcross_solid.png"
+    },
+    {
+      "shape": "trapezoid",
+      "texture": "solid",
+      "manifest_index": 9,
+      "filename": "09_trapezoid_solid.png"
+    }
+  ],
+  "cells": [
+    {
+      "task": "targets",
+      "run": 1,
+      "set_size": 2,
+      "varies": "shape",
+      "block_type": "k2",
+      "shapes": [
+        "hexagon",
+        "circle"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "hexagon",
+          "texture": "solid",
+          "manifest_index": 6,
+          "filename": "06_hexagon_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "circle",
+          "texture": "solid",
+          "manifest_index": 2,
+          "filename": "02_circle_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "targets",
+      "run": 1,
+      "set_size": 3,
+      "varies": "shape",
+      "block_type": "k3",
+      "shapes": [
+        "arrow",
+        "triangle",
+        "xcross"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "arrow",
+          "texture": "solid",
+          "manifest_index": 7,
+          "filename": "07_arrow_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "triangle",
+          "texture": "solid",
+          "manifest_index": 1,
+          "filename": "01_triangle_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 3,
+          "shape": "xcross",
+          "texture": "solid",
+          "manifest_index": 8,
+          "filename": "08_xcross_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "targets",
+      "run": 1,
+      "set_size": 4,
+      "varies": "shape",
+      "block_type": "k4",
+      "shapes": [
+        "heart",
+        "star",
+        "trapezoid",
+        "diamond"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "heart",
+          "texture": "solid",
+          "manifest_index": 3,
+          "filename": "03_heart_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "star",
+          "texture": "solid",
+          "manifest_index": 5,
+          "filename": "05_star_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 3,
+          "shape": "trapezoid",
+          "texture": "solid",
+          "manifest_index": 9,
+          "filename": "09_trapezoid_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 4,
+          "shape": "diamond",
+          "texture": "solid",
+          "manifest_index": 4,
+          "filename": "04_diamond_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "instrumental",
+      "run": 1,
+      "set_size": 2,
+      "varies": "shape",
+      "block_type": "k2",
+      "shapes": [
+        "triangle",
+        "star"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "triangle",
+          "texture": "solid",
+          "manifest_index": 1,
+          "filename": "01_triangle_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "star",
+          "texture": "solid",
+          "manifest_index": 5,
+          "filename": "05_star_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "instrumental",
+      "run": 1,
+      "set_size": 3,
+      "varies": "shape",
+      "block_type": "k3",
+      "shapes": [
+        "heart",
+        "arrow",
+        "circle"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "heart",
+          "texture": "solid",
+          "manifest_index": 3,
+          "filename": "03_heart_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "arrow",
+          "texture": "solid",
+          "manifest_index": 7,
+          "filename": "07_arrow_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 3,
+          "shape": "circle",
+          "texture": "solid",
+          "manifest_index": 2,
+          "filename": "02_circle_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "instrumental",
+      "run": 1,
+      "set_size": 4,
+      "varies": "shape",
+      "block_type": "k4",
+      "shapes": [
+        "trapezoid",
+        "hexagon",
+        "diamond",
+        "xcross"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "trapezoid",
+          "texture": "solid",
+          "manifest_index": 9,
+          "filename": "09_trapezoid_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "hexagon",
+          "texture": "solid",
+          "manifest_index": 6,
+          "filename": "06_hexagon_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 3,
+          "shape": "diamond",
+          "texture": "solid",
+          "manifest_index": 4,
+          "filename": "04_diamond_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 4,
+          "shape": "xcross",
+          "texture": "solid",
+          "manifest_index": 8,
+          "filename": "08_xcross_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "targets-instrumental",
+      "run": 1,
+      "set_size": 2,
+      "varies": "shape",
+      "block_type": "k2",
+      "shapes": [
+        "heart",
+        "diamond"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "heart",
+          "texture": "solid",
+          "manifest_index": 3,
+          "filename": "03_heart_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "diamond",
+          "texture": "solid",
+          "manifest_index": 4,
+          "filename": "04_diamond_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "targets-instrumental",
+      "run": 1,
+      "set_size": 3,
+      "varies": "shape",
+      "block_type": "k3",
+      "shapes": [
+        "hexagon",
+        "arrow",
+        "star"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "hexagon",
+          "texture": "solid",
+          "manifest_index": 6,
+          "filename": "06_hexagon_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "arrow",
+          "texture": "solid",
+          "manifest_index": 7,
+          "filename": "07_arrow_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 3,
+          "shape": "star",
+          "texture": "solid",
+          "manifest_index": 5,
+          "filename": "05_star_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "targets-instrumental",
+      "run": 1,
+      "set_size": 4,
+      "varies": "shape",
+      "block_type": "k4",
+      "shapes": [
+        "xcross",
+        "triangle",
+        "circle",
+        "trapezoid"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "xcross",
+          "texture": "solid",
+          "manifest_index": 8,
+          "filename": "08_xcross_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "triangle",
+          "texture": "solid",
+          "manifest_index": 1,
+          "filename": "01_triangle_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 3,
+          "shape": "circle",
+          "texture": "solid",
+          "manifest_index": 2,
+          "filename": "02_circle_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 4,
+          "shape": "trapezoid",
+          "texture": "solid",
+          "manifest_index": 9,
+          "filename": "09_trapezoid_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "targets",
+      "run": 2,
+      "set_size": 2,
+      "varies": "shape",
+      "block_type": "k2",
+      "shapes": [
+        "star",
+        "circle"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "star",
+          "texture": "solid",
+          "manifest_index": 5,
+          "filename": "05_star_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "circle",
+          "texture": "solid",
+          "manifest_index": 2,
+          "filename": "02_circle_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "targets",
+      "run": 2,
+      "set_size": 3,
+      "varies": "shape",
+      "block_type": "k3",
+      "shapes": [
+        "trapezoid",
+        "xcross",
+        "heart"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "trapezoid",
+          "texture": "solid",
+          "manifest_index": 9,
+          "filename": "09_trapezoid_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "xcross",
+          "texture": "solid",
+          "manifest_index": 8,
+          "filename": "08_xcross_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 3,
+          "shape": "heart",
+          "texture": "solid",
+          "manifest_index": 3,
+          "filename": "03_heart_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "targets",
+      "run": 2,
+      "set_size": 4,
+      "varies": "shape",
+      "block_type": "k4",
+      "shapes": [
+        "hexagon",
+        "diamond",
+        "arrow",
+        "triangle"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "hexagon",
+          "texture": "solid",
+          "manifest_index": 6,
+          "filename": "06_hexagon_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "diamond",
+          "texture": "solid",
+          "manifest_index": 4,
+          "filename": "04_diamond_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 3,
+          "shape": "arrow",
+          "texture": "solid",
+          "manifest_index": 7,
+          "filename": "07_arrow_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 4,
+          "shape": "triangle",
+          "texture": "solid",
+          "manifest_index": 1,
+          "filename": "01_triangle_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "instrumental",
+      "run": 2,
+      "set_size": 2,
+      "varies": "shape",
+      "block_type": "k2",
+      "shapes": [
+        "triangle",
+        "heart"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "triangle",
+          "texture": "solid",
+          "manifest_index": 1,
+          "filename": "01_triangle_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "heart",
+          "texture": "solid",
+          "manifest_index": 3,
+          "filename": "03_heart_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "instrumental",
+      "run": 2,
+      "set_size": 3,
+      "varies": "shape",
+      "block_type": "k3",
+      "shapes": [
+        "circle",
+        "hexagon",
+        "trapezoid"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "circle",
+          "texture": "solid",
+          "manifest_index": 2,
+          "filename": "02_circle_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "hexagon",
+          "texture": "solid",
+          "manifest_index": 6,
+          "filename": "06_hexagon_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 3,
+          "shape": "trapezoid",
+          "texture": "solid",
+          "manifest_index": 9,
+          "filename": "09_trapezoid_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "instrumental",
+      "run": 2,
+      "set_size": 4,
+      "varies": "shape",
+      "block_type": "k4",
+      "shapes": [
+        "xcross",
+        "star",
+        "diamond",
+        "arrow"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "xcross",
+          "texture": "solid",
+          "manifest_index": 8,
+          "filename": "08_xcross_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "star",
+          "texture": "solid",
+          "manifest_index": 5,
+          "filename": "05_star_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 3,
+          "shape": "diamond",
+          "texture": "solid",
+          "manifest_index": 4,
+          "filename": "04_diamond_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 4,
+          "shape": "arrow",
+          "texture": "solid",
+          "manifest_index": 7,
+          "filename": "07_arrow_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "targets-instrumental",
+      "run": 2,
+      "set_size": 2,
+      "varies": "shape",
+      "block_type": "k2",
+      "shapes": [
+        "triangle",
+        "arrow"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "triangle",
+          "texture": "solid",
+          "manifest_index": 1,
+          "filename": "01_triangle_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "arrow",
+          "texture": "solid",
+          "manifest_index": 7,
+          "filename": "07_arrow_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "targets-instrumental",
+      "run": 2,
+      "set_size": 3,
+      "varies": "shape",
+      "block_type": "k3",
+      "shapes": [
+        "diamond",
+        "hexagon",
+        "circle"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "diamond",
+          "texture": "solid",
+          "manifest_index": 4,
+          "filename": "04_diamond_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "hexagon",
+          "texture": "solid",
+          "manifest_index": 6,
+          "filename": "06_hexagon_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 3,
+          "shape": "circle",
+          "texture": "solid",
+          "manifest_index": 2,
+          "filename": "02_circle_solid.png",
+          "training": false
+        }
+      ]
+    },
+    {
+      "task": "targets-instrumental",
+      "run": 2,
+      "set_size": 4,
+      "varies": "shape",
+      "block_type": "k4",
+      "shapes": [
+        "trapezoid",
+        "heart",
+        "star",
+        "xcross"
+      ],
+      "cues": [
+        {
+          "cue_index": 1,
+          "shape": "trapezoid",
+          "texture": "solid",
+          "manifest_index": 9,
+          "filename": "09_trapezoid_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 2,
+          "shape": "heart",
+          "texture": "solid",
+          "manifest_index": 3,
+          "filename": "03_heart_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 3,
+          "shape": "star",
+          "texture": "solid",
+          "manifest_index": 5,
+          "filename": "05_star_solid.png",
+          "training": false
+        },
+        {
+          "cue_index": 4,
+          "shape": "xcross",
+          "texture": "solid",
+          "manifest_index": 8,
+          "filename": "08_xcross_solid.png",
+          "training": false
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "pool_is_9_distinct_shapes_one_texture": true,
+    "each_task_run_partitions_9_shapes_exactly": true,
+    "task_groupings_independently_randomized": true
+  }
+}
