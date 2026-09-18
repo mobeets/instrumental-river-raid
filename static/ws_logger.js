@@ -1,12 +1,17 @@
 class WSLogger {
-  constructor(url, reconnectInterval = 2000, maxBufferSize = 5000, batchInterval = 500) {
+  constructor(
+    url,
+    reconnectInterval = 2000,
+    maxBufferSize = 5000,
+    batchInterval = 500,
+  ) {
     this.url = url;
     this.reconnectInterval = reconnectInterval;
     this.maxBufferSize = maxBufferSize;
     this.socket = null;
 
-    this.buffer = [];       // immediate events when WS down
-    this.batchQueue = [];   // batched events
+    this.buffer = []; // immediate events when WS down
+    this.batchQueue = []; // batched events
     this.batchInterval = batchInterval;
     this.log_filename;
 
@@ -17,9 +22,8 @@ class WSLogger {
   _generateFilename() {
     const params = new URLSearchParams(window.location.search);
     const subj = params.get("subject_id") || "unknown";
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const rand = Math.random().toString(36).slice(2, 6);
-    return `${subj}-${timestamp}-${rand}.jsonl`;
+    return `${subj}-riverraid-${rand}.jsonl`;
   }
 
   connect() {
@@ -36,23 +40,29 @@ class WSLogger {
 
       // Tell server what file to write to
       this.log_filename = this._generateFilename();
-      this.socket.send(JSON.stringify({
-        type: "set_filename",
-        filename: this.log_filename
-      }));
+      this.socket.send(
+        JSON.stringify({
+          type: "set_filename",
+          filename: this.log_filename,
+        }),
+      );
       console.log("Sent filename:", this.log_filename);
 
       this.flushBuffer();
     };
 
     this.socket.onclose = () => {
-      console.warn(`WebSocket disconnected, reconnecting in ${this.reconnectInterval} ms`);
+      console.warn(
+        `WebSocket disconnected, reconnecting in ${this.reconnectInterval} ms`,
+      );
       setTimeout(() => this.connect(), this.reconnectInterval);
     };
 
     this.socket.onerror = (err) => {
       console.error("WebSocket error:", err);
-      try { this.socket.close(); } catch (_) {}
+      try {
+        this.socket.close();
+      } catch (_) {}
     };
   }
 
@@ -62,7 +72,7 @@ class WSLogger {
       type,
       t_wall: Date.now(),
       t_sketch: performance.now(),
-      payload: payload
+      payload: payload,
     };
     console.log(evt);
 
@@ -77,7 +87,10 @@ class WSLogger {
           this._enqueue(evt);
         }
       } catch (err) {
-        console.warn("Failed to send WebSocket message, buffering instead", err);
+        console.warn(
+          "Failed to send WebSocket message, buffering instead",
+          err,
+        );
         this._enqueue(evt);
       }
     }
@@ -87,7 +100,7 @@ class WSLogger {
   _enqueue(evt) {
     this.buffer.push(evt);
     if (this.buffer.length > this.maxBufferSize) {
-      console.error('Dropping logs due to maxBufferSize!');
+      console.error("Dropping logs due to maxBufferSize!");
       this.buffer.shift();
     }
   }
@@ -97,7 +110,7 @@ class WSLogger {
     this.batchQueue.push(evt);
     if (this.batchQueue.length > this.maxBufferSize) {
       // drop oldest batchable events
-      console.error('Dropping logs due to maxBufferSize!');
+      console.error("Dropping logs due to maxBufferSize!");
       this.batchQueue.shift();
     }
   }
@@ -123,12 +136,16 @@ class WSLogger {
     this.flushBuffer();
 
     // Flush batched events if socket is open
-    if (this.batchQueue.length > 0 && this.socket && this.socket.readyState === WebSocket.OPEN) {
+    if (
+      this.batchQueue.length > 0 &&
+      this.socket &&
+      this.socket.readyState === WebSocket.OPEN
+    ) {
       const batchEvent = {
         type: "batch",
         t_wall: Date.now(),
         t_sketch: performance.now(),
-        events: this.batchQueue
+        events: this.batchQueue,
       };
       try {
         this.socket.send(JSON.stringify(batchEvent));
@@ -147,10 +164,12 @@ class WSLogger {
     }
 
     try {
-      this.socket.send(JSON.stringify({
-        type: "save_json",
-        contents: JSON.stringify(finalObject)
-      }));
+      this.socket.send(
+        JSON.stringify({
+          type: "save_json",
+          contents: JSON.stringify(finalObject),
+        }),
+      );
       console.log("Saved JSON file");
     } catch (err) {
       console.error("Failed to save JSON", err);
@@ -167,7 +186,7 @@ class WSLogger {
         type: "batch",
         t_wall: Date.now(),
         t_sketch: performance.now(),
-        events: this.batchQueue
+        events: this.batchQueue,
       };
 
       try {
