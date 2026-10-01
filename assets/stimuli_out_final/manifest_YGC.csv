@@ -1,0 +1,7 @@
+index,shape,texture,filename
+1,triangle,solid,01_triangle_solid.png
+2,circle,solid,02_circle_solid.png
+3,heart,solid,03_heart_solid.png
+5,star,solid,05_star_solid.png
+6,hexagon,solid,06_hexagon_solid.png
+9,trapezoid,solid,09_trapezoid_solid.png

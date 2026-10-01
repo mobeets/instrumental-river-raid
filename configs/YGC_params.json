@@ -1,0 +1,33 @@
+{
+	"ISI_DURATION": 2,
+	"PRACTICE_ISI_DURATION": 2,
+	"FEEDBACK_DURATION": 0.5,
+	"ITI_MEAN_DURATION": 0.2,
+    "ITI1_MIN_DURATION": 0.25,
+	"ITI2_MEAN_DURATION": 0.2,
+	"ITI2_MIN_DURATION": 0.25,
+	"JET_SIDETOSIDE_DURATION": 1.5,
+	"PROJECTILE_TRAVEL_DURATION": 1.0,
+	"POSITIONS_PER_CUE": 10,
+	"FPS": 60,
+	"MAX_PROJECTILES": 1,
+	"MAX_BOATS": 1,
+	"PROP_RIVER_WIDTH": 0.84,
+	"PROP_CUE_WIDTH": 0.2,
+	"PROXIMITY_DURATION": 0.2,
+	"CUE_ONSET_PAUSE": 2.0,
+	"jetOffset": 60,
+	"showHUD": false,
+	"bulletsPassThru": false,
+	"maxEntropyPolicy": true,
+	"nactions": 2,
+	"projectileShowsNumber": true,
+	"photodiode": {
+		"size": 120
+	},
+	"debug": false,
+	"target-variant": true,
+	"RESPONSE_LOCKOUT": false,
+	"DRIFT_STARTS_ON_RESPONSE": false,
+	"RESPONSE_TIMEOUT": 0
+}

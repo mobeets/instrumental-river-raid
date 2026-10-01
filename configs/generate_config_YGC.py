@@ -134,7 +134,7 @@ def load_design(path):
         design = json.load(f)
     cells_by_task_run = defaultdict(dict)  # (task, run) -> {set_size: cell}
     for cell in design["cells"]:
-        cells_by_task_run[(cell["task"], cell["run"])][cell["set_size"]] = cell
+        cells_by_task_run[(cell["task"], cell["run"])][cell["block_index"]] = cell
     return design, cells_by_task_run
 
 
@@ -226,17 +226,22 @@ def build_config(
             blocks.append(make_practice_block(task, training_images, npract))
 
         # Sub-block (set-size) order within the slot is shuffled.
-        set_sizes = sorted(cells_by_task_run[(task, run)].keys())  # [2,3,4]
+        set_sizes = sorted(cells_by_task_run[(task, run)].keys())  # [1, 2, 3]
         random.shuffle(set_sizes)
 
+        # Sub-block order within the slot is shuffled.
+        block_ids = sorted(cells_by_task_run[(task, run)].keys())  # [1, 2, 3]
+        random.shuffle(block_ids)
+
         sub = []
-        for k in set_sizes:
-            cell = cells_by_task_run[(task, run)][k]
+        for b in block_ids:
+            cell = cells_by_task_run[(task, run)][b]
             nt = ntrials_targets if task == "targets" else ntrials_per_cue
             blocks.append(make_task_block(task, cell, nt))
             sub.append(
                 {
-                    "set_size": k,
+                    "block_index": b,
+                    "set_size": cell["set_size"],
                     "varies": cell["varies"],
                     "block_type": cell["block_type"],
                 }
@@ -272,7 +277,7 @@ def render_order_report(info):
     ]
     for s in info["slots"]:
         subs = ", ".join(
-            f"k{d['set_size']}({d['varies']})" for d in s["sub_block_order"]
+            f"k{d['block_index']}({d['varies']})" for d in s["sub_block_order"]
         )
         lines.append(
             f"  slot {s['slot_position']}: {s['task']:<22} run {s['run']}   [{subs}]"
@@ -310,7 +315,7 @@ def main():
     ap.add_argument(
         "--ntrials_practice_second",
         type=int,
-        default=0,
+        default=10,
         help="Practice trials/cue on the SECOND occurrence of a task type "
         "(0 = no practice block on the second encounter).",
     )

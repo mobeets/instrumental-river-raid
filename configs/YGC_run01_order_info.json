@@ -1,0 +1,173 @@
+{
+  "session_index": 1,
+  "design_source": "configs/design_YGC_run01.json",
+  "design_seed": 104,
+  "dropped_texture": null,
+  "slot_token_order": [
+    "T",
+    "I",
+    "TI",
+    "T",
+    "I",
+    "TI"
+  ],
+  "interleave_all": true,
+  "slots": [
+    {
+      "slot_position": 0,
+      "task": "targets",
+      "token": "T",
+      "run": 1,
+      "sub_block_order": [
+        {
+          "block_index": 3,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block3"
+        },
+        {
+          "block_index": 1,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block1"
+        },
+        {
+          "block_index": 2,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block2"
+        }
+      ]
+    },
+    {
+      "slot_position": 1,
+      "task": "instrumental",
+      "token": "I",
+      "run": 1,
+      "sub_block_order": [
+        {
+          "block_index": 3,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block3"
+        },
+        {
+          "block_index": 2,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block2"
+        },
+        {
+          "block_index": 1,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block1"
+        }
+      ]
+    },
+    {
+      "slot_position": 2,
+      "task": "targets-instrumental",
+      "token": "TI",
+      "run": 2,
+      "sub_block_order": [
+        {
+          "block_index": 3,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block3"
+        },
+        {
+          "block_index": 2,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block2"
+        },
+        {
+          "block_index": 1,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block1"
+        }
+      ]
+    },
+    {
+      "slot_position": 3,
+      "task": "targets",
+      "token": "T",
+      "run": 2,
+      "sub_block_order": [
+        {
+          "block_index": 1,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block1"
+        },
+        {
+          "block_index": 2,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block2"
+        },
+        {
+          "block_index": 3,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block3"
+        }
+      ]
+    },
+    {
+      "slot_position": 4,
+      "task": "instrumental",
+      "token": "I",
+      "run": 2,
+      "sub_block_order": [
+        {
+          "block_index": 2,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block2"
+        },
+        {
+          "block_index": 3,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block3"
+        },
+        {
+          "block_index": 1,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block1"
+        }
+      ]
+    },
+    {
+      "slot_position": 5,
+      "task": "targets-instrumental",
+      "token": "TI",
+      "run": 1,
+      "sub_block_order": [
+        {
+          "block_index": 3,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block3"
+        },
+        {
+          "block_index": 2,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block2"
+        },
+        {
+          "block_index": 1,
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "block1"
+        }
+      ]
+    }
+  ]
+}
