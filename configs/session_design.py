@@ -70,47 +70,61 @@ def build_session_design(seed, manifest_path):
 
     lookup = load_manifest(manifest_path)
     shapes = sorted(lookup.keys())
-    assert len(shapes) == 9, f"Expected 9 distinct shapes in manifest, got {len(shapes)}: {shapes}"
+    assert len(shapes) == 9, (
+        f"Expected 9 distinct shapes in manifest, got {len(shapes)}: {shapes}"
+    )
     textures_used = {info["texture"] for info in lookup.values()}
-    assert len(textures_used) == 1, f"Expected a single uniform texture, got {textures_used}"
+    assert len(textures_used) == 1, (
+        f"Expected a single uniform texture, got {textures_used}"
+    )
     texture = next(iter(textures_used))
 
     pool = [
-        {"shape": s, "texture": texture, "manifest_index": info["manifest_index"], "filename": info["filename"]}
+        {
+            "shape": s,
+            "texture": texture,
+            "manifest_index": info["manifest_index"],
+            "filename": info["filename"],
+        }
         for s, info in lookup.items()
     ]
 
     cells = []
     for run in (1, 2):
-        for task in TASKS:
-            shuffled = shapes[:]
-            random.shuffle(shuffled)
-            # Independent random partition of the same 9 shapes, per (task, run) --
-            # T, I, and TI each get their own shuffle, so their groupings generally differ.
-            groups = {2: shuffled[0:2], 3: shuffled[2:5], 4: shuffled[5:9]}
+        # One shuffle per run, shared by all three tasks, so T, I and TI get the same grouping
+        shuffled = shapes[:]
+        random.shuffle(shuffled)
+        groups = {2: shuffled[0:2], 3: shuffled[2:5], 4: shuffled[5:9]}
 
+        for task in TASKS:
             for k in SET_SIZES:
-                group_shapes = groups[k]
+                group_shapes = list(
+                    groups[k]
+                )  # copy so tasks don't share one list object
                 cues = []
                 for i, s in enumerate(group_shapes):
                     info = lookup[s]
-                    cues.append({
-                        "cue_index": i + 1,
-                        "shape": s,
-                        "texture": texture,
-                        "manifest_index": info["manifest_index"],
-                        "filename": info["filename"],
-                        "training": False,
-                    })
-                cells.append({
-                    "task": task,
-                    "run": run,
-                    "set_size": k,
-                    "varies": "shape",
-                    "block_type": f"k{k}",
-                    "shapes": group_shapes,
-                    "cues": cues,
-                })
+                    cues.append(
+                        {
+                            "cue_index": i + 1,
+                            "shape": s,
+                            "texture": texture,
+                            "manifest_index": info["manifest_index"],
+                            "filename": info["filename"],
+                            "training": False,
+                        }
+                    )
+                cells.append(
+                    {
+                        "task": task,
+                        "run": run,
+                        "set_size": k,
+                        "varies": "shape",
+                        "block_type": f"k{k}",
+                        "shapes": group_shapes,
+                        "cues": cues,
+                    }
+                )
 
     design = {
         "session_seed": seed,
@@ -135,17 +149,21 @@ def validate_design(design):
     pool_shapes = [p["shape"] for p in pool]
     assert len(set(pool_shapes)) == 9, "Pool has duplicate shapes"
     texture = design["textures"][0]
-    assert all(p["texture"] == texture for p in pool), "Pool contains more than one texture"
+    assert all(p["texture"] == texture for p in pool), (
+        "Pool contains more than one texture"
+    )
     report["pool_is_9_distinct_shapes_one_texture"] = True
 
-    assert set(c["task"] for c in cells) == set(TASKS), \
+    assert set(c["task"] for c in cells) == set(TASKS), (
         f"Expected tasks {TASKS}, got {sorted(set(c['task'] for c in cells))}"
+    )
 
     by_task_run = defaultdict(list)
     for cell in cells:
         by_task_run[(cell["task"], cell["run"])].append(cell)
-    assert len(by_task_run) == len(TASKS) * 2, \
+    assert len(by_task_run) == len(TASKS) * 2, (
         f"Expected {len(TASKS) * 2} (task, run) groups, got {len(by_task_run)}"
+    )
 
     shapes_in_pool = {p["shape"] for p in pool}
     for (task, run), group_cells in by_task_run.items():
@@ -153,29 +171,43 @@ def validate_design(design):
         assert sizes == [2, 3, 4], f"{task} run {run} sizes {sizes} != [2, 3, 4]"
 
         assigned_shapes = [s for c in group_cells for s in c["shapes"]]
-        assert len(assigned_shapes) == 9, f"{task} run {run}: {len(assigned_shapes)} shapes assigned, expected 9"
-        assert set(assigned_shapes) == shapes_in_pool, f"{task} run {run} does not cover the full 9-shape pool"
-        assert len(set(assigned_shapes)) == 9, f"{task} run {run}: a shape is assigned to more than one cell"
+        assert len(assigned_shapes) == 9, (
+            f"{task} run {run}: {len(assigned_shapes)} shapes assigned, expected 9"
+        )
+        assert set(assigned_shapes) == shapes_in_pool, (
+            f"{task} run {run} does not cover the full 9-shape pool"
+        )
+        assert len(set(assigned_shapes)) == 9, (
+            f"{task} run {run}: a shape is assigned to more than one cell"
+        )
 
         for cell in group_cells:
             assert len(cell["cues"]) == cell["set_size"], "Cue count != set_size"
-            assert len(cell["shapes"]) == cell["set_size"], "shapes list length != set_size"
-            assert set(c["shape"] for c in cell["cues"]) == set(cell["shapes"]), "cues/shapes mismatch"
+            assert len(cell["shapes"]) == cell["set_size"], (
+                "shapes list length != set_size"
+            )
+            assert set(c["shape"] for c in cell["cues"]) == set(cell["shapes"]), (
+                "cues/shapes mismatch"
+            )
     report["each_task_run_partitions_9_shapes_exactly"] = True
 
-    # Informational: do the 3 tasks actually land on different partitions within
-    # a run? True by construction with very high probability, not a hard invariant
-    # (a random coincidence making two tasks match wouldn't itself be invalid).
-    all_differ = True
+    # Matched design: within a run, T, I and TI must use identical groupings.
+
+    all_match = True
     for run in (1, 2):
         groupings = []
         for task in TASKS:
-            g = tuple(sorted((c["set_size"], frozenset(c["shapes"])) for c in by_task_run[(task, run)]))
+            g = tuple(
+                sorted(
+                    (c["set_size"], frozenset(c["shapes"]))
+                    for c in by_task_run[(task, run)]
+                )
+            )
             groupings.append(g)
-        if len(set(groupings)) != len(TASKS):
-            all_differ = False
-    report["task_groupings_independently_randomized"] = all_differ
-
+        if len(set(groupings)) != 1:
+            all_match = False
+    assert all_match, "T, I and TI do not share the same shape groupings within a run"
+    report["task_groupings_matched_within_run"] = True
     design["validation"] = report
     return report
 
@@ -185,16 +217,22 @@ def validate_design(design):
 # ---------------------------------------------------------------------------
 def render_table(design):
     lines = []
-    lines.append(f"SESSION DESIGN  (seed={design['session_seed']}, texture={design['textures'][0]})")
+    lines.append(
+        f"SESSION DESIGN  (seed={design['session_seed']}, texture={design['textures'][0]})"
+    )
     lines.append("")
     lines.append("CELLS")
     for cell in design["cells"]:
         head = f"  {cell['task']:<22} run {cell['run']}  k={cell['set_size']}  shapes={cell['shapes']}"
         lines.append(head)
         for c in cell["cues"]:
-            lines.append(f"      cue {c['cue_index']}: {c['shape']:<10} (#{c['manifest_index']:02d} {c['filename']})")
+            lines.append(
+                f"      cue {c['cue_index']}: {c['shape']:<10} (#{c['manifest_index']:02d} {c['filename']})"
+            )
     lines.append("")
-    lines.append("VALIDATION: " + ", ".join(f"{k}={v}" for k, v in design["validation"].items()))
+    lines.append(
+        "VALIDATION: " + ", ".join(f"{k}={v}" for k, v in design["validation"].items())
+    )
     return "\n".join(lines)
 
 
@@ -205,6 +243,7 @@ def audit_decorrelation(n_sessions, manifest_path, base_seed=0):
     """Across n_sessions seeds, tally each shape's set-size occupancy. Randomization
     should keep this roughly balanced: shapes near k/9 per set size."""
     from collections import Counter
+
     counts = defaultdict(Counter)
     for i in range(n_sessions):
         d = build_session_design(base_seed + i, manifest_path)
@@ -213,9 +252,12 @@ def audit_decorrelation(n_sessions, manifest_path, base_seed=0):
                 counts[s][cell["set_size"]] += 1
 
     expected = {k: k / 9 for k in SET_SIZES}
-    lines = [f"DECORRELATION AUDIT over {n_sessions} sessions",
-             "(each shape's share of appearances at k=2 / k=3 / k=4, "
-             f"vs. expected {expected[2]:.2f}/{expected[3]:.2f}/{expected[4]:.2f})", ""]
+    lines = [
+        f"DECORRELATION AUDIT over {n_sessions} sessions",
+        "(each shape's share of appearances at k=2 / k=3 / k=4, "
+        f"vs. expected {expected[2]:.2f}/{expected[3]:.2f}/{expected[4]:.2f})",
+        "",
+    ]
     worst = 0.0
     for s in sorted(counts.keys()):
         c = counts[s]
@@ -225,7 +267,9 @@ def audit_decorrelation(n_sessions, manifest_path, base_seed=0):
         worst = max(worst, dev)
         lines.append(f"  {s:<10}  k2={frac[2]:.2f} k3={frac[3]:.2f} k4={frac[4]:.2f}")
     lines.append("")
-    lines.append(f"max deviation from the correct (unequal-group-size) baseline: {worst:.3f}")
+    lines.append(
+        f"max deviation from the correct (unequal-group-size) baseline: {worst:.3f}"
+    )
     return "\n".join(lines)
 
 
@@ -233,11 +277,23 @@ def audit_decorrelation(n_sessions, manifest_path, base_seed=0):
 # CLI
 # ---------------------------------------------------------------------------
 def main():
-    ap = argparse.ArgumentParser(description="Generate one River Raid session cue-identity design (single-factor, 9 shapes).")
-    ap.add_argument("--seed", type=int, default=0, help="Session seed (controls shape->cell assignment).")
+    ap = argparse.ArgumentParser(
+        description="Generate one River Raid session cue-identity design (single-factor, 9 shapes)."
+    )
+    ap.add_argument(
+        "--seed",
+        type=int,
+        default=0,
+        help="Session seed (controls shape->cell assignment).",
+    )
     ap.add_argument("--manifest", required=True, help="Path to stimulus manifest.csv.")
     ap.add_argument("--out", default=None, help="Write design JSON to this path.")
-    ap.add_argument("--audit", type=int, default=0, help="Run group-level decorrelation audit over N sessions.")
+    ap.add_argument(
+        "--audit",
+        type=int,
+        default=0,
+        help="Run group-level decorrelation audit over N sessions.",
+    )
     args = ap.parse_args()
 
     design = build_session_design(args.seed, args.manifest)

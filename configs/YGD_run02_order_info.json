@@ -1,0 +1,155 @@
+{
+  "session_index": 1,
+  "design_source": "configs/design_YGD_run02.json",
+  "design_seed": 215,
+  "dropped_texture": null,
+  "slot_token_order": [
+    "I",
+    "T",
+    "TI",
+    "I",
+    "TI",
+    "T"
+  ],
+  "interleave_all": true,
+  "slots": [
+    {
+      "slot_position": 0,
+      "task": "instrumental",
+      "token": "I",
+      "run": 2,
+      "sub_block_order": [
+        {
+          "set_size": 4,
+          "varies": "shape",
+          "block_type": "k4"
+        },
+        {
+          "set_size": 3,
+          "varies": "shape",
+          "block_type": "k3"
+        },
+        {
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "k2"
+        }
+      ]
+    },
+    {
+      "slot_position": 1,
+      "task": "targets",
+      "token": "T",
+      "run": 1,
+      "sub_block_order": [
+        {
+          "set_size": 4,
+          "varies": "shape",
+          "block_type": "k4"
+        },
+        {
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "k2"
+        },
+        {
+          "set_size": 3,
+          "varies": "shape",
+          "block_type": "k3"
+        }
+      ]
+    },
+    {
+      "slot_position": 2,
+      "task": "targets-instrumental",
+      "token": "TI",
+      "run": 2,
+      "sub_block_order": [
+        {
+          "set_size": 3,
+          "varies": "shape",
+          "block_type": "k3"
+        },
+        {
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "k2"
+        },
+        {
+          "set_size": 4,
+          "varies": "shape",
+          "block_type": "k4"
+        }
+      ]
+    },
+    {
+      "slot_position": 3,
+      "task": "instrumental",
+      "token": "I",
+      "run": 1,
+      "sub_block_order": [
+        {
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "k2"
+        },
+        {
+          "set_size": 3,
+          "varies": "shape",
+          "block_type": "k3"
+        },
+        {
+          "set_size": 4,
+          "varies": "shape",
+          "block_type": "k4"
+        }
+      ]
+    },
+    {
+      "slot_position": 4,
+      "task": "targets-instrumental",
+      "token": "TI",
+      "run": 1,
+      "sub_block_order": [
+        {
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "k2"
+        },
+        {
+          "set_size": 4,
+          "varies": "shape",
+          "block_type": "k4"
+        },
+        {
+          "set_size": 3,
+          "varies": "shape",
+          "block_type": "k3"
+        }
+      ]
+    },
+    {
+      "slot_position": 5,
+      "task": "targets",
+      "token": "T",
+      "run": 2,
+      "sub_block_order": [
+        {
+          "set_size": 4,
+          "varies": "shape",
+          "block_type": "k4"
+        },
+        {
+          "set_size": 2,
+          "varies": "shape",
+          "block_type": "k2"
+        },
+        {
+          "set_size": 3,
+          "varies": "shape",
+          "block_type": "k3"
+        }
+      ]
+    }
+  ]
+}
