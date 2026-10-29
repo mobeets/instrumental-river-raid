@@ -91,16 +91,15 @@ def build_session_design(seed, manifest_path):
 
     cells = []
     for run in (1, 2):
-        # One shuffle per run, shared by all three tasks, so T, I and TI get the same grouping
-        shuffled = shapes[:]
-        random.shuffle(shuffled)
-        groups = {2: shuffled[0:2], 3: shuffled[2:5], 4: shuffled[5:9]}
-
         for task in TASKS:
+            shuffled = shapes[:]
+            random.shuffle(shuffled)
+            # Independent random partition of the same 9 shapes, per (task, run) --
+            # T, I, and TI each get their own shuffle, so their groupings generally differ.
+            groups = {2: shuffled[0:2], 3: shuffled[2:5], 4: shuffled[5:9]}
+
             for k in SET_SIZES:
-                group_shapes = list(
-                    groups[k]
-                )  # copy so tasks don't share one list object
+                group_shapes = groups[k]
                 cues = []
                 for i, s in enumerate(group_shapes):
                     info = lookup[s]
@@ -191,9 +190,10 @@ def validate_design(design):
             )
     report["each_task_run_partitions_9_shapes_exactly"] = True
 
-    # Matched design: within a run, T, I and TI must use identical groupings.
-
-    all_match = True
+    # Informational: do the 3 tasks actually land on different partitions within
+    # a run? True by construction with very high probability, not a hard invariant
+    # (a random coincidence making two tasks match wouldn't itself be invalid).
+    all_differ = True
     for run in (1, 2):
         groupings = []
         for task in TASKS:
@@ -204,10 +204,10 @@ def validate_design(design):
                 )
             )
             groupings.append(g)
-        if len(set(groupings)) != 1:
-            all_match = False
-    assert all_match, "T, I and TI do not share the same shape groupings within a run"
-    report["task_groupings_matched_within_run"] = True
+        if len(set(groupings)) != len(TASKS):
+            all_differ = False
+    report["task_groupings_independently_randomized"] = all_differ
+
     design["validation"] = report
     return report
 
