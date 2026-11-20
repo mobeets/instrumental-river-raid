@@ -51,6 +51,10 @@ const STARTING_MODE = 2;
 const READY_MODE = 3;
 const COMPLETE_MODE = 4;
 let gameMode = READY_MODE;
+// An explicit GO_TEXT_DURATION opts this run into the delayed-go visuals.
+let delayedGoVisuals = false;
+let goTextDurationFrames = 0;
+let goTextTimer = 0;
 let feedbackTimer = 0; // counts down frames to show feedback text
 // v5: response lockout + self-paced drift (set from params in setup)
 let responseLockout = false; // lock movement + fire during the cue-hold window
@@ -195,7 +199,12 @@ function newGame(restartGame = false, goBack = false) {
   animations = [];
   jet.visible = false; // reset jet visibility for new block
   trialActive = false; // reset trial for new block
-  iti1MinTimer = iti1MinDurationFrames;
+  if (delayedGoVisuals) {
+    goTextTimer = 0;
+    feedbackTimer = 0;
+  }
+  // The first play frame draws the initial blank screen before timing it.
+  iti1MinTimer = iti1MinDurationFrames + Number(delayedGoVisuals);
 }
 
 // ====== p5.js setup and draw ======
@@ -227,6 +236,8 @@ function setup() {
 
   // v5: lockout / self-paced drift (default off -> original behavior)
   responseLockout = E.params.RESPONSE_LOCKOUT ?? false;
+  delayedGoVisuals = E.params.GO_TEXT_DURATION != null;
+  goTextDurationFrames = Math.ceil((E.params.GO_TEXT_DURATION ?? 0) * E.params.FPS);
   driftOnResponse = E.params.DRIFT_STARTS_ON_RESPONSE ?? false;
   responseTimeoutFrames = Math.ceil(
     (E.params.RESPONSE_TIMEOUT ?? 0) * E.params.FPS,
@@ -286,6 +297,7 @@ function getEventNameWithLocations(eventName, jet, boats, extra_info) {
 
 function draw() {
   frameRate(E.params.FPS);
+  const showRiver = E.params.SHOW_RIVER !== false;
   if (gameMode == PLAY_MODE) {
     background("#496FB6");
   } else {
@@ -306,7 +318,10 @@ function draw() {
 
   if (gameMode == PLAY_MODE) {
     framesInGame++;
-    grass.update();
+    // Keep the river moving through every trial phase, including baseline.
+    if (showRiver) grass.update();
+    let jetStartedThisFrame = false;
+    let goStartedThisFrame = false;
 
     // ITI 1 — jet appears after previous trial ends
     let iti_p = 1 / (E.params.ITI_MEAN_DURATION * E.params.FPS);
@@ -336,18 +351,20 @@ function draw() {
         trialActive = true; // add boolean to ensure that trial is active
         trial.trigger(getEventNameWithLocations("agent onset", jet, []));
         iti2MinTimer = Math.ceil(E.params.ITI2_MIN_DURATION * E.params.FPS); // adds at least 0.25 second after plane appears
-        return; // ← skip ITI 2 this frame
+        if (!delayedGoVisuals) return; // ← skip ITI 2 this frame
+        jetStartedThisFrame = true; // render the jet on its logged onset frame
       }
     }
 
     // ITI 2 — boat appears after jet has been visible for a bit
     let iti2_p = 1 / (E.params.ITI2_MEAN_DURATION * E.params.FPS);
 
-    if (iti2MinTimer > 0) iti2MinTimer--;
+    if (!jetStartedThisFrame && iti2MinTimer > 0) iti2MinTimer--;
     if (
       explosions.length === 0 &&
       boats.length === 0 &&
       jet.visible &&
+      !jetStartedThisFrame &&
       trialActive &&
       iti2MinTimer === 0 &&
       random(1) < iti2_p
@@ -361,6 +378,7 @@ function draw() {
         cueWidth / 2,
         nTilesPerCue,
       );
+      if (delayedGoVisuals) boat.waitTimer = Math.max(1, Math.ceil(boat.waitTimer));
       boat.jetAligned = false;
       boat.firedDuringTrial = false;
       boat.correctButtonFired = false;
@@ -373,7 +391,14 @@ function draw() {
 
     // Update and render boats
     for (let i = boats.length - 1; i >= 0; i--) {
-      boats[i].update();
+      const boat = boats[i];
+      // Count the hold from the frame on which the cue first appears.
+      if (!delayedGoVisuals || boat.hasBeenSeen) {
+        boat.update();
+        if (delayedGoVisuals && boat.released && !boat.goLogged && !driftOnResponse) {
+          boat.y += boat.speed;
+        }
+      }
       // proximity-based explosion for targets task
       if (trial_block.name === "targets" && boats[i].shouldExplode) {
         trial.trigger(
@@ -505,8 +530,10 @@ function draw() {
       if (b.released && !b.goLogged) {
         b.goLogged = true;
         trial.trigger(getEventNameWithLocations("go", jet, [b]));
+        goStartedThisFrame = delayedGoVisuals;
+        goTextTimer = goTextDurationFrames;
       }
-      if (b.released && driftOnResponse && !b.driftStarted) {
+      if (b.released && driftOnResponse && !b.driftStarted && !goStartedThisFrame) {
         if (user.moveLeft || user.moveRight || user.fired > 0) {
           b.driftStarted = true;
           trial.trigger(getEventNameWithLocations("response onset", jet, [b]));
@@ -578,13 +605,15 @@ function draw() {
     }
 
     // Update jet
-    jet.update();
+    // The controls were sampled before the first Go! frame was drawn.
+    if (!goStartedThisFrame) jet.update();
     if (trialActive) trial.logPositions(jet, boats, projectiles);
   }
 
   // render grass, boats, projectiles, and jet
   if (gameMode == PLAY_MODE) {
-    grass.render();
+    const responseVisible = trialActive && !beforeGo();
+    if (showRiver) grass.render();
     for (let i = boats.length - 1; i >= 0; i--) {
       boats[i].render();
     }
@@ -592,7 +621,24 @@ function draw() {
       let p = projectiles[i];
       p.render();
     }
-    jet.render();
+    if (delayedGoVisuals && beforeGo()) {
+      push();
+      tint(255, 105);
+      jet.render();
+      pop();
+    } else {
+      jet.render();
+    }
+    if (delayedGoVisuals && responseVisible && goTextTimer > 0) {
+      goTextTimer--;
+      push();
+      fill("white");
+      textSize(64);
+      textAlign(CENTER, CENTER);
+      textFont(myFont);
+      text("Go!", width / 2, height / 2);
+      pop();
+    }
   }
 
   // Update/render explosions
@@ -618,7 +664,11 @@ function draw() {
     }
   }
 
-  if (E.params.showHUD) {
+  if (
+    E.params.showHUD &&
+    (!delayedGoVisuals || gameMode !== PLAY_MODE ||
+      (trialActive && !beforeGo()) || feedbackTimer > 0)
+  ) {
     drawHUD();
     streakbar.update();
     streakbar.render();
