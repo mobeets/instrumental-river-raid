@@ -447,8 +447,8 @@ function draw() {
 
       if (!boats[i].hasBeenSeen && boats[i].onscreen()) {
         trial.trigger(getEventNameWithLocations("cue onset", jet, [boats[i]]));
-        // markEvent triggers photodiode/sound
-        markEvent();
+        // Standard runs keep the cue-onset pulse and click.
+        if (!delayedGoVisuals) markEvent();
       }
       let horizontalOverlap =
         jet.x + jet.width / 2 > boats[i].x - boats[i].width / 2 &&
@@ -551,6 +551,8 @@ function draw() {
         trial.trigger(getEventNameWithLocations("go", jet, [b]));
         goStartedThisFrame = delayedGoVisuals;
         goTextTimer = goTextDurationFrames;
+        // Mark the same frame that draws Go! in the delayed-Go preview.
+        if (delayedGoVisuals) markEvent();
       }
       // Log the first actual descent frame, even when Go! and descent coincide.
       if (cueDescentStartedThisFrame) {
