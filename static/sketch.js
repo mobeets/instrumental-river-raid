@@ -55,6 +55,7 @@ let gameMode = READY_MODE;
 let delayedGoVisuals = false;
 let goTextDurationFrames = 0;
 let goTextTimer = 0;
+let cueFallDelayFrames = null;
 let feedbackTimer = 0; // counts down frames to show feedback text
 // v5: response lockout + self-paced drift (set from params in setup)
 let responseLockout = false; // lock movement + fire during the cue-hold window
@@ -238,6 +239,10 @@ function setup() {
   responseLockout = E.params.RESPONSE_LOCKOUT ?? false;
   delayedGoVisuals = E.params.GO_TEXT_DURATION != null;
   goTextDurationFrames = Math.ceil((E.params.GO_TEXT_DURATION ?? 0) * E.params.FPS);
+  // This delay starts at Go! and controls only downward cue motion.
+  if (delayedGoVisuals && E.params.CUE_FALL_DELAY_AFTER_GO != null) {
+    cueFallDelayFrames = Math.max(0, Math.ceil(E.params.CUE_FALL_DELAY_AFTER_GO * E.params.FPS));
+  }
   driftOnResponse = E.params.DRIFT_STARTS_ON_RESPONSE ?? false;
   responseTimeoutFrames = Math.ceil(
     (E.params.RESPONSE_TIMEOUT ?? 0) * E.params.FPS,
@@ -322,6 +327,7 @@ function draw() {
     if (showRiver) grass.update();
     let jetStartedThisFrame = false;
     let goStartedThisFrame = false;
+    let cueDescentStartedThisFrame = false;
 
     // ITI 1 — jet appears after previous trial ends
     let iti_p = 1 / (E.params.ITI_MEAN_DURATION * E.params.FPS);
@@ -379,6 +385,8 @@ function draw() {
         nTilesPerCue,
       );
       if (delayedGoVisuals) boat.waitTimer = Math.max(1, Math.ceil(boat.waitTimer));
+      boat.fallDelayFrames = cueFallDelayFrames ?? 0;
+      boat.descentLogged = false;
       boat.jetAligned = false;
       boat.firedDuringTrial = false;
       boat.correctButtonFired = false;
@@ -394,9 +402,20 @@ function draw() {
       const boat = boats[i];
       // Count the hold from the frame on which the cue first appears.
       if (!delayedGoVisuals || boat.hasBeenSeen) {
-        boat.update();
-        if (delayedGoVisuals && boat.released && !boat.goLogged && !driftOnResponse) {
-          boat.y += boat.speed;
+        // Release the controls at Go! and keep checking hits while descent waits.
+        if (boat.released && boat.fallDelayFrames > 0) boat.fallDelayFrames--;
+        if (!boat.released || boat.fallDelayFrames === 0) {
+          const previousY = boat.y;
+          boat.update();
+          if (
+            delayedGoVisuals && boat.released && !boat.goLogged &&
+            boat.fallDelayFrames === 0 && !driftOnResponse
+          ) {
+            boat.y += boat.speed;
+          }
+          if (cueFallDelayFrames !== null && !boat.descentLogged && boat.y > previousY) {
+            cueDescentStartedThisFrame = true;
+          }
         }
       }
       // proximity-based explosion for targets task
@@ -532,6 +551,11 @@ function draw() {
         trial.trigger(getEventNameWithLocations("go", jet, [b]));
         goStartedThisFrame = delayedGoVisuals;
         goTextTimer = goTextDurationFrames;
+      }
+      // Log the first actual descent frame, even when Go! and descent coincide.
+      if (cueDescentStartedThisFrame) {
+        b.descentLogged = true;
+        trial.trigger(getEventNameWithLocations("cue descent onset", jet, [b]));
       }
       if (b.released && driftOnResponse && !b.driftStarted && !goStartedThisFrame) {
         if (user.moveLeft || user.moveRight || user.fired > 0) {
